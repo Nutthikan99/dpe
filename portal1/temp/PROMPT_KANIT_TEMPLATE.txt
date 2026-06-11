@@ -1,0 +1,20 @@
+PROMPT สำหรับงาน HTML Template + Kanit
+
+ให้นำไฟล์ HTML เดิมไปวางเป็นหน้า index.html ภายในโครงสร้าง template .zip เดิม โดยรักษาโฟลเดอร์ css/js/images/fonts ของ template ไว้ทั้งหมด และปรับฟอนต์ทั้งเว็บไซต์ให้เป็น Kanit ด้วยโค้ดใน <head> ดังนี้:
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style id="kanit-font-override">
+  html, body, body * {
+    font-family: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  }
+  body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+</style>
+
+ข้อกำหนด:
+1. เปิดไฟล์ index.html แล้วต้องแสดงหน้าเว็บหลักได้ทันที
+2. ต้องรองรับภาษาไทย และใช้ Kanit ทั่วทั้งหน้า
+3. ห้ามลบ asset เดิมของ template ยกเว้นมีคำสั่งเพิ่มเติม
+4. บีบอัดกลับเป็นไฟล์ .zip พร้อมใช้งาน
