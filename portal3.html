@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>portal3 — ระบบบริการขอใช้อาคารสถานกีฬา</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark:  #1B4332;
+  --green-mid:   #2D6A4F;
+  --green-light: #52B788;
+  --green-pale:  #D8F3DC;
+  --gold:        #C9A84C;
+  --gold-light:  #F0D080;
+  --gold-pale:   #FDF6E3;
+  --white:       #FFFFFF;
+  --gray-50:     #F9F9F9;
+  --gray-100:    #F4F4F4;
+  --gray-200:    #E0E0E0;
+  --gray-400:    #9E9E9E;
+  --gray-600:    #616161;
+  --gray-700:    #424242;
+  --text-dark:   #1A2E1A;
+  --radius:      10px;
+  --shadow:      0 2px 10px rgba(0,0,0,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Kanit','Segoe UI',sans-serif; background: #EAEEEB; color: var(--text-dark); font-size: 13px; line-height: 1.55; }
+.page-wrap { width: 1320px; margin: 0 auto; padding: 28px 24px 48px; }
+
+/* DOC HEADER */
+.doc-header { background: var(--green-dark); border-radius: 12px; padding: 20px 28px; margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; }
+.doc-header h1 { font-size: 18px; font-weight: 700; color: var(--gold-light); line-height: 1.4; }
+.doc-header .subtitle { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+.tor-badge { background: var(--gold); color: var(--green-dark); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 700; white-space: nowrap; align-self: flex-start; }
+
+/* SECTION */
+.section-header { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; flex-wrap: wrap; }
+.section-pill { background: var(--green-dark); color: var(--gold-light); padding: 3px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.section-title { font-size: 15px; font-weight: 700; color: var(--green-dark); }
+.tor-ref { font-size: 11px; color: var(--gold); font-weight: 700; }
+
+/* GRIDS */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+/* SCREEN CARD */
+.screen-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--gray-200); }
+.screen-label { background: var(--gray-100); border-bottom: 1px solid var(--gray-200); padding: 5px 10px; font-size: 10px; font-weight: 700; color: var(--gray-700); display: flex; justify-content: space-between; align-items: center; }
+.screen-num { color: var(--gold); font-weight: 700; }
+
+/* TOPBAR */
+.topbar { background: var(--green-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 36px; }
+.topbar .logo { font-weight: 700; font-size: 12px; color: var(--gold-light); }
+.topbar .nav-items { display: flex; gap: 10px; }
+.topbar .nav-item { font-size: 10px; color: rgba(255,255,255,0.7); cursor: pointer; }
+.topbar .nav-item.active { color: var(--gold-light); border-bottom: 1.5px solid var(--gold); }
+.topbar .user-badge { background: var(--gold); color: var(--green-dark); border-radius: 20px; padding: 2px 8px; font-size: 10px; font-weight: 700; }
+
+/* SIDEBAR */
+.layout-with-side { display: flex; min-height: 340px; }
+.sidebar { width: 130px; background: var(--green-pale); flex-shrink: 0; padding: 12px 0; border-right: 1px solid var(--gray-200); }
+.sidebar-item { padding: 7px 12px; font-size: 10px; color: var(--green-dark); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.sidebar-item.active { background: var(--green-dark); color: var(--gold-light); font-weight: 600; }
+.sidebar-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.sidebar-group { font-size: 9px; color: var(--gray-400); padding: 10px 12px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* CONTENT */
+.content { flex: 1; padding: 12px 14px; overflow: hidden; }
+
+/* PAGE TITLE BAR */
+.page-title-bar { background: linear-gradient(135deg, var(--green-dark), var(--green-mid)); color: var(--white); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; }
+.page-title-bar h3 { font-size: 12px; font-weight: 700; }
+.page-title-bar .breadcrumb { font-size: 9px; color: rgba(255,255,255,0.6); }
+
+/* FORM */
+.form-group { margin-bottom: 8px; }
+.form-label { font-size: 9px; color: var(--gray-700); margin-bottom: 3px; font-weight: 700; display: block; }
+.form-label .req { color: #C0392B; }
+.form-input { width: 100%; border: 1px solid var(--gray-200); border-radius: 5px; height: 26px; background: var(--white); padding: 0 8px; font-size: 10px; color: var(--gray-400); font-family: 'Kanit', sans-serif; }
+.form-input.filled { border-color: var(--green-mid); color: var(--text-dark); }
+.form-input.prefill { background: var(--green-pale); border-color: var(--green-light); color: var(--text-dark); }
+.form-select { width: 100%; border: 1px solid var(--gray-200); border-radius: 5px; height: 26px; background: var(--white); padding: 0 8px; font-size: 10px; color: var(--gray-400); font-family: 'Kanit', sans-serif; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* INNER CARD */
+.inner-card { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 7px; padding: 8px 10px; margin-bottom: 8px; }
+.inner-title { font-size: 10px; font-weight: 700; color: var(--green-dark); margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1.5px solid var(--gold); display: flex; align-items: center; gap: 5px; }
+.inner-title-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+/* BUTTONS */
+.gold-btn { background: var(--gold); color: var(--green-dark); border: none; border-radius: 5px; padding: 5px 12px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Kanit', sans-serif; }
+.gold-btn-full { width: 100%; height: 30px; font-size: 11px; }
+.outline-btn { background: white; border: 1px solid var(--green-mid); color: var(--green-mid); border-radius: 5px; padding: 4px 10px; font-size: 10px; cursor: pointer; font-family: 'Kanit', sans-serif; }
+.green-btn { background: var(--green-mid); color: white; border: none; border-radius: 5px; padding: 5px 12px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Kanit', sans-serif; }
+.btn-sm { padding: 2px 8px; font-size: 9px; }
+
+/* BADGE */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 8px; font-weight: 700; }
+.badge-green { background: var(--green-pale); color: var(--green-dark); }
+.badge-gold { background: var(--gold-pale); color: #7B6010; border: 1px solid var(--gold); }
+.badge-gray { background: var(--gray-200); color: var(--gray-600); }
+.badge-red { background: #FFEBEE; color: #B71C1C; }
+.badge-blue { background: #E3F2FD; color: #1565C0; }
+.badge-orange { background: #FFF8E1; color: #E65100; }
+
+/* NOTICE */
+.notice { border-radius: 5px; padding: 6px 9px; font-size: 9px; margin-bottom: 7px; }
+.notice-gold { background: var(--gold-pale); border-left: 3px solid var(--gold); color: #7B5F10; }
+.notice-green { background: var(--green-pale); border-left: 3px solid var(--green-light); color: var(--green-dark); }
+.notice-blue { background: #E3F2FD; border-left: 3px solid #1976D2; color: #1565C0; }
+.notice-orange { background: #FFF8E1; border-left: 3px solid #F9A825; color: #6D4C00; }
+.notice-red { background: #FFEBEE; border-left: 3px solid #C62828; color: #B71C1C; }
+
+/* STEP BAR */
+.step-bar { display: flex; align-items: center; margin-bottom: 10px; padding: 0 4px; }
+.step-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.step-circle { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; margin-bottom: 3px; }
+.step-done { background: var(--green-mid); color: white; }
+.step-active { background: var(--gold); color: var(--green-dark); }
+.step-pending { background: var(--gray-200); color: var(--gray-400); }
+.step-label { font-size: 8px; color: var(--gray-600); text-align: center; line-height: 1.2; }
+.step-line { flex: 1; height: 1.5px; background: var(--gray-200); margin-top: -13px; }
+.step-line-done { background: var(--green-mid); }
+
+/* TABLE */
+.mini-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.mini-table th { background: var(--green-dark); color: var(--gold-light); padding: 5px 8px; text-align: left; font-weight: 700; }
+.mini-table td { padding: 5px 8px; border-bottom: 1px solid var(--gray-200); vertical-align: middle; }
+.mini-table tr:nth-child(even) td { background: var(--gray-50); }
+
+/* SUMMARY */
+.summary-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px; border-bottom: 1px solid var(--gray-200); }
+.summary-total { font-weight: 700; color: var(--green-dark); border-top: 2px solid var(--gold); border-bottom: none; margin-top: 2px; padding-top: 5px; }
+
+/* TABS */
+.tab-bar { display: flex; border-bottom: 2px solid var(--gray-200); margin-bottom: 8px; }
+.tab-item { padding: 5px 12px; font-size: 10px; cursor: pointer; color: var(--gray-400); }
+.tab-item.active { color: var(--green-dark); font-weight: 700; border-bottom: 2px solid var(--gold); margin-bottom: -2px; }
+
+/* UPLOAD */
+.upload-zone { border: 2px dashed var(--green-light); border-radius: 6px; padding: 10px; text-align: center; background: var(--green-pale); font-size: 9px; color: var(--green-mid); cursor: pointer; }
+
+/* CALENDAR */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.cal-day-name { font-weight: 700; color: var(--gray-400); padding: 2px; font-size: 8px; }
+.cal-day { padding: 3px; border-radius: 3px; cursor: pointer; font-size: 9px; }
+.cal-day.today { background: var(--green-dark); color: white; font-weight: 700; }
+.cal-day.booked { background: var(--green-pale); color: var(--green-dark); }
+.cal-day.selected { background: var(--gold); color: var(--green-dark); font-weight: 700; }
+.cal-day.other { color: var(--gray-400); }
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 700; color: var(--green-dark); font-size: 10px; }
+
+/* STATS */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+.stat-box { background: var(--white); border: 1px solid var(--gray-200); border-radius: 7px; padding: 8px 10px; text-align: center; border-top: 3px solid var(--gold); }
+.stat-num { font-size: 20px; font-weight: 700; color: var(--green-dark); }
+.stat-lbl { font-size: 8px; color: var(--gray-400); }
+
+/* CHART */
+.chart-bar-row { display: flex; align-items: flex-end; gap: 6px; height: 70px; padding: 0 4px; }
+.chart-bar { background: var(--green-mid); border-radius: 3px 3px 0 0; flex: 1; opacity: 0.85; }
+.chart-bar.gold { background: var(--gold); }
+.chart-label-row { display: flex; gap: 6px; padding: 3px 4px 0; }
+.chart-label { flex: 1; text-align: center; font-size: 8px; color: var(--gray-400); }
+
+/* PAYMENT */
+.payment-method { border: 1px solid var(--gray-200); border-radius: 6px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer; }
+.payment-method.selected { border-color: var(--gold); background: var(--gold-pale); }
+.payment-radio { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--gray-400); flex-shrink: 0; }
+.payment-radio.selected { border-color: var(--gold); background: var(--gold); }
+.payment-name { font-size: 10px; font-weight: 600; }
+.payment-desc { font-size: 9px; color: var(--gray-400); }
+
+/* FOOTER NAV */
+.footer-nav { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 0 0; }
+
+/* MODAL */
+.modal-overlay { background: rgba(27,67,50,0.2); padding: 16px; border-radius: var(--radius); }
+.modal-box { background: white; border-radius: var(--radius); padding: 16px; border-top: 4px solid var(--gold); max-width: 320px; margin: 0 auto; box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+.modal-title { font-size: 12px; font-weight: 700; color: var(--green-dark); margin-bottom: 10px; }
+
+/* NOTIFICATION */
+.notif-card { border-left: 3px solid var(--green-mid); padding: 7px 9px; margin-bottom: 6px; background: var(--gray-50); border-radius: 0 6px 6px 0; }
+.notif-card.unread { border-color: var(--gold); background: var(--gold-pale); }
+.notif-title { font-size: 10px; font-weight: 700; color: var(--green-dark); }
+.notif-body { font-size: 9px; color: var(--gray-600); margin-top: 2px; }
+.notif-time { font-size: 8px; color: var(--gray-400); margin-top: 3px; }
+
+/* PROGRESS BAR */
+.progress-bar { height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.progress-fill { height: 100%; background: var(--green-mid); border-radius: 3px; }
+
+/* LOGIN */
+.login-wrap { padding: 24px; background: var(--green-pale); min-height: 320px; display: flex; align-items: center; justify-content: center; }
+.login-box { background: white; border-radius: 10px; padding: 20px 22px; width: 220px; border-top: 4px solid var(--gold); box-shadow: var(--shadow); }
+
+/* ===== PORTAL3 PREMIUM + KANIT + RESPONSIVE OVERRIDE ===== */
+html{scroll-behavior:smooth}
+body{
+  font-family:'Kanit',sans-serif !important;
+  background:
+    radial-gradient(circle at 10% 3%, rgba(82,183,136,.16), transparent 26%),
+    radial-gradient(circle at 90% 0%, rgba(201,168,76,.18), transparent 24%),
+    linear-gradient(180deg,#F7FBF8 0%,#EEF7F2 50%,#FAFCFB 100%) !important;
+  color:#173224 !important;
+}
+body *{font-family:'Kanit',sans-serif !important}
+.page-wrap{
+  width:min(1440px,94vw) !important;
+  padding:28px 0 56px !important;
+}
+.doc-header{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px !important;
+  padding:34px 38px !important;
+  background:
+    linear-gradient(135deg,rgba(27,67,50,.96),rgba(45,106,79,.92)),
+    radial-gradient(circle at 90% 0%, rgba(240,208,128,.32), transparent 35%) !important;
+  box-shadow:0 24px 70px rgba(27,67,50,.20) !important;
+  border:1px solid rgba(240,208,128,.35);
+}
+.doc-header::after{
+  content:"";position:absolute;right:-90px;top:-90px;width:240px;height:240px;border-radius:50%;
+  background:rgba(240,208,128,.16);
+}
+.doc-header h1{
+  font-size:clamp(28px,3vw,44px) !important;
+  line-height:1.16 !important;
+  letter-spacing:-.8px;
+  color:#FFF7DA !important;
+}
+.doc-header .subtitle{
+  font-size:14px !important;
+  color:rgba(255,255,255,.78) !important;
+  max-width:1040px;
+}
+.tor-badge{
+  background:linear-gradient(135deg,#FFE89A,#C9A84C) !important;
+  color:#173224 !important;
+  padding:9px 18px !important;
+  border-radius:999px !important;
+  font-size:13px !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.14);
+}
+.section-header{
+  margin:34px 0 18px !important;
+  padding:14px 16px;
+  background:rgba(255,255,255,.70);
+  border:1px solid #D9E8DE;
+  border-radius:20px;
+  box-shadow:0 12px 34px rgba(27,67,50,.08);
+}
+.section-pill{
+  background:linear-gradient(135deg,#1B4332,#2D6A4F) !important;
+  color:#FFF2BF !important;
+  padding:7px 16px !important;
+  font-size:14px !important;
+}
+.section-title{font-size:17px !important}
+.tor-ref{
+  background:#FFF7DE;
+  border:1px solid #E8CC75;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px !important;
+}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:22px !important}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:22px !important}
+.screen-card{
+  border-radius:24px !important;
+  border:1px solid #D8E7DE !important;
+  box-shadow:0 18px 48px rgba(27,67,50,.11) !important;
+  overflow:hidden !important;
+  transition:.22s ease;
+}
+.screen-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 24px 70px rgba(27,67,50,.16) !important;
+}
+.screen-label{
+  background:linear-gradient(180deg,#FFFFFF,#F6FAF7) !important;
+  padding:11px 14px !important;
+  font-size:12px !important;
+  color:#173224 !important;
+}
+.screen-num{font-size:12px !important;color:#B28D24 !important}
+.topbar{
+  min-height:44px !important;
+  height:auto !important;
+  padding:10px 14px !important;
+  background:linear-gradient(135deg,#1B4332,#2D6A4F) !important;
+}
+.topbar .logo{font-size:13px !important}
+.topbar .nav-items{gap:8px;flex-wrap:wrap}
+.topbar .nav-item{
+  font-size:10.5px !important;
+  background:rgba(255,255,255,.08);
+  padding:4px 8px;
+  border-radius:999px;
+}
+.content{padding:16px !important;background:#FBFDFB}
+.inner-card{
+  background:#FFFFFF !important;
+  border:1px solid #DCEADF !important;
+  border-radius:16px !important;
+  padding:12px 13px !important;
+  box-shadow:0 6px 18px rgba(27,67,50,.05);
+}
+.inner-title{
+  font-size:12px !important;
+  padding-bottom:8px !important;
+}
+.form-label,.form-input,.form-select,.notice,.summary-row,.payment-name,.payment-desc,.mini-table{
+  font-size:11px !important;
+}
+.form-input,.form-select{
+  min-height:30px !important;
+  border-radius:10px !important;
+}
+.gold-btn,.outline-btn,.green-btn{
+  border-radius:12px !important;
+  font-size:11.5px !important;
+}
+.badge{font-size:10px !important;padding:4px 9px !important}
+.login-wrap{
+  background:
+    linear-gradient(135deg,rgba(216,243,220,.95),rgba(255,246,227,.82)) !important;
+}
+.login-box{
+  border-radius:20px !important;
+  width:min(260px,92%) !important;
+  padding:24px !important;
+  box-shadow:0 16px 45px rgba(27,67,50,.14) !important;
+}
+.sidebar{
+  width:150px !important;
+  background:#F2FAF5 !important;
+}
+.sidebar-item{
+  font-size:11px !important;
+  border-radius:0 999px 999px 0;
+  margin:2px 8px 2px 0;
+}
+.layout-with-side{min-height:360px}
+.mini-table th{font-size:10.5px !important}
+.mini-table td{font-size:10.5px !important}
+.stats-row{gap:10px !important}
+.stat-box{border-radius:15px !important}
+.stat-num{font-size:24px !important}
+.footer-nav{flex-wrap:wrap}
+@media(max-width:1180px){
+  .grid-3{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+@media(max-width:820px){
+  .page-wrap{width:94vw !important}
+  .doc-header{display:block !important;padding:28px 22px !important}
+  .tor-badge{display:inline-block;margin-top:16px}
+  .grid-3,.grid-2{grid-template-columns:1fr !important}
+  .layout-with-side{display:block !important}
+  .sidebar{width:100% !important;display:flex;overflow:auto;padding:8px !important;border-right:0 !important;border-bottom:1px solid #D8E7DE}
+  .sidebar-group{display:none}
+  .sidebar-item{white-space:nowrap;border-radius:999px;margin:0 6px 0 0;padding:8px 12px !important}
+  .form-row,.form-row-3{grid-template-columns:1fr !important}
+  .stats-row{grid-template-columns:repeat(2,1fr) !important}
+  .topbar{align-items:flex-start;gap:8px;flex-wrap:wrap}
+}
+@media(max-width:520px){
+  .stats-row{grid-template-columns:1fr !important}
+  .doc-header h1{font-size:26px !important}
+}
+
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div>
+    <h1>Wireframe — ระบบบริการขอใช้อาคารสถานกีฬา</h1>
+    <div class="subtitle">TOR ๔.๒.๕ | กรณีบุคคลธรรมดา &amp; นิติบุคคล | โทนสี: เขียว – ขาว – ทอง</div>
+    <div class="subtitle" style="margin-top:4px;">S-01 Login · S-02 สมัครบุคคลธรรมดา · S-03 สมัครนิติบุคคล · S-04 ค้นหาสนาม · S-05 ปฏิทิน · S-06 เอกสาร · S-07 ชำระ · S-08 ใบเสร็จ · S-09 ประวัติ · S-10 อนุมัติ · S-11 แจ้งเตือน · S-12 Dashboard · S-13 วิเคราะห์</div>
+  </div>
+  <div class="tor-badge">TOR ๔.๒.๕</div>
+</div>
+
+<!-- ════════════════════════════════
+     ① ระบบสมาชิก  TOR 1.1–1.3
+     ════════════════════════════════ -->
+<div class="section-header">
+  <span class="section-pill">① ระบบสมาชิก</span>
+  <span class="section-title">S-01 Login · S-02 สมัครบุคคลธรรมดา · S-03 สมัครนิติบุคคล</span>
+  <span class="tor-ref">TOR ๑.๑–๑.๓</span>
+</div>
+
+<div class="grid-3">
+
+  <!-- S-01 Login -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-01</span> หน้าเข้าสู่ระบบ</span><span class="badge badge-gold">TOR ๑</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span style="font-size:9px;color:rgba(255,255,255,0.5)">ระบบบริการสนามกีฬา</span></div>
+    <div class="login-wrap">
+      <div class="login-box">
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="width:44px;height:44px;background:var(--green-dark);border-radius:50%;margin:0 auto 6px;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gold-light);font-weight:700;">ก</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green-dark);">เข้าสู่ระบบ</div>
+          <div style="font-size:9px;color:var(--gray-400);">ระบบบริการอาคารสถานกีฬา</div>
+        </div>
+        <div class="form-group"><label class="form-label">ชื่อผู้ใช้งาน / เลขบัตรประชาชน</label><div class="form-input" style="line-height:26px;color:var(--text-dark);">1-1234-56789-12-3</div></div>
+        <div class="form-group"><label class="form-label">รหัสผ่าน</label><div class="form-input" style="line-height:26px;letter-spacing:4px;color:var(--text-dark);">••••••••</div></div>
+        <button class="gold-btn gold-btn-full" style="margin-top:8px;">เข้าสู่ระบบ</button>
+        <div style="text-align:center;margin-top:10px;">
+          <div style="font-size:9px;color:var(--green-mid);cursor:pointer;margin-bottom:6px;">สมัครสมาชิกใหม่</div>
+          <div style="background:var(--green-dark);color:var(--gold-light);border-radius:5px;padding:5px 8px;font-size:9px;font-weight:700;cursor:pointer;">เข้าสู่ระบบด้วย ThaID</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S-02 สมัครบุคคลธรรมดา -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-02</span> สมัครสมาชิก — บุคคลธรรมดา</span><span class="badge badge-gold">TOR ๑.๑–๑.๒</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><div class="nav-items"><span class="nav-item active">สมัครสมาชิก</span></div></div>
+    <div class="content">
+      <div class="step-bar">
+        <div class="step-item"><div class="step-circle step-active">1</div><div class="step-label">ข้อมูล<br/>ส่วนตัว</div></div>
+        <div class="step-line"></div>
+        <div class="step-item"><div class="step-circle step-pending">2</div><div class="step-label">ยืนยัน<br/>ThaID</div></div>
+        <div class="step-line"></div>
+        <div class="step-item"><div class="step-circle step-pending">3</div><div class="step-label">เสร็จสิ้น</div></div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-title"><div class="inner-title-dot"></div>ข้อมูลส่วนตัว (บุคคลธรรมดา)</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">ชื่อ <span class="req">*</span></label><div class="form-input filled">สมชาย</div></div>
+          <div class="form-group"><label class="form-label">นามสกุล <span class="req">*</span></label><div class="form-input filled">ใจดี</div></div>
+        </div>
+        <div class="form-group"><label class="form-label">เลขบัตรประชาชน <span class="req">*</span></label><div class="form-input filled">1-1234-56789-12-3</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">วันเกิด</label><div class="form-input">01/01/2530</div></div>
+          <div class="form-group"><label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label><div class="form-input">081-xxx-xxxx</div></div>
+        </div>
+        <div class="form-group"><label class="form-label">อีเมล <span class="req">*</span></label><div class="form-input">email@example.com</div></div>
+        <div class="notice notice-gold" style="font-size:9px;">การยืนยันตัวตนผ่าน ThaID จะดำเนินการในขั้นตอนถัดไป</div>
+      </div>
+      <div class="footer-nav"><button class="gold-btn">ถัดไป &rarr;</button></div>
+    </div>
+  </div>
+
+  <!-- S-03 สมัครนิติบุคคล -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-03</span> สมัครสมาชิก — นิติบุคคล</span><span class="badge badge-gold">TOR ๑.๑–๑.๒</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><div class="nav-items"><span class="nav-item active">สมัครสมาชิก</span></div></div>
+    <div class="content">
+      <div class="tab-bar">
+        <div class="tab-item">บุคคลธรรมดา</div>
+        <div class="tab-item active">นิติบุคคล</div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-title"><div class="inner-title-dot"></div>ข้อมูลองค์กร / นิติบุคคล</div>
+        <div class="form-group"><label class="form-label">ชื่อนิติบุคคล <span class="req">*</span></label><div class="form-input filled">บริษัท เอบีซี จำกัด</div></div>
+        <div class="form-group"><label class="form-label">เลขทะเบียนนิติบุคคล <span class="req">*</span></label><div class="form-input filled">0105565xxxxxx</div></div>
+        <div class="form-group"><label class="form-label">ประเภทนิติบุคคล <span class="req">*</span></label><div class="form-select" style="line-height:24px;">บริษัทจำกัด</div></div>
+        <div class="inner-title" style="margin-top:8px;"><div class="inner-title-dot"></div>ผู้มีอำนาจลงนาม</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label><div class="form-input">ชื่อผู้มีอำนาจ</div></div>
+          <div class="form-group"><label class="form-label">ตำแหน่ง <span class="req">*</span></label><div class="form-input">กรรมการผู้จัดการ</div></div>
+        </div>
+        <div class="upload-zone" style="margin-top:4px;">
+          <div style="font-size:9px;">📎 แนบหนังสือรับรองนิติบุคคล + หนังสือมอบอำนาจ</div>
+          <div style="font-size:8px;color:var(--gray-400);margin-top:2px;">PDF, JPG ขนาดไม่เกิน 10 MB</div>
+        </div>
+      </div>
+      <div class="footer-nav"><button class="gold-btn">ถัดไป &rarr;</button></div>
+    </div>
+  </div>
+
+</div><!-- end grid -->
+
+<!-- ════════════════════════════════
+     ② ขอใช้บริการ  TOR 2.1–2.9
+     ════════════════════════════════ -->
+<div class="section-header">
+  <span class="section-pill">② ขอใช้บริการ</span>
+  <span class="section-title">S-04 ค้นหาสนาม · S-05 ปฏิทิน &amp; เวลา · S-06 แนบเอกสาร</span>
+  <span class="tor-ref">TOR ๒.๑–๒.๙</span>
+</div>
+
+<div class="grid-3">
+
+  <!-- S-04 ค้นหาสนาม -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-04</span> ดูข้อมูลสนาม / อาคาร / ห้องพัก</span><span class="badge badge-gold">TOR ๒.๑–๒.๒</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><div class="nav-items"><span class="nav-item active">ขอใช้บริการ</span><span class="nav-item">ประวัติ</span><span class="nav-item">รายงาน</span></div><span class="user-badge">สมชาย</span></div>
+    <div class="layout-with-side">
+      <div class="sidebar">
+        <div class="sidebar-group">เมนูหลัก</div>
+        <div class="sidebar-item active"><div class="sidebar-dot"></div>ขอใช้สนามกีฬา</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ขอใช้อาคาร</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ขอใช้ห้องพัก</div>
+        <div class="sidebar-group">ประวัติ</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>รายการจอง</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ประวัติชำระ</div>
+      </div>
+      <div class="content">
+        <div class="inner-card">
+          <div class="inner-title"><div class="inner-title-dot"></div>ค้นหาสนาม / อาคาร</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ประเภทสิ่งอำนวยฯ</label><div class="form-select" style="line-height:24px;">สนามกีฬา</div></div>
+            <div class="form-group"><label class="form-label">จังหวัด</label><div class="form-select" style="line-height:24px;">กรุงเทพมหานคร</div></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ประเภทกีฬา</label><div class="form-select" style="line-height:24px;">ฟุตบอล</div></div>
+            <div class="form-group"><label class="form-label">วันที่ต้องการ</label><div class="form-input">01/07/2568</div></div>
+          </div>
+          <button class="gold-btn gold-btn-full">ค้นหา</button>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">ผลการค้นหา (3 รายการ)</div>
+        <div style="border:1px solid var(--gray-200);border-radius:7px;overflow:hidden;font-size:10px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--gray-200);background:var(--green-pale);cursor:pointer;">
+            <div style="width:36px;height:36px;background:var(--green-mid);border-radius:5px;flex-shrink:0;"></div>
+            <div style="flex:1;"><div style="font-weight:700;color:var(--green-dark);">สนามฟุตบอล A</div><div style="color:var(--gray-400);font-size:9px;">ความจุ 500 คน | สนามหญ้าเทียม</div></div>
+            <div style="text-align:right;"><div style="color:var(--gold);font-weight:700;">2,000 ฿/ชม.</div><button class="gold-btn btn-sm" style="margin-top:2px;">เลือก</button></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--gray-200);cursor:pointer;">
+            <div style="width:36px;height:36px;background:var(--gray-200);border-radius:5px;flex-shrink:0;"></div>
+            <div style="flex:1;"><div style="font-weight:700;">สนามฟุตบอล B</div><div style="color:var(--gray-400);font-size:9px;">ความจุ 300 คน | สนามหญ้า</div></div>
+            <div style="text-align:right;"><div style="color:var(--gold);font-weight:700;">1,500 ฿/ชม.</div><button class="outline-btn btn-sm" style="margin-top:2px;">เลือก</button></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;">
+            <div style="width:36px;height:36px;background:var(--gray-200);border-radius:5px;flex-shrink:0;"></div>
+            <div style="flex:1;"><div style="font-weight:700;">อาคารอเนกประสงค์ C</div><div style="color:var(--gray-400);font-size:9px;">ความจุ 1,000 คน | ห้องแอร์</div></div>
+            <div style="text-align:right;"><div style="color:var(--gold);font-weight:700;">5,000 ฿/ชม.</div><button class="outline-btn btn-sm" style="margin-top:2px;">เลือก</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S-05 ปฏิทิน -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-05</span> ปฏิทิน &amp; กำหนดเงื่อนไขเวลา</span><span class="badge badge-gold">TOR ๒.๓–๒.๖</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">สมชาย</span></div>
+    <div class="content">
+      <div class="step-bar">
+        <div class="step-item"><div class="step-circle step-done">✓</div><div class="step-label">เลือกสนาม</div></div>
+        <div class="step-line step-line-done"></div>
+        <div class="step-item"><div class="step-circle step-active">2</div><div class="step-label">วันเวลา</div></div>
+        <div class="step-line"></div>
+        <div class="step-item"><div class="step-circle step-pending">3</div><div class="step-label">ค่าใช้จ่าย</div></div>
+        <div class="step-line"></div>
+        <div class="step-item"><div class="step-circle step-pending">4</div><div class="step-label">เอกสาร</div></div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active">ปฏิทิน</div>
+        <div class="tab-item">ตาราง</div>
+        <div class="tab-item">สรุปการใช้งาน</div>
+      </div>
+      <div class="form-row">
+        <div class="inner-card" style="margin-bottom:0;">
+          <div class="cal-header"><span>‹</span><span>กรกฎาคม 2568</span><span>›</span></div>
+          <div class="cal-grid">
+            <div class="cal-day-name">อา</div><div class="cal-day-name">จ</div><div class="cal-day-name">อ</div><div class="cal-day-name">พ</div><div class="cal-day-name">พฤ</div><div class="cal-day-name">ศ</div><div class="cal-day-name">ส</div>
+            <div class="cal-day other">30</div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day booked">6</div>
+            <div class="cal-day booked">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day today">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+            <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day selected">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+          </div>
+          <div style="margin-top:5px;font-size:8px;display:flex;gap:8px;">
+            <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--gold);display:inline-block;"></span>เลือก</span>
+            <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--green-pale);border:1px solid var(--green-mid);display:inline-block;"></span>มีการจอง</span>
+          </div>
+        </div>
+        <div class="inner-card" style="margin-bottom:0;">
+          <div class="inner-title"><div class="inner-title-dot"></div>กำหนดเวลา</div>
+          <div class="form-group"><label class="form-label">วันที่เริ่มต้น <span class="req">*</span></label><div class="form-input filled">16/07/2568</div></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">เวลาเริ่ม <span class="req">*</span></label><div class="form-select" style="line-height:24px;">09:00</div></div>
+            <div class="form-group"><label class="form-label">เวลาสิ้นสุด <span class="req">*</span></label><div class="form-select" style="line-height:24px;">12:00</div></div>
+          </div>
+          <div class="form-group"><label class="form-label">วัตถุประสงค์</label><div class="form-select" style="line-height:24px;">การแข่งขัน</div></div>
+          <div class="form-group"><label class="form-label">จำนวนผู้เข้าใช้ (คน)</label><div class="form-input">150</div></div>
+          <div class="notice notice-green" style="font-size:8px;">ช่วงเวลาที่เลือกว่างและพร้อมใช้งาน</div>
+        </div>
+      </div>
+      <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:6px;padding:8px 10px;font-size:10px;margin-top:8px;">
+        <div style="font-weight:700;color:var(--green-dark);margin-bottom:4px;">ค่าใช้จ่ายโดยประมาณ <span style="color:var(--gold);font-size:9px;">[TOR ๒.๔]</span></div>
+        <div class="summary-row"><span>ค่าสนาม 3 ชั่วโมง × 2,000 ฿</span><span>6,000 ฿</span></div>
+        <div class="summary-row summary-total"><span>รวมทั้งสิ้น</span><span style="color:var(--gold);">6,500 ฿</span></div>
+      </div>
+      <div class="footer-nav"><button class="outline-btn">ย้อนกลับ</button><button class="gold-btn">ถัดไป →</button></div>
+    </div>
+  </div>
+
+  <!-- S-06 แนบเอกสาร -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-06</span> แนบเอกสาร &amp; ยืนยันคำขอ</span><span class="badge badge-gold">TOR ๒.๕</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">สมชาย</span></div>
+    <div class="content">
+      <div class="step-bar">
+        <div class="step-item"><div class="step-circle step-done">✓</div><div class="step-label">เลือกสนาม</div></div>
+        <div class="step-line step-line-done"></div>
+        <div class="step-item"><div class="step-circle step-done">✓</div><div class="step-label">วันเวลา</div></div>
+        <div class="step-line step-line-done"></div>
+        <div class="step-item"><div class="step-circle step-active">3</div><div class="step-label">เอกสาร</div></div>
+        <div class="step-line"></div>
+        <div class="step-item"><div class="step-circle step-pending">4</div><div class="step-label">ยืนยัน</div></div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-title"><div class="inner-title-dot"></div>เอกสารประกอบ — บุคคลธรรมดา</div>
+        <div class="notice notice-gold">กรุณาแนบเอกสารให้ครบถ้วนก่อนส่งคำขอ</div>
+        <div style="margin-bottom:7px;">
+          <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:4px;">1. สำเนาบัตรประชาชน <span class="req">*</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--green-light);border-radius:6px;background:var(--green-pale);">
+            <div style="width:30px;height:30px;background:var(--green-mid);border-radius:4px;"></div>
+            <div style="flex:1;"><div style="font-size:9px;font-weight:700;">ID_Card.pdf</div><div style="font-size:8px;color:var(--gray-400);">1.2 MB</div></div>
+            <span class="badge badge-green">✓ อัปโหลดแล้ว</span>
+          </div>
+        </div>
+        <div style="margin-bottom:7px;">
+          <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:4px;">2. หนังสือขอใช้สนาม <span class="req">*</span></div>
+          <div class="upload-zone"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--gray-400);font-size:8px;margin-top:2px;">PDF, JPG, PNG ไม่เกิน 10 MB</div></div>
+        </div>
+      </div>
+      <div class="inner-card" style="background:var(--gold-pale);border-color:var(--gold);">
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:5px;">เอกสารนิติบุคคล (แตกต่าง)</div>
+        <div style="font-size:9px;color:var(--gray-700);">+ หนังสือรับรองนิติบุคคล (กรมพัฒน์ฯ)</div>
+        <div style="font-size:9px;color:var(--gray-700);">+ หนังสือมอบอำนาจ (กรณีตัวแทน)</div>
+        <div style="font-size:9px;color:var(--gray-700);">+ สำเนาบัตรประชาชนผู้มีอำนาจลงนาม</div>
+      </div>
+      <div class="footer-nav"><button class="outline-btn">ย้อนกลับ</button><button class="gold-btn">ส่งคำขอ</button></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════
+     ③ ชำระค่าบริการ  TOR 3.1–3.3
+     ════════════════════════════════ -->
+<div class="section-header">
+  <span class="section-pill">③ ชำระค่าบริการ</span>
+  <span class="section-title">S-07 เลือกวิธีชำระ · S-08 ใบเสร็จ · S-09 ประวัติ</span>
+  <span class="tor-ref">TOR ๓.๑–๓.๓</span>
+</div>
+
+<div class="grid-3">
+
+  <!-- S-07 ชำระเงิน -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-07</span> เลือกวิธีชำระเงิน</span><span class="badge badge-gold">TOR ๓.๑</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">สมชาย</span></div>
+    <div class="content">
+      <div class="inner-card" style="background:var(--gold-pale);border-color:var(--gold);">
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:5px;">สรุปรายการ</div>
+        <div class="summary-row"><span>สนามฟุตบอล A | 16/07/68 09:00–12:00</span></div>
+        <div class="summary-row"><span>ค่าสนาม</span><span>6,000 ฿</span></div>
+        <div class="summary-row"><span>ค่าบริการ</span><span>500 ฿</span></div>
+        <div class="summary-row summary-total"><span>ยอดชำระทั้งสิ้น</span><span style="color:var(--gold);font-size:14px;">6,500 ฿</span></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">เลือกวิธีชำระเงิน</div>
+      <div class="payment-method selected">
+        <div class="payment-radio selected"></div>
+        <div><div class="payment-name">Bill Payment (ธนาคาร)</div><div class="payment-desc">ชำระผ่าน Counter ธนาคาร / ATM / Mobile Banking</div></div>
+      </div>
+      <div class="payment-method">
+        <div class="payment-radio"></div>
+        <div><div class="payment-name">Cross Bank</div><div class="payment-desc">โอนเงินข้ามธนาคาร (พร้อมเพย์)</div></div>
+      </div>
+      <div style="background:var(--green-pale);border:1px solid var(--green-light);border-radius:6px;padding:8px 10px;font-size:9px;margin-top:8px;">
+        <div style="font-weight:700;color:var(--green-dark);margin-bottom:3px;">รหัส Bill Payment</div>
+        <div style="font-size:18px;font-weight:700;color:var(--green-dark);letter-spacing:3px;">0299 9876 5432 10</div>
+        <div style="color:var(--gray-400);margin-top:3px;">ชำระภายใน: 3 วันทำการ | ใช้ได้ถึง 19/07/2568</div>
+      </div>
+      <button class="gold-btn gold-btn-full" style="margin-top:10px;">ยืนยันการชำระเงิน</button>
+    </div>
+  </div>
+
+  <!-- S-08 ใบเสร็จ -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-08</span> ผลการชำระเงิน / ใบเสร็จ</span><span class="badge badge-gold">TOR ๓.๒–๓.๓</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">สมชาย</span></div>
+    <div class="content">
+      <div style="text-align:center;padding:16px 0 12px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--green-light);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;font-weight:700;">✓</div>
+        <div style="font-size:14px;font-weight:700;color:var(--green-dark);">ชำระเงินสำเร็จ</div>
+        <div style="font-size:10px;color:var(--gray-400);">เลขอ้างอิง: REF-2568-0001234</div>
+      </div>
+      <div class="inner-card" style="background:var(--gold-pale);border-color:var(--gold);">
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:5px;">ใบเสร็จรับเงิน</div>
+        <div class="summary-row"><span style="color:var(--gray-400);">วันที่ชำระ</span><span>10/07/2568 14:32</span></div>
+        <div class="summary-row"><span style="color:var(--gray-400);">วิธีชำระ</span><span>Bill Payment</span></div>
+        <div class="summary-row"><span style="color:var(--gray-400);">รายการ</span><span>สนามฟุตบอล A</span></div>
+        <div class="summary-row summary-total"><span>ยอดที่ชำระ</span><span style="color:var(--gold);">6,500 ฿</span></div>
+      </div>
+      <div class="notice notice-green">สถานะการจอง: <strong>ได้รับการยืนยัน</strong> — ระบบส่งอีเมลยืนยันแล้ว</div>
+      <div style="display:flex;gap:8px;">
+        <button class="outline-btn" style="flex:1;height:28px;">ดาวน์โหลดใบเสร็จ</button>
+        <button class="gold-btn" style="flex:1;height:28px;">กลับหน้าหลัก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S-09 ประวัติ -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-09</span> ประวัติการใช้บริการ</span><span class="badge badge-gold">TOR ๒.๘, ๑.๓</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">สมชาย</span></div>
+    <div class="layout-with-side">
+      <div class="sidebar">
+        <div class="sidebar-group">เมนูหลัก</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ขอใช้บริการ</div>
+        <div class="sidebar-item active"><div class="sidebar-dot"></div>ประวัติการจอง</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ใบเสร็จ</div>
+      </div>
+      <div class="content">
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:7px;">ประวัติการใช้บริการ</div>
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-group"><label class="form-label">ช่วงเวลา</label><div class="form-select" style="line-height:24px;">3 เดือนล่าสุด</div></div>
+          <div class="form-group"><label class="form-label">สถานะ</label><div class="form-select" style="line-height:24px;">ทั้งหมด</div></div>
+        </div>
+        <table class="mini-table">
+          <thead><tr><th>วันที่</th><th>สนาม</th><th>ช่วงเวลา</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>16/07/68</td><td>สนาม A</td><td>09:00–12:00</td><td><span class="badge badge-green">อนุมัติ</span></td></tr>
+            <tr><td>05/07/68</td><td>อาคาร C</td><td>13:00–17:00</td><td><span class="badge badge-blue">ชำระแล้ว</span></td></tr>
+            <tr><td>28/06/68</td><td>สนาม B</td><td>08:00–10:00</td><td><span class="badge badge-orange">รออนุมัติ</span></td></tr>
+            <tr><td>15/06/68</td><td>สนาม A</td><td>10:00–12:00</td><td><span class="badge badge-red">ปฏิเสธ</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════
+     ④ บริหารจัดการ  TOR 4.1–4.8
+     ════════════════════════════════ -->
+<div class="section-header">
+  <span class="section-pill">④ บริหารจัดการ</span>
+  <span class="section-title">S-10 อนุมัติ / ยกเลิก · S-11 แจ้งเตือนซ้ำซ้อน &amp; จัดการค่าใช้จ่าย</span>
+  <span class="tor-ref">TOR ๔.๑–๔.๘ (ผู้ดูแลระบบ)</span>
+</div>
+
+<div class="grid-2">
+
+  <!-- S-10 อนุมัติ -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-10</span> อนุมัติ / ยกเลิกคำขอ</span><span class="badge badge-gold">TOR ๔.๑–๔.๓</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา [Admin]</span><div class="nav-items"><span class="nav-item active">จัดการคำขอ</span><span class="nav-item">จัดการสนาม</span><span class="nav-item">รายงาน</span></div><span class="user-badge" style="background:var(--gold-light);color:var(--green-dark);">Admin</span></div>
+    <div class="layout-with-side">
+      <div class="sidebar">
+        <div class="sidebar-group">จัดการ</div>
+        <div class="sidebar-item active"><div class="sidebar-dot"></div>รออนุมัติ</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>คำขอทั้งหมด</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>จัดการสนาม</div>
+        <div class="sidebar-group">แจ้งเตือน</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>จองซ้ำซ้อน</div>
+        <div class="sidebar-item"><div class="sidebar-dot"></div>ส่งอีเมล</div>
+      </div>
+      <div class="content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:10px;font-weight:700;color:var(--green-dark);">คำขอรออนุมัติ <span class="badge badge-gold">3 รายการ</span></div>
+          <button class="gold-btn btn-sm">เพิ่มสนาม / อาคาร</button>
+        </div>
+        <table class="mini-table">
+          <thead><tr><th>เลขที่</th><th>ผู้ขอ</th><th>สนาม</th><th>วันที่</th><th>ประเภท</th><th>การดำเนินการ</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>REQ-001</td><td>สมชาย ใจดี</td><td>สนาม A</td><td>16/07/68</td>
+              <td><span class="badge badge-green">บุคคล</span></td>
+              <td style="display:flex;gap:3px;flex-wrap:wrap;"><button class="gold-btn btn-sm">อนุมัติ</button><button class="outline-btn btn-sm">ปฏิเสธ</button><button class="outline-btn btn-sm">ดู</button></td>
+            </tr>
+            <tr>
+              <td>REQ-002</td><td>บ.เอบีซี จก.</td><td>อาคาร C</td><td>20/07/68</td>
+              <td><span class="badge badge-gold">นิติบุคคล</span></td>
+              <td style="display:flex;gap:3px;"><button class="gold-btn btn-sm">อนุมัติ</button><button class="outline-btn btn-sm">ปฏิเสธ</button></td>
+            </tr>
+            <tr>
+              <td>REQ-003</td><td>วิไล รักดี</td><td>สนาม B</td><td>22/07/68</td>
+              <td><span class="badge badge-green">บุคคล</span></td>
+              <td style="display:flex;gap:3px;"><button class="gold-btn btn-sm">อนุมัติ</button><button class="outline-btn btn-sm">ปฏิเสธ</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="notice notice-orange" style="margin-top:8px;font-size:9px;">ระบบจะส่งอีเมลแจ้งเตือนอัตโนมัติเมื่ออนุมัติ / ปฏิเสธ <span style="color:var(--gold);font-weight:700;">[TOR ๔.๔–๔.๗]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S-11 แจ้งเตือนซ้ำ + จัดการค่าใช้จ่าย -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-11</span> แจ้งเตือนจองซ้ำ &amp; จัดการค่าใช้จ่าย</span><span class="badge badge-gold">TOR ๔.๔–๔.๘</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา [Admin]</span></div>
+    <div class="content">
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:#FEF3C7;display:flex;align-items:center;justify-content:center;color:#92400E;font-weight:700;font-size:12px;">!</div>
+            <div class="modal-title" style="margin-bottom:0;">ตรวจพบการจองซ้ำซ้อน</div>
+          </div>
+          <div style="font-size:10px;color:var(--gray-700);margin-bottom:8px;"><strong>สนามฟุตบอล A</strong> วันที่ 16/07/68 เวลา 10:00–12:00 มีการจองทับซ้อน</div>
+          <table class="mini-table" style="margin-bottom:8px;font-size:9px;">
+            <thead><tr><th>คำขอ</th><th>ผู้ขอ</th><th>เวลา</th></tr></thead>
+            <tbody>
+              <tr><td>REQ-001</td><td>สมชาย</td><td>09:00–12:00</td></tr>
+              <tr><td>REQ-004</td><td>ประยุทธ์</td><td>10:00–13:00</td></tr>
+            </tbody>
+          </table>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="gold-btn btn-sm">อนุมัติ REQ-001</button>
+            <button class="outline-btn btn-sm">แจ้ง REQ-004</button>
+            <button class="outline-btn btn-sm">ดูรายละเอียด</button>
+          </div>
+          <div class="notice notice-orange" style="margin-top:6px;font-size:8px;">ระบบจะส่งอีเมลแจ้ง REQ-004 อัตโนมัติ [TOR ๔.๕]</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">จัดการค่าใช้จ่าย <span style="color:var(--gold);font-size:9px;">[TOR ๔.๘]</span></div>
+        <div class="inner-card">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ประเภทค่าบริการ</label><div class="form-select" style="line-height:24px;">ค่าสนาม</div></div>
+            <div class="form-group"><label class="form-label">จำนวน (฿/ชม.)</label><div class="form-input filled">2,000</div></div>
+          </div>
+          <div class="form-group"><label class="form-label">หมายเหตุ</label><div class="form-input">ปรับอัตราค่าบริการ Q3/68</div></div>
+          <div class="footer-nav" style="padding:6px 0 0;"><button class="gold-btn">บันทึก</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════
+     ⑤ รายงาน  TOR 5.1–5.3
+     ════════════════════════════════ -->
+<div class="section-header">
+  <span class="section-pill">⑤ รายงาน &amp; วิเคราะห์</span>
+  <span class="section-title">S-12 Dashboard · S-13 รายงานวิเคราะห์เชิงลึก</span>
+  <span class="tor-ref">TOR ๕.๑–๕.๓</span>
+</div>
+
+<div class="grid-2">
+
+  <!-- S-12 Dashboard -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-12</span> Dashboard สรุปการใช้บริการ</span><span class="badge badge-gold">TOR ๕.๑–๕.๒</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><div class="nav-items"><span class="nav-item active">Dashboard</span><span class="nav-item">รายงาน</span><span class="nav-item">วิเคราะห์</span></div><span class="user-badge">Admin</span></div>
+    <div class="content">
+      <div class="form-row" style="margin-bottom:8px;">
+        <div class="form-group"><label class="form-label">ช่วงเวลา</label><div class="form-select" style="line-height:24px;">เดือนกรกฎาคม 2568</div></div>
+        <div class="form-group"><label class="form-label">สนาม / อาคาร</label><div class="form-select" style="line-height:24px;">ทั้งหมด</div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">142</div><div class="stat-lbl">คำขอทั้งหมด</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:var(--green-mid);">118</div><div class="stat-lbl">อนุมัติแล้ว</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#C0392B;">8</div><div class="stat-lbl">ปฏิเสธ</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:var(--gold);">16</div><div class="stat-lbl">รออนุมัติ</div></div>
+      </div>
+      <div class="form-row">
+        <div class="inner-card" style="margin-bottom:0;">
+          <div class="inner-title"><div class="inner-title-dot"></div>การใช้งานสนามรายวัน</div>
+          <div class="chart-bar-row">
+            <div class="chart-bar" style="height:40px;"></div>
+            <div class="chart-bar" style="height:55px;"></div>
+            <div class="chart-bar" style="height:35px;"></div>
+            <div class="chart-bar" style="height:60px;"></div>
+            <div class="chart-bar gold" style="height:45px;"></div>
+            <div class="chart-bar" style="height:50px;"></div>
+            <div class="chart-bar" style="height:30px;"></div>
+          </div>
+          <div class="chart-label-row"><div class="chart-label">จ</div><div class="chart-label">อ</div><div class="chart-label">พ</div><div class="chart-label">พฤ</div><div class="chart-label">ศ</div><div class="chart-label">ส</div><div class="chart-label">อา</div></div>
+        </div>
+        <div class="inner-card" style="margin-bottom:0;">
+          <div class="inner-title"><div class="inner-title-dot"></div>สัดส่วนประเภทผู้ใช้</div>
+          <div style="display:flex;gap:10px;align-items:center;justify-content:center;min-height:75px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--green-mid) 0% 65%, var(--gold) 65% 100%);"></div>
+            <div style="font-size:9px;">
+              <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><div style="width:8px;height:8px;background:var(--green-mid);border-radius:2px;"></div>บุคคลธรรมดา 65%</div>
+              <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;background:var(--gold);border-radius:2px;"></div>นิติบุคคล 35%</div>
+            </div>
+          </div>
+          <div class="summary-row" style="margin-top:4px;"><span>รายได้รวมเดือนนี้</span><span style="font-weight:700;color:var(--gold);">284,500 ฿</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S-13 วิเคราะห์ -->
+  <div class="screen-card">
+    <div class="screen-label"><span><span class="screen-num">S-13</span> รายงานวิเคราะห์เชิงลึก</span><span class="badge badge-gold">TOR ๕.๓</span></div>
+    <div class="topbar"><span class="logo">กรมพลศึกษา</span><span class="user-badge">Admin</span></div>
+    <div class="content">
+      <div class="tab-bar">
+        <div class="tab-item active">สรุปรายเดือน</div>
+        <div class="tab-item">ประเภทการใช้งาน</div>
+        <div class="tab-item">ความพึงพอใจ</div>
+      </div>
+      <div class="form-row" style="margin-bottom:8px;">
+        <div class="form-group"><label class="form-label">ปีงบประมาณ</label><div class="form-select" style="line-height:24px;">2568</div></div>
+        <div class="form-group"><label class="form-label">สนาม</label><div class="form-select" style="line-height:24px;">ทั้งหมด</div></div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-title"><div class="inner-title-dot"></div>การใช้งานสนามรายเดือน (ปี 2568)</div>
+        <div class="chart-bar-row" style="height:80px;">
+          <div class="chart-bar" style="height:45px;"></div>
+          <div class="chart-bar" style="height:52px;"></div>
+          <div class="chart-bar" style="height:38px;"></div>
+          <div class="chart-bar" style="height:70px;"></div>
+          <div class="chart-bar gold" style="height:80px;"></div>
+          <div class="chart-bar" style="height:60px;"></div>
+          <div class="chart-bar" style="height:55px;"></div>
+        </div>
+        <div class="chart-label-row"><div class="chart-label">ม.ค.</div><div class="chart-label">ก.พ.</div><div class="chart-label">มี.ค.</div><div class="chart-label">เม.ย.</div><div class="chart-label">พ.ค.</div><div class="chart-label">มิ.ย.</div><div class="chart-label">ก.ค.</div></div>
+      </div>
+      <div class="inner-card">
+        <div class="inner-title"><div class="inner-title-dot"></div>ข้อมูลวิเคราะห์เพื่อตัดสินใจ <span style="color:var(--gold);font-size:9px;">[TOR ๕.๓]</span></div>
+        <table class="mini-table">
+          <thead><tr><th>สนาม</th><th>ครั้ง/เดือน</th><th>อัตราการใช้</th><th>รายได้</th></tr></thead>
+          <tbody>
+            <tr><td>สนามฟุตบอล A</td><td>48</td><td><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></td><td style="color:var(--gold);font-weight:700;">96,000 ฿</td></tr>
+            <tr><td>อาคาร C</td><td>32</td><td><div class="progress-bar"><div class="progress-fill" style="width:64%"></div></div></td><td style="color:var(--gold);font-weight:700;">160,000 ฿</td></tr>
+            <tr><td>สนามฟุตบอล B</td><td>22</td><td><div class="progress-bar"><div class="progress-fill" style="width:44%"></div></div></td><td style="color:var(--gold);font-weight:700;">33,000 ฿</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer-nav">
+        <button class="outline-btn">ส่งออก Excel</button>
+        <button class="gold-btn">พิมพ์รายงาน</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- page-wrap -->
+</body>
+</html>
