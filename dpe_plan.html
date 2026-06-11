@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gantt Chart — DPE Digital Service Innovation 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plan:#5b6ef5; --design:#8b5cf6; --dev:#10b981; --integ:#f59e0b; --uat:#ef4444;
+    --ink:#1f2937; --sub:#6b7280; --line:#e5e7eb; --line2:#f3f4f6;
+    --head:#f9fafb; --band:#eef2ff; --brand:#2952A3;
+    --m-w:120px; --label1:300px; --label2:140px; --label3:230px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Sarabun',sans-serif;color:var(--ink);background:#fff;padding:24px 18px 60px;font-size:12.5px}
+  h1{font-family:'Kanit',sans-serif;font-weight:600;font-size:18px;color:var(--ink);text-align:center;margin-bottom:6px;letter-spacing:.2px}
+  .sub{text-align:center;color:var(--sub);font-size:12px;margin-bottom:14px}
+  .legend{display:flex;gap:18px;justify-content:flex-start;flex-wrap:wrap;margin-bottom:14px;font-size:12px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:26px;height:11px;border-radius:3px;display:inline-block}
+  .wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+  table{border-collapse:collapse;width:100%;min-width:1180px}
+  th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:middle;text-align:left}
+  thead th{background:var(--head);font-family:'Kanit',sans-serif;font-weight:500;font-size:12px;color:var(--ink)}
+  .mcol{width:var(--m-w);text-align:center;line-height:1.4}
+  .mcol small{display:block;color:var(--sub);font-weight:400;font-size:10.5px}
+  .phaserow td{background:#fff7ed;color:#b45309;text-align:center;font-weight:600;font-size:11.5px;font-family:'Kanit',sans-serif;letter-spacing:.3px}
+  .phaserow .ph{color:#dc2626}
+  .section td{font-family:'Kanit',sans-serif;font-weight:600;font-size:13px;padding:9px 10px}
+  .s1{background:#eef1fb;color:#3b4fd1}
+  .s2{background:#ecfdf5;color:#047857}
+  .s3{background:#fef2f2;color:#dc2626}
+  .req{font-weight:500;line-height:1.45}
+  .req small{color:var(--sub);font-weight:400;display:block}
+  .mod,.del{line-height:1.45;color:#374151}
+  .mod small,.del small{color:var(--sub);display:block;font-size:11px}
+  .tl{position:relative;padding:0;height:38px}
+  .tl .grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr)}
+  .tl .grid div{border-right:1px solid var(--line2)}
+  .tl .grid div:last-child{border-right:none}
+  .bar{position:absolute;top:50%;transform:translateY(-50%);height:15px;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .bplan{background:var(--plan)} .bdesign{background:var(--design)}
+  .bdev{background:var(--dev)} .binteg{background:var(--integ)} .buat{background:var(--uat)}
+  /* full 6-month grid spans tl which covers all 6 months. left/width in % of total */
+</style>
+</head>
+<body>
+  <h1>📊 Gantt Chart — โครงการพัฒนานวัตกรรมบริการดิจิทัล กรมพลศึกษา (DPE Digital Service Innovation) ปีงบประมาณ พ.ศ. 2569</h1>
+  <div class="sub">ระยะเวลาดำเนินงาน 180 วัน &nbsp;|&nbsp; งบประมาณ 1,490,500 บาท &nbsp;|&nbsp; แบ่ง 3 งวดการส่งมอบตามข้อ 10 ของ TOR</div>
+
+  <div class="legend">
+    <span><i class="sw bplan"></i>วางแผน/วิเคราะห์</span>
+    <span><i class="sw bdesign"></i>ออกแบบระบบ</span>
+    <span><i class="sw bdev"></i>พัฒนาระบบ</span>
+    <span><i class="sw binteg"></i>Integration/Security</span>
+    <span><i class="sw buat"></i>ทดสอบ/UAT/ส่งมอบ</span>
+  </div>
+
+  <div class="wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:300px">TOR Requirement</th>
+        <th style="width:140px">Module / ข้อ TOR</th>
+        <th style="width:230px">Deliverable</th>
+        <th class="mcol">M1<small>วันที่ 1–30</small></th>
+        <th class="mcol">M2<small>วันที่ 31–60</small></th>
+        <th class="mcol">M3<small>วันที่ 61–90</small></th>
+        <th class="mcol">M4<small>วันที่ 91–120</small></th>
+        <th class="mcol">M5<small>วันที่ 121–150</small></th>
+        <th class="mcol">M6<small>วันที่ 151–180</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="phaserow">
+        <td colspan="3">งวดที่ 1 (18.49%) ส่งครบ 60 วัน&nbsp; |&nbsp; งวดที่ 2 (60.00%) ส่งครบ 120 วัน&nbsp; |&nbsp; งวดที่ 3 (62.71%) ส่งครบ 180 วัน</td>
+        <td colspan="2" class="ph">◀ งวด 1 ▶</td>
+        <td colspan="2" class="ph">◀ งวด 2 ▶</td>
+        <td colspan="2" class="ph">◀ งวด 3 ▶</td>
+      </tr>
+
+      <!-- งวด 1 -->
+      <tr class="section"><td colspan="9" class="s1">🔵 งวด 1 — วิเคราะห์และออกแบบทั้งหมดให้แล้วเสร็จภายใน 60 วัน (ข้อ 4.2.1 &amp; 4.2.2)</td></tr>
+
+      <tr>
+        <td class="req">จัดทำแผนดำเนินการโครงการ + Gantt Chart</td>
+        <td class="mod">Project Mgmt<small>4.2.1(R)</small></td>
+        <td class="del">Project Plan<small>+ แผนสื่อสาร</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bplan" style="left:2%;width:21%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">วิเคราะห์ TOR + ความต้องการระบบ</td>
+        <td class="mod">Business Analysis<small>4.2.2</small></td>
+        <td class="del">Requirement Spec<small>(ทุกระบบ)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bplan" style="left:1%;width:14%"></div><div class="bar bplan" style="left:18%;width:7%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ศึกษา Biz Portal / Citizen Portal<small>(ศกพ. รูปแบบ MiniApp)</small></td>
+        <td class="mod">Integration Study<small>4.2.2(จ)</small></td>
+        <td class="del">Platform Study Report</td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bplan" style="left:2%;width:11%"></div><div class="bar bplan" style="left:18%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ออกแบบสถาปัตยกรรมระบบ<small>(Network / System / DFD)</small></td>
+        <td class="mod">System Design<small>4.2.2(ค–ง)</small></td>
+        <td class="del">Architecture Diagram<small>(Network/System/DFD)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdesign" style="left:9%;width:7%"></div><div class="bar bdesign" style="left:18%;width:9%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ออกแบบ API + ฐานข้อมูล (ER Diagram)</td>
+        <td class="mod">Data &amp; API Design<small>4.1.6 &amp; 4.1.7</small></td>
+        <td class="del">API Spec<small>+ ER Diagram</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdesign" style="left:7%;width:6%"></div><div class="bar bdesign" style="left:17%;width:10%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ออกแบบ UI/UX + Wireframe<small>(ทั้ง 3 ระบบ + MiniApp)</small></td>
+        <td class="mod">UX Design<small>4.1.4 &amp; 4.2.2(R)</small></td>
+        <td class="del">Wireframe/Mockup<small>(3 ระบบ + MiniApp UI)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdesign" style="left:13%;width:4%"></div><div class="bar bdesign" style="left:18%;width:13%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ออกแบบ Security / PDPA<small>(AES-256, HTTPS, OWASP)</small></td>
+        <td class="mod">Security Design<small>4.1.7</small></td>
+        <td class="del">Security Architecture<small>+ PDPA Framework</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdesign" style="left:18%;width:9%"></div></div></td>
+      </tr>
+
+      <!-- งวด 2 -->
+      <tr class="section"><td colspan="9" class="s2">🟢 งวด 2 — พัฒนาระบบหลักให้แล้วเสร็จภายใน 120 วัน (ข้อ 4.2.3 &amp; 4.2.5)</td></tr>
+
+      <tr>
+        <td class="req">ระบบสมาชิก<small>(Member Management)</small></td>
+        <td class="mod">Member Mgmt<small>4.2.3(1)</small></td>
+        <td class="del">Member Module<small>(สมัคร/ตรวจสอบบันทึก/ออก QR)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบจัดการตารางคลาส<small>(Class Management)</small></td>
+        <td class="mod">Class Mgmt<small>4.2.3(2)</small></td>
+        <td class="del">Schedule Module<small>(สร้าง/จองวิชาการ)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบบันทึกการออกกำลังกาย<small>(Workout Tracking)</small></td>
+        <td class="mod">Fitness Tracking<small>4.2.3(3)</small></td>
+        <td class="del">Workout Module<small>(บันทึก/สถิติตารางเวลา)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบรายงานและวิเคราะห์<small>(Reporting &amp; Analytics)</small></td>
+        <td class="mod">Reporting<small>4.2.3(4)</small></td>
+        <td class="del">Dashboard<small>(สมาชิก/Peak/BMI ทำรายได้)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:37%;width:7%"></div><div class="bar bdev" style="left:46%;width:8%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบ Admin &amp; User Mgmt<small>(Role / Permission)</small></td>
+        <td class="mod">Admin<small>4.2.3(5)</small></td>
+        <td class="del">Admin Module</td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:4%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบชำระค่าบริการ<small>(Payment)</small></td>
+        <td class="mod">Payment<small>4.2.3(6)</small></td>
+        <td class="del">Payment Module<small>(Bill Payment/CrossBank)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบแจ้งเตือน<small>(Notification)</small></td>
+        <td class="mod">Notification<small>4.2.3(5)</small></td>
+        <td class="del">Alert Module<small>(Email/Push)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:40%;width:4%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ระบบขอใช้อาคารสถานกีฬา<small>(Facility Booking)</small></td>
+        <td class="mod">Facility<small>4.2.5</small></td>
+        <td class="del">Booking System<small>(จอง/อนุมัติทางจอ)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar bdev" style="left:33%;width:11%"></div><div class="bar bdev" style="left:46%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">เชื่อมต่อ DOPA–Digital ID / ThaID</td>
+        <td class="mod">Digital ID<small>4.1.5</small></td>
+        <td class="del">DOPA Integration</td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar binteg" style="left:44%;width:4%"></div><div class="bar binteg" style="left:50%;width:5%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ทดสอบ Unit / Integration Test<small>(ระบบงวด 2)</small></td>
+        <td class="mod">QA งวด 2<small>4.2.8</small></td>
+        <td class="del">Test Report<small>(งวด 2)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar binteg" style="left:51%;width:8%"></div></div></td>
+      </tr>
+
+      <!-- งวด 3 -->
+      <tr class="section"><td colspan="9" class="s3">🔴 งวด 3 — MiniApp / อบรมบุคลากร / ติดตั้ง / UAT / ส่งมอบ ครบ 180 วัน (ข้อ 4.2.4, 4.2.6–4.2.9)</td></tr>
+
+      <tr>
+        <td class="req">ระบบอบรมบุคลากรกีฬา<small>(Training Service API)</small></td>
+        <td class="mod">Training<small>4.2.4</small></td>
+        <td class="del">Training Module<small>(คงทะเบียนหลักสูตร/สอบ ทดสอบ)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar binteg" style="left:67%;width:12%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">พัฒนา Service MiniApp<small>(เชื่อม Biz + Citizen Portal)</small></td>
+        <td class="mod">MiniApp<small>4.2.6</small></td>
+        <td class="del">MiniApp UI<small>+ API Gateway (3 ระบบ)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar binteg" style="left:67%;width:15%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">Implement Security<small>(AES-256 / HTTPS / OWASP)</small></td>
+        <td class="mod">Security Impl<small>4.1.7</small></td>
+        <td class="del">Security Config<small>+ PDPA Compliance</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar binteg" style="left:67%;width:9%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ติดตั้งระบบ UAT Environment<small>(ครบทุกระบบ)</small></td>
+        <td class="mod">Deployment UAT<small>4.2.7(1)</small></td>
+        <td class="del">UAT Environment<small>(3 ระบบ + MiniApp)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:78%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ทดสอบระบบ 5 ประเภท<small>(Functional/Perf/Sec/ Integration/UAT)</small></td>
+        <td class="mod">QA &amp; UAT<small>4.2.8</small></td>
+        <td class="del">Test Report<small>(ครบ 5 ประเภท)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:80%;width:6%"></div><div class="bar buat" style="left:88%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">UAT — ทดสอบโดยผู้ใช้จริง</td>
+        <td class="mod">User Test<small>4.2.8(2.1)</small></td>
+        <td class="del">UAT Sign-off</td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:82%;width:5%"></div><div class="bar buat" style="left:89%;width:5%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ติดตั้งระบบ Production<small>(ครบทุกระบบ)</small></td>
+        <td class="mod">Deployment Prod<small>4.2.7(2)</small></td>
+        <td class="del">Production System (Live)</td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:86%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">อบรมผู้ใช้งาน<small>(2 หลักสูตร ≥15+5 คน)</small></td>
+        <td class="mod">User Training<small>4.2.9</small></td>
+        <td class="del">Training Report<small>+ คู่มือการใช้งาน</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:90%;width:6%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">จัดทำเอกสารส่งมอบ<small>(Source Code / คู่มือ / PDF)</small></td>
+        <td class="mod">Documentation<small>งวด 3</small></td>
+        <td class="del">Final Docs<small>(3 ชุด + Flash Drive)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:84%;width:5%"></div><div class="bar buat" style="left:90%;width:7%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="req">ส่งมอบระบบครบถ้วน<small>(ครบ 180 วัน)</small></td>
+        <td class="mod">Handover<small>ข้อ 10 งวด 3</small></td>
+        <td class="del">Final Deliverable<small>(รายงานสมบูรณ์ 3 ชุด)</small></td>
+        <td colspan="6"><div class="tl"><div class="grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div class="bar buat" style="left:96%;width:3%"></div></div></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</body>
+</html>
