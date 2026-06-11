@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal2 · Service MiniApp กรมพลศึกษา</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --navy:    #0A1F44;
+    --navy2:   #122b5e;
+    --blue:    #1A56A8;
+    --blue2:   #2266CC;
+    --sky:     #E8F0FB;
+    --gold:    #C9A84C;
+    --gold2:   #E2C47A;
+    --gold3:   #F5E6B8;
+    --white:   #FFFFFF;
+    --gray:    #F2F5FA;
+    --text:    #1C2B4A;
+    --muted:   #6B7A99;
+    --border:  #D4DFEF;
+    --radius:  10px;
+    --shadow:  0 2px 16px rgba(10,31,68,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Kanit', sans-serif; background: #EEF2F9; color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* COVER */
+  .cover { background: linear-gradient(160deg, var(--navy) 60%, var(--navy2) 100%); color: var(--white); min-height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 24px 40px; position: relative; overflow: hidden; border-bottom: 4px solid var(--gold); }
+  .cover::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 30%, rgba(201,168,76,0.10) 0%, transparent 60%); pointer-events: none; }
+  .cover-logo { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 18px; box-shadow: 0 0 0 6px rgba(201,168,76,0.18); }
+  .cover h1 { font-family: 'Kanit', sans-serif; font-size: 26px; font-weight: 700; color: var(--gold2); letter-spacing: 0.5px; margin-bottom: 8px; }
+  .cover p { font-size: 14px; color: #b8c8e8; }
+  .gold-tag { display: inline-block; background: var(--gold); color: var(--navy); font-size: 11px; font-weight: 700; padding: 3px 14px; border-radius: 20px; letter-spacing: 1px; margin-top: 14px; text-transform: uppercase; }
+
+  /* TOC */
+  .toc-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin: 28px auto; max-width: 860px; padding: 28px 32px; border-top: 4px solid var(--gold); }
+  .toc-wrap h2 { font-family: 'Kanit', sans-serif; font-size: 18px; color: var(--navy); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .toc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .toc-item { background: var(--sky); border-radius: 8px; padding: 10px 14px; border-left: 3px solid var(--blue); cursor: pointer; transition: all 0.2s; font-size: 13px; }
+  .toc-item:hover { background: var(--gold3); border-left-color: var(--gold); }
+  .toc-item span { color: var(--gold); font-weight: 700; margin-right: 6px; }
+
+  /* SECTION */
+  .section { max-width: 860px; margin: 0 auto 36px; padding: 0 16px; }
+  .section-title { font-family: 'Kanit', sans-serif; font-size: 18px; color: var(--navy); font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--gold); }
+  .section-title .num { background: var(--navy); color: var(--gold); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; font-family: 'Kanit', sans-serif; }
+  .section-title .tor { font-size: 11px; color: var(--muted); font-family: 'Kanit', sans-serif; font-weight: 400; margin-left: 4px; }
+
+  /* WF CARD */
+  .wf-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border); }
+  .wf-label { background: var(--navy); color: var(--gold2); font-size: 12px; font-weight: 600; padding: 8px 16px; display: flex; align-items: center; gap: 8px; }
+  .wf-label .badge { background: var(--gold); color: var(--navy); font-size: 10px; padding: 1px 8px; border-radius: 10px; font-weight: 700; }
+  .wf-label .badge-green { background: #DFF5E8; color: #1A6B3C; }
+  .wf-body { padding: 20px; }
+
+  /* NAVBAR */
+  .navbar { background: var(--navy); display: flex; align-items: center; padding: 10px 20px; gap: 16px; border-radius: 8px 8px 0 0; }
+  .navbar .logo { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .navbar .site-name { color: var(--gold2); font-weight: 700; font-size: 13px; flex: 1; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link { color: #8aa8d8; font-size: 11px; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.06); white-space: nowrap; }
+  .nav-link.active { background: var(--gold); color: var(--navy); font-weight: 700; }
+  .nav-user { width: 28px; height: 28px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12px; flex-shrink: 0; border: 2px solid var(--gold); }
+
+  /* SIDEBAR */
+  .app-layout { display: flex; gap: 0; }
+  .sidebar { width: 180px; background: var(--navy); padding: 16px 0; flex-shrink: 0; border-radius: 0 0 0 8px; }
+  .sb-section { padding: 6px 12px 4px; font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+  .sb-item { padding: 7px 14px 7px 22px; font-size: 12px; color: #8aa8d8; display: flex; align-items: center; gap: 7px; border-left: 3px solid transparent; cursor: pointer; }
+  .sb-item.active { color: var(--white); background: rgba(201,168,76,0.10); border-left-color: var(--gold); }
+  .sb-item .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .sb-badge { background: #C0392B; color: var(--white); font-size: 9px; padding: 1px 5px; border-radius: 8px; margin-left: auto; }
+  .main-content { flex: 1; background: var(--gray); padding: 18px; border-radius: 0 0 8px 0; min-height: 360px; }
+
+  /* STAT */
+  .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
+  .stat-card { background: var(--white); border-radius: 8px; padding: 12px 14px; border-top: 3px solid var(--blue); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .stat-card.gold { border-top-color: var(--gold); }
+  .stat-card.green { border-top-color: #2E8B57; }
+  .stat-card.red { border-top-color: #C0392B; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--navy); }
+  .stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* TABLE */
+  .wf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .wf-table th { background: var(--navy); color: var(--gold2); padding: 8px 10px; text-align: left; font-weight: 600; }
+  .wf-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  .wf-table tr:hover td { background: var(--sky); }
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .tag-active { background: #DFF5E8; color: #1A6B3C; }
+  .tag-exp { background: #FDE8E8; color: #9B2020; }
+  .tag-pend { background: var(--gold3); color: #7A5800; }
+  .tag-blue { background: var(--sky); color: var(--blue2); }
+  .tag-orange { background: #FEF0E6; color: #C2570A; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 11px; font-weight: 600; color: var(--navy); }
+  .field input, .field select, .field textarea { border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 12px; color: var(--text); background: var(--white); font-family: 'Kanit', sans-serif; outline: none; }
+  .field input:focus, .field select:focus { border-color: var(--blue); }
+  .field textarea { resize: none; height: 56px; }
+  .field-full { grid-column: 1 / -1; }
+  .field .prefill-note { font-size: 10px; color: var(--blue); background: var(--sky); padding: 2px 8px; border-radius: 4px; margin-top: 2px; display: inline-block; }
+  .field input.prefill { background: var(--sky); color: var(--blue); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  .btn { padding: 7px 18px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; font-family: 'Kanit', sans-serif; display: flex; align-items: center; gap: 5px; }
+  .btn-primary { background: var(--blue); color: var(--white); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-outline { background: transparent; color: var(--blue); border: 1.5px solid var(--blue); }
+  .btn-danger { background: #C0392B; color: var(--white); }
+  .btn-success { background: #2E8B57; color: var(--white); }
+  .btn-warning { background: #E67E22; color: var(--white); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  /* CHART */
+  .chart-box { background: var(--white); border-radius: 8px; border: 1px solid var(--border); padding: 14px; }
+  .chart-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+  .bar { flex: 1; background: var(--blue); border-radius: 4px 4px 0 0; min-width: 0; transition: background 0.2s; }
+  .bar:hover { background: var(--gold); }
+  .bar.gold { background: var(--gold); }
+  .bar-label { text-align: center; font-size: 9px; color: var(--muted); margin-top: 3px; }
+
+  /* PROGRESS */
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .progress-label { font-size: 11px; width: 110px; color: var(--text); flex-shrink: 0; }
+  .progress-bar-wrap { flex: 1; background: var(--border); border-radius: 6px; height: 10px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 6px; background: var(--blue); }
+  .progress-bar.gold { background: var(--gold); }
+  .progress-bar.green { background: #2E8B57; }
+  .progress-val { font-size: 11px; font-weight: 700; color: var(--navy); width: 36px; text-align: right; }
+
+  /* CARD GRID */
+  .card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .info-card { background: var(--white); border-radius: 8px; padding: 14px; border: 1px solid var(--border); box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+  .info-card .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--sky); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; border: 1.5px solid var(--blue); }
+  .card-icon.gold { background: var(--gold3); border-color: var(--gold); }
+  .card-head-text { font-size: 12px; font-weight: 700; color: var(--navy); }
+  .card-sub { font-size: 11px; color: var(--muted); }
+
+  /* MODAL */
+  .modal-overlay { background: rgba(10,31,68,0.45); border-radius: 8px; padding: 40px 30px; display: flex; align-items: center; justify-content: center; min-height: 260px; }
+  .modal { background: var(--white); border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.2); width: 100%; max-width: 480px; border-top: 4px solid var(--gold); overflow: hidden; }
+  .modal-head { background: var(--navy); color: var(--gold2); padding: 12px 16px; font-size: 13px; font-weight: 700; }
+  .modal-body { padding: 16px; }
+
+  /* NOTIF */
+  .notif-list { display: flex; flex-direction: column; gap: 6px; }
+  .notif-item { background: var(--white); border-radius: 7px; padding: 10px 12px; border-left: 4px solid var(--blue); display: flex; align-items: flex-start; gap: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); font-size: 12px; }
+  .notif-item.gold { border-left-color: var(--gold); }
+  .notif-item.red { border-left-color: #C0392B; }
+  .notif-item.green { border-left-color: #2E8B57; }
+  .notif-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .notif-title { font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+  .notif-desc { color: var(--muted); font-size: 11px; }
+  .notif-time { font-size: 10px; color: var(--border); margin-left: auto; white-space: nowrap; }
+
+  /* AVATAR */
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; border: 2px solid var(--gold); }
+  .avatar.sm { width: 26px; height: 26px; font-size: 10px; }
+
+  /* MISC */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+  .search-input { flex: 1; border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; font-size: 12px; font-family: 'Sarabun',sans-serif; background: var(--white); }
+  .tabs { display: flex; gap: 2px; margin-bottom: 14px; border-bottom: 2px solid var(--border); }
+  .tab { padding: 7px 16px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .breadcrumb .active { color: var(--navy); font-weight: 600; }
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .page-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .page-heading { font-family: 'Kanit', sans-serif; font-size: 16px; color: var(--navy); font-weight: 700; margin-bottom: 14px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .report-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+  .report-card { background: var(--white); border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
+  .report-card h4 { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 12px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; }
+  .tl-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 2px; }
+  .tl-dot.done { background: #2E8B57; }
+  .tl-dot.active { background: var(--gold); border: 2px solid var(--gold2); }
+  .tl-dot.pending { background: var(--border); }
+  .tl-line { width: 2px; flex: 1; background: var(--border); margin: 3px 6px; min-height: 18px; }
+  .tl-line.done { background: #2E8B57; }
+  .tl-content { flex: 1; padding-bottom: 14px; }
+  .tl-title { font-size: 12px; font-weight: 700; color: var(--navy); }
+  .tl-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .tl-date { font-size: 10px; color: var(--blue); margin-top: 2px; }
+
+  /* STEPS */
+  .step-row { display: flex; align-items: flex-start; gap: 0; margin-bottom: 18px; }
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .step-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .step-circle.done { background: #2E8B57; color: var(--white); }
+  .step-circle.active { background: var(--blue); color: var(--white); }
+  .step-circle.todo { background: var(--border); color: var(--muted); }
+  .step-lbl { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.2; }
+  .step-lbl.active { color: var(--navy); font-weight: 700; }
+  .step-connector { flex: 1; height: 2px; background: var(--border); margin-top: 14px; }
+  .step-connector.done { background: #2E8B57; }
+
+  /* INFO BOX */
+  .info-box { background: var(--sky); border: 1px solid var(--blue2); border-radius: 8px; padding: 10px 14px; font-size: 11px; margin-bottom: 12px; }
+  .info-box.green { background: #DFF5E8; border-color: #2E8B57; }
+  .info-box.gold { background: var(--gold3); border-color: var(--gold); }
+  .info-box.red { background: #FDE8E8; border-color: #C0392B; }
+
+  /* UPLOAD BOX */
+  .upload-box { border: 2px dashed var(--border); border-radius: 8px; padding: 14px; text-align: center; background: var(--sky); font-size: 11px; color: var(--muted); }
+  .upload-box.done { background: #DFF5E8; border-color: #2E8B57; border-style: solid; color: #1A6B3C; }
+
+  /* QR */
+  .qr-box { width: 80px; height: 80px; border: 3px solid var(--navy); border-radius: 8px; background: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; }
+  .qr-box::after { content: ''; position: absolute; inset: 6px; background: repeating-linear-gradient(0deg, var(--navy) 0px, var(--navy) 3px, transparent 3px, transparent 6px), repeating-linear-gradient(90deg, var(--navy) 0px, var(--navy) 3px, transparent 3px, transparent 6px); opacity: 0.18; }
+
+  /* ARCH BOX */
+  .arch-wrap { background: var(--navy); border-radius: 10px; padding: 20px; }
+  .arch-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: center; }
+  .arch-node { background: rgba(255,255,255,.07); border: 1px solid rgba(201,168,76,.3); border-radius: 8px; padding: 14px; text-align: center; }
+  .arch-node.highlight { background: rgba(201,168,76,.12); border-color: rgba(201,168,76,.6); }
+  .arch-node.blue { background: rgba(26,86,168,.25); border-color: rgba(26,86,168,.5); }
+  .arch-arrow { text-align: center; color: var(--gold); font-size: 22px; }
+  .arch-title { color: var(--gold2); font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .arch-sub { color: #8aa8d8; font-size: 10px; }
+  .arch-pills { display: flex; flex-direction: column; gap: 3px; margin-top: 8px; }
+  .arch-pill { background: rgba(255,255,255,.07); border-radius: 4px; padding: 3px 6px; font-size: 9px; color: #b8c8e8; }
+
+  /* FOOTER */
+  .footer-note { text-align: center; font-size: 11px; color: var(--muted); padding: 12px 0 6px; }
+  .footer-note strong { color: var(--gold); }
+
+  /* RECEIPT */
+  .receipt { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 16px; max-width: 300px; font-size: 12px; }
+  .receipt-head { text-align: center; border-bottom: 2px dashed var(--border); padding-bottom: 10px; margin-bottom: 10px; }
+  .receipt-head h3 { font-size: 14px; color: var(--navy); font-weight: 700; }
+  .receipt-row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .receipt-total { border-top: 2px dashed var(--border); margin-top: 8px; padding-top: 8px; font-weight: 700; color: var(--navy); }
+
+  /* RESPONSIVE */
+  @media (max-width: 720px) {
+    .toc-grid { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: repeat(2,1fr); }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid.cols3 { grid-template-columns: 1fr 1fr; }
+    .report-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .arch-grid { grid-template-columns: 1fr; }
+  }
+
+
+  /* ═════════ PREMIUM PORTAL2 OVERRIDE ═════════ */
+  :root{
+    --navy:#063B78; --navy2:#082B5F; --blue:#0A74D9; --blue2:#0F8FE8;
+    --sky:#EEF8FF; --gold:#F8C43A; --gold2:#FFE08A; --gold3:#FFF4CF;
+    --white:#FFFFFF; --gray:#F4F8FC; --text:#10233F; --muted:#61758C;
+    --border:#D8E8F6; --radius:18px; --shadow:0 18px 48px rgba(6,59,120,.12);
+  }
+  body{
+    background:
+      radial-gradient(circle at 10% 6%, rgba(24,185,232,.18), transparent 26%),
+      radial-gradient(circle at 90% 4%, rgba(248,196,58,.16), transparent 24%),
+      linear-gradient(180deg,#F9FDFF 0%,#EEF7FF 45%,#F8FBFF 100%);
+    color:var(--text);
+  }
+  body:before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:linear-gradient(rgba(10,116,217,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(10,116,217,.04) 1px,transparent 1px);
+    background-size:46px 46px;
+    mask-image:linear-gradient(180deg,rgba(0,0,0,.72),transparent 76%);
+  }
+  .portal-top{
+    position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:12px 4vw;background:rgba(255,255,255,.82);backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(216,232,246,.92);box-shadow:0 10px 32px rgba(6,59,120,.07);
+  }
+  .portal-brand{display:flex;align-items:center;gap:12px;min-width:260px;}
+  .portal-mark{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--navy),var(--blue));display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:0 14px 28px rgba(10,116,217,.26);}
+  .portal-brand b{font-size:15px;color:var(--navy);display:block;line-height:1.2;}
+  .portal-brand span{font-size:11px;color:var(--muted);display:block;}
+  .portal-menu{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap;}
+  .portal-menu a{padding:8px 12px;border-radius:999px;background:#EEF8FF;color:#174A7A;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(216,232,246,.9);}
+  .portal-menu a:hover{background:var(--blue);color:#fff;}
+  .cover{
+    min-height:420px;border-bottom:0;margin:0 0 34px;padding-top:68px;
+    background:
+      linear-gradient(135deg,rgba(6,43,95,.96),rgba(10,116,217,.82)),
+      url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80') center/cover;
+    border-radius:0 0 42px 42px;box-shadow:0 30px 80px rgba(6,59,120,.22);
+  }
+  .cover::before{background:radial-gradient(circle at 74% 22%,rgba(255,224,138,.25),transparent 34%)}
+  .cover-logo{width:76px;height:76px;border-radius:24px;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 0 0 10px rgba(255,255,255,.10),0 20px 42px rgba(0,0,0,.22);}
+  .cover h1{font-size:clamp(34px,5vw,62px);line-height:1.05;color:#fff;letter-spacing:-.8px;text-shadow:0 12px 32px rgba(0,0,0,.22);}
+  .cover p{font-size:18px;line-height:1.75;color:#E6F4FF;max-width:760px;}
+  .gold-tag{background:rgba(255,255,255,.15);color:var(--gold2);border:1px solid rgba(255,224,138,.45);backdrop-filter:blur(10px);padding:8px 18px;font-size:12px;}
+  .toc-wrap{max-width:1040px;border:1px solid var(--border);border-top:0;border-radius:28px;padding:28px;box-shadow:var(--shadow);background:rgba(255,255,255,.78);backdrop-filter:blur(16px);}
+  .toc-wrap h2{font-size:22px;border-bottom:0;margin-bottom:18px;color:var(--navy);}
+  .toc-grid{grid-template-columns:repeat(4,1fr);gap:12px;}
+  .toc-item{border-left:0;border:1px solid var(--border);background:linear-gradient(180deg,#fff,#F3FAFF);border-radius:18px;padding:14px 14px;font-weight:700;box-shadow:0 8px 22px rgba(6,59,120,.06);}
+  .toc-item:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(6,59,120,.12);background:linear-gradient(180deg,#fff,#FFF8DE);}
+  .section{max-width:1120px;margin-bottom:46px;}
+  .section-title{font-size:22px;border-bottom:0;margin-bottom:16px;padding:0 4px;color:var(--navy);line-height:1.35;}
+  .section-title .num{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border-radius:14px;padding:8px 13px;box-shadow:0 10px 22px rgba(10,116,217,.22);}
+  .section-title .tor{background:#EEF8FF;border:1px solid var(--border);border-radius:999px;padding:5px 10px;color:#55708B;}
+  .wf-card{border:1px solid rgba(216,232,246,.95);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;background:rgba(255,255,255,.82);backdrop-filter:blur(16px);}
+  .wf-label{background:linear-gradient(135deg,var(--navy),var(--blue));padding:13px 18px;color:#fff;font-size:13px;}
+  .wf-label .badge{background:rgba(255,224,138,.96);color:#173A60;padding:3px 10px;}
+  .wf-body{padding:24px;}
+  .navbar{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:18px 18px 0 0;padding:13px 18px;}
+  .navbar .site-name{font-size:14px;color:#fff;}
+  .nav-link{background:rgba(255,255,255,.13);color:#D7ECFF;border:1px solid rgba(255,255,255,.12);}
+  .nav-link.active{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#173A60;}
+  .sidebar{background:linear-gradient(180deg,var(--navy),#061D3D);border-radius:0 0 0 18px;}
+  .main-content{background:#F4F8FC;border-radius:0 0 18px 0;}
+  .stat-card,.info-card,.chart-box,.report-card,.modal,.receipt{border-radius:18px;border:1px solid var(--border);box-shadow:0 10px 26px rgba(6,59,120,.06);}
+  .stat-card{border-top:0;background:linear-gradient(180deg,#fff,#F8FCFF);}
+  .stat-num{font-size:28px;color:var(--navy);}
+  .wf-table{border-collapse:separate;border-spacing:0 8px;font-size:12px;}
+  .wf-table th{background:#EAF5FF;color:var(--navy);padding:10px 12px;border:0;}
+  .wf-table th:first-child{border-radius:12px 0 0 12px}.wf-table th:last-child{border-radius:0 12px 12px 0}
+  .wf-table td{background:#fff;border-bottom:0;padding:11px 12px;border-top:1px solid #E8F2FB;border-bottom:1px solid #E8F2FB;}
+  .wf-table td:first-child{border-left:1px solid #E8F2FB;border-radius:14px 0 0 14px}.wf-table td:last-child{border-right:1px solid #E8F2FB;border-radius:0 14px 14px 0}
+  .btn{border-radius:999px;padding:8px 16px;font-weight:700;box-shadow:none;}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));box-shadow:0 10px 22px rgba(10,116,217,.22);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 10px 22px rgba(248,196,58,.18);}
+  .btn-outline{background:#fff;border:1px solid var(--border);color:var(--navy);}
+  .field input,.field select,.field textarea,.search-input{border-radius:14px;padding:9px 12px;border:1px solid var(--border);}
+  .info-box{border-radius:16px;padding:12px 14px;}
+  .upload-box{border-radius:18px;padding:18px;}
+  .arch-wrap{border-radius:24px;background:linear-gradient(135deg,var(--navy),#061D3D);}
+  .footer-note{padding-bottom:26px;}
+  .floating-top{position:fixed;right:18px;bottom:18px;z-index:998;width:48px;height:48px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;box-shadow:0 18px 38px rgba(10,116,217,.28);font-weight:900;text-decoration:none;}
+  @media(max-width:1020px){.toc-grid{grid-template-columns:repeat(2,1fr)}.portal-menu{display:none}.portal-top{align-items:flex-start}.app-layout{display:block}.sidebar{width:100%;border-radius:0}.main-content{border-radius:0 0 18px 18px}.nav-links{overflow-x:auto;max-width:100%;}.navbar{flex-wrap:wrap}.card-grid{grid-template-columns:1fr 1fr}.stat-row{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:720px){.toc-grid,.card-grid,.form-grid,.form-grid.cols3,.two-col,.report-grid,.stat-row{grid-template-columns:1fr!important}.cover{min-height:360px;padding:50px 18px}.section-title{font-size:18px;display:flex;flex-wrap:wrap}.wf-body{padding:16px}.portal-brand{min-width:0}.portal-brand span{display:none}.portal-top{padding:10px 14px}.cover h1{font-size:34px}.cover p{font-size:15px}.toc-wrap{padding:18px}.section{padding:0 12px}}
+
+
+/* ===== Premium Light System Architecture Patch ===== */
+.architecture-premium{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(24,185,232,.10), transparent 28%),
+    linear-gradient(180deg,#ffffff 0%,#f7fbff 100%) !important;
+  color:#183552 !important;
+  border:1px solid #D8E7F5 !important;
+  border-radius:34px !important;
+  padding:30px !important;
+  box-shadow:0 24px 80px rgba(7,59,120,.12) !important;
+}
+.architecture-premium *{font-family:'Kanit',sans-serif}
+.arch-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-bottom:22px;
+}
+.arch-head-title{
+  display:flex;align-items:center;gap:12px;font-weight:800;color:#073B78;font-size:18px;
+}
+.arch-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#FFF6D8;color:#7A5700;border:1px solid #F5D56B;
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;
+}
+.arch-flow{
+  display:grid;grid-template-columns:1fr 70px 1fr 70px 1fr;
+  gap:0;align-items:stretch;margin-top:16px;
+}
+.arch-node-light{
+  background:#fff;border:1px solid #D8E7F5;border-radius:26px;padding:22px;
+  box-shadow:0 16px 44px rgba(7,59,120,.09);min-height:285px;
+  position:relative;overflow:hidden;
+}
+.arch-node-light::after{
+  content:"";position:absolute;right:-45px;top:-45px;width:120px;height:120px;border-radius:50%;
+  background:rgba(24,185,232,.10);
+}
+.arch-node-light.citizen{background:linear-gradient(180deg,#FFFDF6,#fff)}
+.arch-node-light.platform{background:linear-gradient(180deg,#F0F8FF,#fff);border-color:#BBDCF6}
+.arch-node-light.miniapp{background:linear-gradient(180deg,#F2FFF8,#fff);border-color:#C7EED9}
+.arch-node-icon{
+  width:58px;height:58px;border-radius:22px;display:grid;place-items:center;
+  background:#F1F7FE;border:1px solid #D8E7F5;font-size:30px;margin:0 auto 14px;
+}
+.arch-node-light h3{margin:0;text-align:center;color:#073B78;font-size:19px;line-height:1.35}
+.arch-node-light p{text-align:center;margin:6px 0 16px;color:#65758B;font-size:13px}
+.arch-list{display:grid;gap:9px;margin-top:16px}
+.arch-list div{
+  display:flex;align-items:center;gap:9px;
+  background:#F7FBFF;border:1px solid #E1EDF8;border-radius:14px;
+  padding:10px 12px;color:#29445F;font-size:13px;font-weight:600;
+}
+.arch-list div::before{content:"✓";width:20px;height:20px;border-radius:7px;background:#E7F8EF;color:#16844D;display:grid;place-items:center;font-size:12px;font-weight:900;flex:0 0 auto}
+.arch-arrow-light{
+  display:flex;align-items:center;justify-content:center;color:#0A74D9;font-size:34px;font-weight:900;
+}
+.arch-dataflow{
+  margin-top:22px;background:#F7FBFF;border:1px solid #D8E7F5;border-radius:24px;padding:18px;
+}
+.arch-dataflow h4{margin:0 0 12px;color:#073B78;font-size:16px;display:flex;align-items:center;gap:8px}
+.flow-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.flow-item{background:#fff;border:1px solid #E1EDF8;border-radius:16px;padding:12px 14px;color:#405A75;font-size:13px;line-height:1.55}
+.flow-item b{color:#073B78}
+@media(max-width:900px){
+  .arch-flow{grid-template-columns:1fr;gap:14px}
+  .arch-arrow-light{transform:rotate(90deg);height:40px}
+  .flow-grid{grid-template-columns:1fr}
+  .arch-head{align-items:flex-start;flex-direction:column}
+}
+
+
+/* Light override for old dark architecture classes */
+.arch-wrap,.arch-grid,.arch-node,.arch-node.highlight,.arch-node.blue{
+  background:transparent !important;
+  color:#183552 !important;
+  border-color:#D8E7F5 !important;
+}
+
+</style>
+</head>
+<body>
+<div class="portal-top">
+  <a class="portal-brand" href="#top">
+    <div class="portal-mark">🏛️</div>
+    <div><b>กรมพลศึกษา · Service MiniApp</b><span>ระบบบริการอบรมบุคลากรด้านกีฬาและนันทนาการ</span></div>
+  </a>
+  <div class="portal-menu">
+    <a href="#s01">Login</a><a href="#s02">Profile</a><a href="#s04">e-Form</a><a href="#s06">Approval</a><a href="#s07">Tracking</a><a href="#s10">Dashboard</a><a href="#s12">Architecture</a>
+  </div>
+</div>
+<a id="top"></a>
+
+
+<!-- ═══════════════════ COVER ═══════════════════ -->
+<div class="cover">
+  <div class="cover-logo">🏛️</div>
+  <h1>DPE Smart Service MiniApp</h1>
+  <p>ระบบบริการอบรมบุคลากรด้านกีฬาและนันทนาการ<br/>การพัฒนาระบบเชื่อมโยงกับแพลตฟอร์มกลางงานบริการภาครัฐ</p>
+  <div class="gold-tag">Premium UI Prototype · TOR ข้อ 4.2.6 · กรมพลศึกษา</div>
+</div>
+
+<!-- ═══════════════════ TOC ═══════════════════ -->
+<div style="max-width:860px;margin:0 auto;padding:0 16px;">
+<div class="toc-wrap">
+  <h2>📋 สารบัญหน้าจอ (Screen Index)</h2>
+  <div class="toc-grid">
+    <div class="toc-item" onclick="document.getElementById('s01').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >หน้าหลัก — Home &amp; Login</div>
+    <div class="toc-item" onclick="document.getElementById('s02').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >User Profile — Prefill (TOR ๒)</div>
+    <div class="toc-item" onclick="document.getElementById('s03').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >ข้อมูลบริการของฉัน (TOR ๓)</div>
+    <div class="toc-item" onclick="document.getElementById('s04').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >e-Form สมัครอบรม (TOR ๔)</div>
+    <div class="toc-item" onclick="document.getElementById('s05').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >แนบเอกสาร + ยืนยัน (TOR ๔)</div>
+    <div class="toc-item" onclick="document.getElementById('s06').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >อนุมัติคำขอ — Admin (TOR ๕)</div>
+    <div class="toc-item" onclick="document.getElementById('s07').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >ติดตามสถานะ — Tracking (TOR ๖)</div>
+    <div class="toc-item" onclick="document.getElementById('s08').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >การแจ้งเตือน — Notification (TOR ๗)</div>
+    <div class="toc-item" onclick="document.getElementById('s09').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >ชำระเงิน + ใบเสร็จ (TOR ๕)</div>
+    <div class="toc-item" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >Backend Dashboard (TOR ๘)</div>
+    <div class="toc-item" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >จัดการหลักสูตรอบรม (TOR ๘)</div>
+    <div class="toc-item" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;" >สถาปัตยกรรมระบบ (TOR ๑–๘)</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ S01: HOME / LOGIN ═══════════════════ -->
+<div class="section" id="s01">
+  <div class="section-title">
+    <span class="num">01</span>
+    หน้าหลัก — Home &amp; Login
+    <span class="tor">TOR (๑) Responsive UI</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">🔐 หน้า Login — เข้าสู่ระบบผ่านแพลตฟอร์มกลาง <span class="badge">ประชาชน / เจ้าหน้าที่</span></div>
+    <div class="wf-body" style="padding:0;">
+      <div style="background:linear-gradient(135deg,var(--navy) 55%,var(--navy2) 100%);display:flex;min-height:320px;border-radius:0 0 var(--radius) var(--radius);overflow:hidden;">
+        <div style="flex:1;background:linear-gradient(160deg,var(--navy) 60%,var(--blue) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border-right:1px solid rgba(255,255,255,.08);">
+          <div style="font-size:40px;margin-bottom:12px;">🏋️</div>
+          <div style="color:var(--gold2);font-size:16px;font-weight:700;text-align:center;margin-bottom:6px;">ระบบบริการอบรมบุคลากร<br/>ด้านกีฬาและนันทนาการ</div>
+          <div style="color:#8aa8d8;font-size:12px;text-align:center;margin-bottom:20px;">กรมพลศึกษา — Service MiniApp</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+            <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);padding:6px 14px;border-radius:6px;color:#b8c8e8;font-size:11px;">🏅 ประชาชน</div>
+            <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);padding:6px 14px;border-radius:6px;color:#b8c8e8;font-size:11px;">👤 เจ้าหน้าที่</div>
+            <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);padding:6px 14px;border-radius:6px;color:#b8c8e8;font-size:11px;">⚙️ Admin</div>
+          </div>
+        </div>
+        <div style="width:300px;background:var(--white);padding:30px 26px;flex-shrink:0;">
+          <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px;">เข้าสู่ระบบ</h3>
+          <div class="info-box" style="margin-bottom:14px;font-size:11px;">
+            🔗 เชื่อมต่อผ่านแพลตฟอร์มกลางงานบริการภาครัฐ (Biz Portal / Citizen Portal)
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="field"><label>ชื่อผู้ใช้ / Username</label><input placeholder="กรอกชื่อผู้ใช้"/></div>
+            <div class="field"><label>รหัสผ่าน / Password</label><input type="password" placeholder="••••••••"/></div>
+            <div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between;">
+              <label><input type="checkbox" style="margin-right:4px"/>จดจำฉัน</label>
+              <a style="color:var(--blue);text-decoration:none;">ลืมรหัสผ่าน?</a>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">เข้าสู่ระบบ</button>
+            <div style="text-align:center;font-size:11px;color:var(--muted);">— หรือ —</div>
+            <button class="btn btn-gold" style="width:100%;justify-content:center;">🏛️ เข้าสู่ระบบผ่านแพลตฟอร์มกลาง</button>
+            <button class="btn btn-outline" style="width:100%;justify-content:center;font-size:11px;">🪪 บัตรประชาชน Digital ID</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Home Dashboard ประชาชน -->
+  <div class="wf-card">
+    <div class="wf-label">🏠 หน้าหลักหลัง Login — ประชาชน <span class="badge">TOR (๑)(๓)</span></div>
+    <div class="wf-body" style="padding:0;">
+      <div class="navbar">
+        <div class="logo">🏋️</div>
+        <div class="site-name">ระบบบริการอบรมบุคลากรด้านกีฬาและนันทนาการ</div>
+        <div class="nav-links">
+          <div class="nav-link active">หน้าหลัก</div>
+          <div class="nav-link">สมัครอบรม</div>
+          <div class="nav-link">ติดตามสถานะ</div>
+          <div class="nav-link">ประวัติของฉัน</div>
+          <div class="nav-link">การแจ้งเตือน 🔴</div>
+        </div>
+        <div class="nav-user">ส</div>
+      </div>
+      <div style="background:var(--gray);padding:18px;border-radius:0 0 var(--radius) var(--radius);">
+        <div class="breadcrumb"><span>หน้าหลัก</span></div>
+        <!-- Profile bar -->
+        <div style="background:var(--white);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:16px;border:1px solid var(--border);box-shadow:0 1px 5px rgba(0,0,0,.05);">
+          <div class="avatar" style="width:44px;height:44px;font-size:16px;">ส</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--navy);">สมชาย ใจดี</div>
+            <div style="font-size:11px;color:var(--muted);">เชื่อมโยงจากแพลตฟอร์มกลาง ✅ &nbsp;|&nbsp; เลขบัตร: 1-1001-xxxxx-xx-x</div>
+          </div>
+          <div class="qr-box"></div>
+        </div>
+        <!-- Stat row -->
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">คำขอที่ยื่นแล้ว</div></div>
+          <div class="stat-card gold"><div class="stat-num">1</div><div class="stat-label">รออนุมัติ</div></div>
+          <div class="stat-card green"><div class="stat-num">1</div><div class="stat-label">ผ่านการอบรม</div></div>
+          <div class="stat-card red"><div class="stat-num">3</div><div class="stat-label">การแจ้งเตือนใหม่</div></div>
+        </div>
+        <!-- Quick actions -->
+        <div class="card-grid">
+          <div class="info-card" style="border-top:3px solid var(--gold);text-align:center;padding:20px 14px;">
+            <div class="card-icon gold" style="margin:0 auto 10px;width:44px;height:44px;font-size:22px;">📝</div>
+            <div class="card-head-text">สมัครอบรม</div>
+            <div class="card-sub" style="margin:6px 0 10px;">กรอก e-Form ขอรับบริการ</div>
+            <button class="btn btn-gold btn-sm" style="margin:0 auto;">เริ่มสมัคร →</button>
+          </div>
+          <div class="info-card" style="border-top:3px solid var(--blue);text-align:center;padding:20px 14px;">
+            <div class="card-icon" style="margin:0 auto 10px;width:44px;height:44px;font-size:22px;">📋</div>
+            <div class="card-head-text">ติดตามสถานะ</div>
+            <div class="card-sub" style="margin:6px 0 10px;">ตรวจสอบความคืบหน้าคำขอ</div>
+            <button class="btn btn-primary btn-sm" style="margin:0 auto;">ดูสถานะ →</button>
+          </div>
+          <div class="info-card" style="border-top:3px solid #2E8B57;text-align:center;padding:20px 14px;">
+            <div class="card-icon" style="margin:0 auto 10px;width:44px;height:44px;font-size:22px;background:#DFF5E8;border-color:#2E8B57;">🏆</div>
+            <div class="card-head-text">ใบรับรองของฉัน</div>
+            <div class="card-sub" style="margin:6px 0 10px;">ดาวน์โหลดใบรับรองผ่านการอบรม</div>
+            <button class="btn btn-sm" style="background:#2E8B57;color:var(--white);margin:0 auto;">ดูใบรับรอง →</button>
+          </div>
+        </div>
+        <!-- Latest notices -->
+        <div style="margin-top:16px;">
+          <div class="page-label" style="margin-bottom:8px;">📢 ประกาศล่าสุด</div>
+          <div class="notif-list">
+            <div class="notif-item gold">
+              <div class="notif-icon">📣</div>
+              <div style="flex:1;">
+                <div class="notif-title">เปิดรับสมัครอบรมผู้ฝึกสอนกีฬา รุ่น 3/2568</div>
+                <div class="notif-desc">หลักสูตรผู้ฝึกสอนฟุตบอล ระดับ 1 — สมัครได้ถึง 15 เม.ย. 68 · ที่นั่งคงเหลือ 12/30</div>
+              </div>
+              <div class="notif-time">วันนี้</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon">📅</div>
+              <div style="flex:1;">
+                <div class="notif-title">หลักสูตรนักนันทนาการ — รุ่น 2/68</div>
+                <div class="notif-desc">เริ่ม 1 พ.ค. 68 · สถานที่: กรมพลศึกษา กรุงเทพฯ</div>
+              </div>
+              <div class="notif-time">เมื่อวาน</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S02: USER PROFILE PREFILL ═══════════════════ -->
+<div class="section" id="s02">
+  <div class="section-title">
+    <span class="num">02</span>
+    User Profile — เชื่อมโยงข้อมูลจากแพลตฟอร์มกลาง
+    <span class="tor">TOR (๒) Prefill — ไม่ต้องกรอกซ้ำซ้อน</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">🔗 User Profile — Prefill จากแพลตฟอร์มกลาง <span class="badge">TOR (๒)</span></div>
+    <div class="wf-body">
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div class="info-box green" style="margin-bottom:14px;">
+            ✅ <strong>เชื่อมโยงสำเร็จ</strong> — ข้อมูลถูกดึงอัตโนมัติจากแพลตฟอร์มกลางฯ ไม่ต้องกรอกใหม่ (Prefill)
+          </div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">ข้อมูลส่วนตัว (Prefill จากแพลตฟอร์มกลาง)</div>
+          <div class="form-grid" style="gap:9px;margin-bottom:14px;">
+            <div class="field">
+              <label>ชื่อจริง <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="สมชาย" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>นามสกุล <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="ใจดี" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>เลขบัตรประชาชน <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="1-1001-xxxxx-xx-x" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>วันเกิด <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="1 มกราคม 2530" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>อีเมล <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="somchai@email.com" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>เบอร์โทรศัพท์ <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="081-xxx-xxxx" class="prefill" readonly/>
+            </div>
+            <div class="field field-full">
+              <label>ที่อยู่ <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="123 ถ.พระรามที่ 4 แขวงคลองเตย กรุงเทพฯ 10110" class="prefill" readonly/>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">ข้อมูลเพิ่มเติม (กรอกเอง)</div>
+          <div class="form-grid" style="gap:9px;">
+            <div class="field">
+              <label>วุฒิการศึกษาสูงสุด</label>
+              <select><option>ปริญญาตรี</option><option>ปริญญาโท</option><option>ปวส.</option></select>
+            </div>
+            <div class="field">
+              <label>อาชีพปัจจุบัน</label>
+              <input placeholder="ครูพลศึกษา / โค้ชกีฬา..."/>
+            </div>
+            <div class="field">
+              <label>สังกัดหน่วยงาน</label>
+              <input placeholder="โรงเรียน / สโมสร / หน่วยงาน..."/>
+            </div>
+            <div class="field">
+              <label>ประสบการณ์ด้านกีฬา (ปี)</label>
+              <input placeholder="เช่น 5" type="number"/>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-gold">ยืนยันข้อมูล — ถัดไป →</button>
+            <button class="btn btn-outline">แก้ไขข้อมูล</button>
+          </div>
+        </div>
+        <div>
+          <div style="background:var(--navy);border-radius:10px;padding:16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--gold2);margin-bottom:12px;">🔗 แผนผังการเชื่อมโยงข้อมูล</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:11px;">
+              <div style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:7px;padding:10px;">
+                <div style="color:var(--gold2);font-weight:700;margin-bottom:3px;">🏛️ แพลตฟอร์มกลางภาครัฐ</div>
+                <div style="color:#9ab3d8;">ชื่อ, บัตรประชาชน, ที่อยู่, เบอร์, อีเมล</div>
+              </div>
+              <div style="text-align:center;color:var(--gold);font-size:20px;margin:-2px 0;">↓ OAuth 2.0 / API</div>
+              <div style="background:rgba(26,86,168,.3);border:1px solid rgba(26,86,168,.5);border-radius:7px;padding:10px;">
+                <div style="color:#b5d4f4;font-weight:700;margin-bottom:3px;">🏋️ Service MiniApp</div>
+                <div style="color:#9ab3d8;">รับ Prefill → ไม่กรอกซ้ำ (TOR ๒)</div>
+              </div>
+              <div style="text-align:center;color:var(--gold);font-size:20px;margin:-2px 0;">↓</div>
+              <div style="background:rgba(46,139,87,.2);border:1px solid rgba(46,139,87,.4);border-radius:7px;padding:10px;">
+                <div style="color:#9fdfbb;font-weight:700;margin-bottom:3px;">📝 e-Form อบรม</div>
+                <div style="color:#9ab3d8;">ข้อมูลถูกกรอกอัตโนมัติในฟอร์ม</div>
+              </div>
+            </div>
+          </div>
+          <div class="info-box" style="margin-top:12px;">
+            <strong>📌 TOR (๒):</strong> เชื่อมโยงข้อมูลผู้ใช้งาน (User Profile) จากแพลตฟอร์มกลางฯ ไปกรอก (Prefill) ไม่ต้องให้ประชาชนกรอกข้อมูลซ้ำซ้อน
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S03: ข้อมูลบริการของฉัน ═══════════════════ -->
+<div class="section" id="s03">
+  <div class="section-title">
+    <span class="num">03</span>
+    ข้อมูลบริการของตน
+    <span class="tor">TOR (๓) ประชาชนสามารถดูข้อมูลที่เกี่ยวข้องกับงานบริการได้</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">👤 ข้อมูลบริการของฉัน — My Services <span class="badge">TOR (๓)</span></div>
+    <div class="wf-body">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;background:var(--sky);padding:12px;border-radius:8px;">
+        <div class="avatar" style="width:48px;height:48px;font-size:18px;">ส</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--navy);">สมชาย ใจดี</div>
+          <div style="font-size:11px;color:var(--muted);">เลขบัตร: 1-1001-xxxxx-xx-x &nbsp;|&nbsp; 🔗 ยืนยันตัวตนแล้ว</div>
+          <div style="font-size:11px;color:var(--blue);margin-top:2px;">ดึงข้อมูลจากแพลตฟอร์มกลาง</div>
+        </div>
+        <button class="btn btn-outline btn-sm">📥 Export PDF</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active">คำขอทั้งหมด</div>
+        <div class="tab">รออนุมัติ</div>
+        <div class="tab">ผ่านการอบรม</div>
+        <div class="tab">ใบรับรอง</div>
+      </div>
+      <table class="wf-table">
+        <thead>
+          <tr><th>เลขที่คำขอ</th><th>หลักสูตร</th><th>วันที่ยื่น</th><th>วันอบรม</th><th>สถานะ</th><th>จัดการ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>REQ-68-001</strong></td>
+            <td>ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</td>
+            <td>25 มี.ค. 68</td>
+            <td>5–10 เม.ย. 68</td>
+            <td><span class="tag tag-pend">รออนุมัติ</span></td>
+            <td><button class="btn btn-primary btn-sm">ติดตาม</button></td>
+          </tr>
+          <tr>
+            <td><strong>REQ-68-003</strong></td>
+            <td>ผู้ตัดสินกีฬา</td>
+            <td>1 มี.ค. 68</td>
+            <td>20–22 มี.ค. 68</td>
+            <td><span class="tag tag-blue">ชำระแล้ว</span></td>
+            <td><button class="btn btn-primary btn-sm">ดูรายละเอียด</button></td>
+          </tr>
+          <tr>
+            <td><strong>REQ-67-012</strong></td>
+            <td>นักนันทนาการชุมชน</td>
+            <td>10 ก.พ. 68</td>
+            <td>1–5 มี.ค. 68</td>
+            <td><span class="tag tag-active">ผ่านการอบรม</span></td>
+            <td><div style="display:flex;gap:4px;"><button class="btn btn-success btn-sm">📜 ใบรับรอง</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">🏆 ใบรับรองที่ได้รับ</div>
+      <div class="card-grid">
+        <div class="info-card">
+          <div class="card-head"><div class="card-icon gold">📜</div><div><div class="card-head-text">นักนันทนาการชุมชน</div><div class="card-sub">ออกวันที่: 8 มี.ค. 68</div></div></div>
+          <div style="font-size:11px;color:var(--muted);">เลขที่ใบรับรอง: CERT-68-0012</div>
+          <div class="btn-row" style="margin-top:8px;"><button class="btn btn-gold btn-sm">📥 ดาวน์โหลด</button><button class="btn btn-outline btn-sm">ดู</button></div>
+        </div>
+        <div class="info-card" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:var(--sky);border:2px dashed var(--border);min-height:80px;">
+          <div style="font-size:24px;color:var(--border);">➕</div>
+          <div style="font-size:12px;color:var(--muted);">สมัครอบรมเพิ่มเติม</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S04: e-FORM ═══════════════════ -->
+<div class="section" id="s04">
+  <div class="section-title">
+    <span class="num">04</span>
+    กรอกแบบฟอร์ม e-Form — สมัครอบรม
+    <span class="tor">TOR (๔) Service Request — Prefill ไม่กรอกซ้ำ</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">📝 e-Form สมัครอบรมบุคลากรด้านกีฬา <span class="badge">TOR (๔)</span></div>
+    <div class="wf-body">
+      <!-- Step indicator -->
+      <div class="step-row">
+        <div class="step-item">
+          <div class="step-circle done">✓</div>
+          <div class="step-lbl done" style="color:var(--navy);font-weight:700;">ข้อมูลส่วนตัว</div>
+        </div>
+        <div class="step-connector done"></div>
+        <div class="step-item">
+          <div class="step-circle active">2</div>
+          <div class="step-lbl active">เลือกหลักสูตร</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-circle todo">3</div>
+          <div class="step-lbl">แนบเอกสาร</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-circle todo">4</div>
+          <div class="step-lbl">ยืนยันส่งคำขอ</div>
+        </div>
+      </div>
+
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">ขั้นตอนที่ 1 — ข้อมูลผู้สมัคร</div>
+          <div class="info-box green" style="margin-bottom:12px;">
+            🔗 ข้อมูลถูกดึงอัตโนมัติจากแพลตฟอร์มกลาง (Prefill) — ตรวจสอบก่อนดำเนินการต่อ
+          </div>
+          <div class="form-grid" style="gap:9px;margin-bottom:14px;">
+            <div class="field">
+              <label>ชื่อ-นามสกุล <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="สมชาย ใจดี" class="prefill" readonly/>
+              <span class="prefill-note">✓ ดึงจากแพลตฟอร์มกลาง</span>
+            </div>
+            <div class="field">
+              <label>เลขบัตรประชาชน <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="1-1001-xxxxx-xx-x" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>อีเมล <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="somchai@email.com" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>เบอร์โทรศัพท์ <span style="color:#2E8B57;font-size:9px;">[Prefill ✓]</span></label>
+              <input value="081-xxx-xxxx" class="prefill" readonly/>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin:12px 0 10px;">ขั้นตอนที่ 2 — เลือกหลักสูตรอบรม</div>
+          <div class="form-grid" style="gap:9px;">
+            <div class="field field-full">
+              <label>ประเภทหลักสูตร *</label>
+              <select>
+                <option>-- เลือกหลักสูตร --</option>
+                <option selected>ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</option>
+                <option>ผู้ฝึกสอนกีฬา (บาสเกตบอล) ระดับ 1</option>
+                <option>นักนันทนาการชุมชน</option>
+                <option>ผู้ตัดสินกีฬา</option>
+                <option>กีฬาสำหรับผู้สูงอายุ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>รุ่น / รอบที่ *</label>
+              <select><option>รุ่นที่ 3/2568 (5–10 เม.ย. 68)</option><option>รุ่นที่ 4/2568 (5–10 พ.ค. 68)</option></select>
+            </div>
+            <div class="field">
+              <label>สถานที่จัดอบรม</label>
+              <input value="สนามกีฬาแห่งชาติ กรุงเทพฯ" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>ระยะเวลาอบรม</label>
+              <input value="6 วัน (5–10 เม.ย. 68)" class="prefill" readonly/>
+            </div>
+            <div class="field">
+              <label>ค่าลงทะเบียน</label>
+              <input value="฿ 1,500" class="prefill" readonly style="font-weight:700;color:var(--navy);"/>
+            </div>
+            <div class="field">
+              <label>ที่นั่งคงเหลือ</label>
+              <input value="12 / 30 ที่นั่ง" class="prefill" readonly/>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-gold">ถัดไป: แนบเอกสาร →</button>
+            <button class="btn btn-outline">← ย้อนกลับ</button>
+          </div>
+        </div>
+
+        <div>
+          <!-- หลักสูตรแนะนำ -->
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">หลักสูตรที่เปิดรับสมัคร</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:12px;cursor:pointer;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div class="card-icon gold" style="font-size:14px;">⚽</div>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:var(--navy);">ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</div>
+                  <div style="font-size:10px;color:var(--muted);">รุ่น 3/68 · 5–10 เม.ย. 68 · ฿1,500</div>
+                </div>
+                <span class="tag tag-pend" style="margin-left:auto;">12 ที่นั่ง</span>
+              </div>
+              <div style="font-size:10px;color:var(--muted);">สนามกีฬาแห่งชาติ กรุงเทพฯ</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div class="card-icon" style="font-size:14px;">🏀</div>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:var(--navy);">ผู้ฝึกสอนกีฬา (บาสเกตบอล)</div>
+                  <div style="font-size:10px;color:var(--muted);">รุ่น 2/68 · 20–25 เม.ย. 68 · ฿1,200</div>
+                </div>
+                <span class="tag tag-active" style="margin-left:auto;">20 ที่นั่ง</span>
+              </div>
+            </div>
+            <div style="background:var(--sky);border:1px solid var(--border);border-radius:8px;padding:12px;opacity:.6;cursor:not-allowed;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="card-icon" style="font-size:14px;">🧘</div>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:var(--navy);">นักนันทนาการชุมชน</div>
+                  <div style="font-size:10px;color:var(--muted);">รุ่น 1/68 — เต็มแล้ว</div>
+                </div>
+                <span class="tag tag-exp" style="margin-left:auto;">เต็ม</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S05: แนบเอกสาร + ยืนยัน ═══════════════════ -->
+<div class="section" id="s05">
+  <div class="section-title">
+    <span class="num">05</span>
+    แนบเอกสาร &amp; ยืนยันการส่งคำขอ
+    <span class="tor">TOR (๔) ขั้นตอนที่ 3–4</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">📎 แนบเอกสาร + ยืนยัน — ขั้นตอนที่ 3–4 <span class="badge">TOR (๔)</span></div>
+    <div class="wf-body">
+      <div class="step-row">
+        <div class="step-item"><div class="step-circle done">✓</div><div class="step-lbl">ข้อมูลส่วนตัว</div></div>
+        <div class="step-connector done"></div>
+        <div class="step-item"><div class="step-circle done">✓</div><div class="step-lbl">เลือกหลักสูตร</div></div>
+        <div class="step-connector done"></div>
+        <div class="step-item"><div class="step-circle active">3</div><div class="step-lbl active">แนบเอกสาร</div></div>
+        <div class="step-connector"></div>
+        <div class="step-item"><div class="step-circle todo">4</div><div class="step-lbl">ยืนยันส่งคำขอ</div></div>
+      </div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">ขั้นตอนที่ 3 — แนบเอกสารประกอบ</div>
+          <div class="form-grid" style="gap:10px;">
+            <div class="field field-full">
+              <label>สำเนาบัตรประชาชน *</label>
+              <div class="upload-box done">✅ id_card.jpg — 1.2 MB · อัพโหลดแล้ว</div>
+            </div>
+            <div class="field field-full">
+              <label>รูปถ่าย 1 นิ้ว *</label>
+              <div class="upload-box">📸 คลิกเพื่ออัพโหลด หรือลากไฟล์มาวาง<br/><span style="font-size:10px;">JPG, PNG · ไม่เกิน 2MB</span></div>
+            </div>
+            <div class="field field-full">
+              <label>วุฒิการศึกษา (Transcript) *</label>
+              <div class="upload-box done">✅ transcript_2567.pdf — 2.1 MB · อัพโหลดแล้ว</div>
+            </div>
+            <div class="field field-full">
+              <label>หนังสือรับรองจากต้นสังกัด (ถ้ามี)</label>
+              <div class="upload-box">📄 คลิกเพื่ออัพโหลด<br/><span style="font-size:10px;">PDF · ไม่เกิน 5MB</span></div>
+            </div>
+          </div>
+          <div style="background:var(--sky);border-radius:8px;padding:10px;margin-top:10px;">
+            <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;">ความสมบูรณ์ของเอกสาร</div>
+            <div class="progress-row"><div class="progress-label">เอกสารครบถ้วน</div><div class="progress-bar-wrap"><div class="progress-bar gold" style="width:66%;"></div></div><div class="progress-val">2/3</div></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-gold" style="opacity:.5;">ถัดไป: ยืนยัน → (กรุณาแนบครบ)</button>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">ขั้นตอนที่ 4 — ยืนยันการส่งคำขอ</div>
+          <div style="background:var(--sky);border-radius:8px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;">📋 สรุปการสมัคร</div>
+            <div class="receipt-row"><span style="color:var(--muted);font-size:11px;">หลักสูตร</span><span style="font-size:11px;">ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);font-size:11px;">รุ่น</span><span style="font-size:11px;">3/68 · 5–10 เม.ย. 68</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);font-size:11px;">สถานที่</span><span style="font-size:11px;">สนามกีฬาแห่งชาติ</span></div>
+            <div style="border-top:1px dashed var(--border);margin:8px 0 4px;"></div>
+            <div class="receipt-row" style="font-weight:700;color:var(--navy);"><span>ค่าลงทะเบียน</span><span>฿ 1,500</span></div>
+          </div>
+          <div class="info-box gold">
+            ⚠️ <strong>หมายเหตุ:</strong> คำขอจะถูกส่งให้เจ้าหน้าที่ตรวจสอบและอนุมัติก่อน ท่านจะได้รับการแจ้งเตือนผ่านแพลตฟอร์มกลางฯ เมื่อได้รับอนุมัติ จึงดำเนินการชำระเงินได้ (TOR ๕)
+          </div>
+          <!-- Modal ยืนยัน -->
+          <div class="modal-overlay" style="min-height:auto;padding:20px 10px;">
+            <div class="modal" style="max-width:380px;">
+              <div class="modal-head">📨 ยืนยันการส่งคำขอรับบริการ</div>
+              <div class="modal-body">
+                <div style="font-size:12px;color:var(--text);margin-bottom:12px;">กรุณาตรวจสอบข้อมูลก่อนส่งคำขอ เมื่อส่งแล้วจะไม่สามารถแก้ไขได้</div>
+                <div class="btn-row">
+                  <button class="btn btn-gold">📨 ยืนยันส่งคำขอ</button>
+                  <button class="btn btn-outline">ยกเลิก</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S06: APPROVAL ═══════════════════ -->
+<div class="section" id="s06">
+  <div class="section-title">
+    <span class="num">06</span>
+    ตรวจสอบและอนุมัติคำขอ
+    <span class="tor">TOR (๕) ตรวจสอบอนุมัติก่อนชำระค่าบริการ</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">✅ Approval — เจ้าหน้าที่ตรวจสอบและอนุมัติ <span class="badge">Admin / เจ้าหน้าที่</span></div>
+    <div class="wf-body" style="padding:0;">
+      <div class="navbar">
+        <div class="logo">🏋️</div>
+        <div class="site-name">ระบบหลังบ้าน — ตรวจสอบและอนุมัติคำขอ</div>
+        <div class="nav-links">
+          <div class="nav-link active">อนุมัติคำขอ</div>
+          <div class="nav-link">ตารางอบรม</div>
+          <div class="nav-link">รายงาน</div>
+          <div class="nav-link">ตั้งค่า</div>
+        </div>
+        <div class="nav-user">จ</div>
+      </div>
+      <div class="app-layout">
+        <div class="sidebar">
+          <div class="sb-section">คำขอ</div>
+          <div class="sb-item active"><div class="dot"></div>รออนุมัติ<span class="sb-badge">5</span></div>
+          <div class="sb-item"><div class="dot"></div>อนุมัติแล้ว</div>
+          <div class="sb-item"><div class="dot"></div>รอชำระเงิน</div>
+          <div class="sb-item"><div class="dot"></div>ปฏิเสธ</div>
+          <div class="sb-section">ระบบ</div>
+          <div class="sb-item"><div class="dot"></div>หลักสูตร</div>
+          <div class="sb-item"><div class="dot"></div>ตารางอบรม</div>
+          <div class="sb-item"><div class="dot"></div>รายงาน</div>
+        </div>
+        <div class="main-content">
+          <div class="breadcrumb"><span>หน้าหลัก</span><span class="sep">›</span><span class="active">รออนุมัติ</span></div>
+          <div class="page-label">TOR (๕)</div>
+          <div class="page-heading">คำขอรออนุมัติ</div>
+          <div class="stat-row">
+            <div class="stat-card red"><div class="stat-num">5</div><div class="stat-label">รออนุมัติ</div></div>
+            <div class="stat-card gold"><div class="stat-num">12</div><div class="stat-label">อนุมัติวันนี้</div></div>
+            <div class="stat-card green"><div class="stat-num">3</div><div class="stat-label">รอชำระเงิน</div></div>
+            <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">ปฏิเสธ</div></div>
+          </div>
+          <table class="wf-table">
+            <thead>
+              <tr><th>เลขที่คำขอ</th><th>ชื่อผู้สมัคร</th><th>หลักสูตร</th><th>วันที่ยื่น</th><th>เอกสาร</th><th>สถานะ</th><th>จัดการ</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>REQ-68-001</strong></td>
+                <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar sm">ส</div>สมชาย ใจดี</div></td>
+                <td>ผู้ฝึกสอนฟุตบอล ระดับ 1</td>
+                <td>25 มี.ค. 68</td>
+                <td><span class="tag tag-active">ครบ</span></td>
+                <td><span class="tag tag-pend">รออนุมัติ</span></td>
+                <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">ตรวจสอบ</button><button class="btn btn-success btn-sm">อนุมัติ</button><button class="btn btn-danger btn-sm">ปฏิเสธ</button></div></td>
+              </tr>
+              <tr>
+                <td><strong>REQ-68-002</strong></td>
+                <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar sm" style="background:var(--gold);color:var(--navy);">ก</div>กมลา รักกีฬา</div></td>
+                <td>นักนันทนาการชุมชน</td>
+                <td>26 มี.ค. 68</td>
+                <td><span class="tag tag-exp">ไม่ครบ</span></td>
+                <td><span class="tag tag-pend">รออนุมัติ</span></td>
+                <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">ตรวจสอบ</button><button class="btn btn-warning btn-sm">ขอเอกสาร</button></div></td>
+              </tr>
+              <tr>
+                <td><strong>REQ-68-003</strong></td>
+                <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar sm">ว</div>วิชัย แข็งแกร่ง</div></td>
+                <td>ผู้ตัดสินกีฬา</td>
+                <td>27 มี.ค. 68</td>
+                <td><span class="tag tag-active">ครบ</span></td>
+                <td><span class="tag tag-active">อนุมัติแล้ว</span></td>
+                <td><span style="font-size:11px;color:var(--muted);">รอชำระเงิน</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ตรวจสอบ -->
+  <div class="wf-card">
+    <div class="wf-label">🔍 Modal ตรวจสอบรายละเอียดคำขอ <span class="badge">TOR (๕)</span></div>
+    <div class="wf-body" style="padding:0;">
+      <div class="modal-overlay">
+        <div class="modal" style="max-width:520px;">
+          <div class="modal-head">🔍 ตรวจสอบคำขอ REQ-68-001 — สมชาย ใจดี</div>
+          <div class="modal-body">
+            <div class="two-col" style="gap:14px;margin-bottom:12px;">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;">ข้อมูลผู้สมัคร</div>
+                <div style="font-size:11px;display:flex;flex-direction:column;gap:4px;">
+                  <div><span style="color:var(--muted);">ชื่อ:</span> สมชาย ใจดี</div>
+                  <div><span style="color:var(--muted);">บัตร:</span> 1-1001-xxxxx-xx-x</div>
+                  <div><span style="color:var(--muted);">อีเมล:</span> somchai@email.com</div>
+                  <div><span style="color:var(--muted);">หลักสูตร:</span> ผู้ฝึกสอนฟุตบอล ระดับ 1</div>
+                  <div><span style="color:var(--muted);">รุ่น:</span> 3/68 · 5–10 เม.ย. 68</div>
+                  <div><span style="color:var(--muted);">ค่าลงทะเบียน:</span> <strong>฿1,500</strong></div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;">เอกสารแนบ</div>
+                <div style="display:flex;flex-direction:column;gap:5px;font-size:11px;">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="color:#2E8B57;">✅</span>สำเนาบัตรประชาชน<a style="color:var(--blue);margin-left:auto;cursor:pointer;">ดู</a></div>
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="color:#2E8B57;">✅</span>รูปถ่าย 1 นิ้ว<a style="color:var(--blue);margin-left:auto;cursor:pointer;">ดู</a></div>
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="color:#2E8B57;">✅</span>วุฒิการศึกษา<a style="color:var(--blue);margin-left:auto;cursor:pointer;">ดู</a></div>
+                </div>
+              </div>
+            </div>
+            <div class="field field-full" style="margin-bottom:10px;">
+              <label>หมายเหตุการพิจารณา (ถ้ามี)</label>
+              <textarea placeholder="กรอกเหตุผลในกรณีปฏิเสธ หรือหมายเหตุ..."></textarea>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-success">✅ อนุมัติ</button>
+              <button class="btn btn-danger">❌ ปฏิเสธ</button>
+              <button class="btn btn-warning">📎 ขอเอกสารเพิ่ม</button>
+              <button class="btn btn-outline">ปิด</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S07: SERVICE TRACKING ═══════════════════ -->
+<div class="section" id="s07">
+  <div class="section-title">
+    <span class="num">07</span>
+    ติดตามสถานะ — Service Tracking
+    <span class="tor">TOR (๖) ติดตามสถานะความคืบหน้าการขอรับบริการ</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">📋 Service Tracking — ติดตามความคืบหน้า <span class="badge">TOR (๖)</span></div>
+    <div class="wf-body">
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div class="page-heading" style="margin-bottom:12px;">ติดตามสถานะคำขอ</div>
+          <div class="search-bar">
+            <input class="search-input" placeholder="🔍 กรอกเลขที่คำขอ เช่น REQ-68-001"/>
+            <button class="btn btn-primary btn-sm">ค้นหา</button>
+          </div>
+          <!-- Tracking card -->
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+              <div style="background:var(--navy);color:var(--gold2);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;">REQ-68-001</div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--navy);">ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</div>
+                <div style="font-size:10px;color:var(--muted);">ยื่น: 25 มี.ค. 68 · สมชาย ใจดี</div>
+              </div>
+              <span class="tag tag-pend" style="margin-left:auto;">⏳ รออนุมัติ</span>
+            </div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line done"></div></div>
+                <div class="tl-content"><div class="tl-title">✅ รับคำขอแล้ว</div><div class="tl-sub">ระบบรับและสร้างเลขที่อ้างอิง REQ-68-001</div><div class="tl-date">25 มี.ค. 68 เวลา 09:00 น.</div></div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line done"></div></div>
+                <div class="tl-content"><div class="tl-title">✅ ตรวจสอบเอกสาร</div><div class="tl-sub">เอกสารครบถ้วน ส่งให้เจ้าหน้าที่พิจารณา</div><div class="tl-date">26 มี.ค. 68 เวลา 10:30 น.</div></div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot active"></div><div class="tl-line"></div></div>
+                <div class="tl-content"><div class="tl-title" style="color:var(--gold);">⏳ รอการอนุมัติ (TOR ๕)</div><div class="tl-sub">เจ้าหน้าที่กำลังพิจารณาคำขอ</div><div class="tl-date" style="color:var(--gold);">กำลังดำเนินการ...</div></div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot pending"></div><div class="tl-line"></div></div>
+                <div class="tl-content" style="opacity:.45;"><div class="tl-title">ชำระค่าลงทะเบียน</div><div class="tl-sub">฿1,500 — รอผลอนุมัติ</div></div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot pending"></div></div>
+                <div class="tl-content" style="opacity:.45;"><div class="tl-title">เข้ารับการอบรม</div><div class="tl-sub">5–10 เม.ย. 68 · สนามกีฬาแห่งชาติ</div></div>
+              </div>
+            </div>
+            <!-- Progress bar -->
+            <div style="margin-top:12px;">
+              <div class="progress-row"><div class="progress-label" style="width:90px;">ความคืบหน้า</div><div class="progress-bar-wrap"><div class="progress-bar gold" style="width:40%;"></div></div><div class="progress-val">40%</div></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline btn-sm">📞 ติดต่อเจ้าหน้าที่</button>
+            <button class="btn btn-primary btn-sm">📋 ดูคำขอทั้งหมด</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">คำขอทั้งหมดของฉัน</div>
+          <table class="wf-table">
+            <thead><tr><th>เลขที่</th><th>หลักสูตร</th><th>วันที่ยื่น</th><th>สถานะ</th></tr></thead>
+            <tbody>
+              <tr><td><strong>REQ-68-001</strong></td><td>ผู้ฝึกสอนฟุตบอล</td><td>25 มี.ค. 68</td><td><span class="tag tag-pend">รออนุมัติ</span></td></tr>
+              <tr><td><strong>REQ-68-003</strong></td><td>ผู้ตัดสินกีฬา</td><td>1 มี.ค. 68</td><td><span class="tag tag-blue">ชำระแล้ว</span></td></tr>
+              <tr><td><strong>REQ-67-012</strong></td><td>นักนันทนาการ</td><td>10 ก.พ. 68</td><td><span class="tag tag-active">สำเร็จ</span></td></tr>
+            </tbody>
+          </table>
+          <div class="info-box" style="margin-top:12px;">
+            <strong>📌 TOR (๖):</strong> ประชาชนสามารถติดตามสถานะความคืบหน้าการขอรับบริการได้ตลอดเวลา
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S08: NOTIFICATION ═══════════════════ -->
+<div class="section" id="s08">
+  <div class="section-title">
+    <span class="num">08</span>
+    การแจ้งเตือน — Service Notification
+    <span class="tor">TOR (๗) แจ้งเตือนผ่านแพลตฟอร์มกลาง</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">🔔 Service Notification — ประชาชน <span class="badge">TOR (๗)</span></div>
+    <div class="wf-body">
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div class="page-heading" style="margin-bottom:12px;">การแจ้งเตือนทั้งหมด</div>
+          <div class="notif-list">
+            <div class="notif-item green">
+              <div class="notif-icon">✅</div>
+              <div style="flex:1;">
+                <div class="notif-title">ได้รับอนุมัติแล้ว!</div>
+                <div class="notif-desc">คำขอ REQ-68-003 ได้รับการอนุมัติ กรุณาชำระเงิน ฿1,500 ภายใน 7 วัน</div>
+              </div>
+              <div class="notif-time">วันนี้ 09:30</div>
+            </div>
+            <div class="notif-item gold">
+              <div class="notif-icon">💰</div>
+              <div style="flex:1;">
+                <div class="notif-title">แจ้งเตือนชำระเงิน</div>
+                <div class="notif-desc">กำหนดชำระค่าอบรม ฿1,500 ภายใน 6 เม.ย. 68 หากไม่ชำระถือว่าสละสิทธิ์</div>
+              </div>
+              <div class="notif-time">เมื่อวาน</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon">📋</div>
+              <div style="flex:1;">
+                <div class="notif-title">อัพเดตสถานะคำขอ REQ-68-001</div>
+                <div class="notif-desc">คำขออยู่ระหว่างการพิจารณาจากเจ้าหน้าที่</div>
+              </div>
+              <div class="notif-time">28 มี.ค.</div>
+            </div>
+            <div class="notif-item red">
+              <div class="notif-icon">⚠️</div>
+              <div style="flex:1;">
+                <div class="notif-title">เอกสารไม่ครบ</div>
+                <div class="notif-desc">คำขอ REQ-68-002 ต้องการเอกสารเพิ่มเติม กรุณาอัพโหลดภายใน 3 วัน</div>
+              </div>
+              <div class="notif-time">27 มี.ค.</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon">📅</div>
+              <div style="flex:1;">
+                <div class="notif-title">แจ้งเตือนการอบรม</div>
+                <div class="notif-desc">หลักสูตรผู้ตัดสินกีฬา เริ่มวันที่ 20 มี.ค. 68 ณ สนามกีฬาแห่งชาติ</div>
+              </div>
+              <div class="notif-time">26 มี.ค.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">⚙️ ตั้งค่าการแจ้งเตือน</div>
+          <table class="wf-table" style="margin-bottom:12px;">
+            <thead><tr><th>ประเภท</th><th>Push</th><th>SMS</th><th>Email</th></tr></thead>
+            <tbody>
+              <tr><td>อนุมัติคำขอ</td><td>✅</td><td>✅</td><td>✅</td></tr>
+              <tr><td>แจ้งชำระเงิน</td><td>✅</td><td>✅</td><td>✅</td></tr>
+              <tr><td>วันอบรม</td><td>✅</td><td>✅</td><td>—</td></tr>
+              <tr><td>เอกสารไม่ครบ</td><td>✅</td><td>—</td><td>✅</td></tr>
+              <tr><td>ใบรับรองพร้อม</td><td>✅</td><td>—</td><td>✅</td></tr>
+            </tbody>
+          </table>
+          <div class="info-box">
+            <strong>📌 TOR (๗):</strong> บริการฯ สามารถแจ้งเตือนข้อมูลต่างๆ ให้ประชาชนทราบผ่านแพลตฟอร์มกลางฯ เช่น การขอรับบริการที่ยื่นไว้ได้รับอนุมัติแล้ว
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin:12px 0 10px;">ส่งแจ้งเตือนกลุ่ม (Admin)</div>
+          <div class="form-grid" style="gap:8px;">
+            <div class="field field-full"><label>กลุ่มเป้าหมาย</label><select><option>ผู้สมัครหลักสูตรฟุตบอล รุ่น 3/68</option><option>ทั้งหมด</option></select></div>
+            <div class="field field-full"><label>ข้อความ</label><textarea placeholder="กรอกข้อความแจ้งเตือน..."></textarea></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary btn-sm">📨 ส่งแจ้งเตือน</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S09: ชำระเงิน ═══════════════════ -->
+<div class="section" id="s09">
+  <div class="section-title">
+    <span class="num">09</span>
+    ชำระค่าบริการ &amp; ใบเสร็จ
+    <span class="tor">TOR (๕) ชำระหลังได้รับอนุมัติ</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">💳 ชำระค่าลงทะเบียนอบรม + ใบเสร็จ <span class="badge">TOR (๕)</span></div>
+    <div class="wf-body">
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div class="info-box green" style="margin-bottom:14px;">
+            ✅ <strong>คำขอ REQ-68-003 ได้รับการอนุมัติแล้ว</strong> — กรุณาชำระค่าลงทะเบียน ฿1,500 ภายใน 7 เม.ย. 68
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">เลือกวิธีชำระเงิน</div>
+          <div class="form-grid" style="gap:9px;">
+            <div class="field field-full"><label>สมาชิก</label><input value="สมชาย ใจดี (REQ-68-003)" class="prefill" readonly/></div>
+            <div class="field field-full"><label>หลักสูตร</label><input value="ผู้ตัดสินกีฬา — รุ่น 1/68" class="prefill" readonly/></div>
+            <div class="field field-full">
+              <label>วิธีชำระเงิน</label>
+              <select>
+                <option>🏦 Bill Payment / Cross Bank</option>
+                <option>💳 บัตรเดบิต/เครดิต</option>
+                <option>💵 ชำระหน้าเคาน์เตอร์</option>
+              </select>
+            </div>
+          </div>
+          <div style="background:var(--sky);border-radius:8px;padding:12px;margin-top:10px;font-size:12px;">
+            <div class="receipt-row"><span style="color:var(--muted);">หลักสูตร</span><span>ผู้ตัดสินกีฬา</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);">ค่าลงทะเบียน</span><span>฿ 1,500</span></div>
+            <div class="receipt-row" style="color:#2E8B57;"><span>ส่วนลดพิเศษ</span><span>— ฿ 0</span></div>
+            <div style="border-top:1px dashed var(--border);margin:6px 0 4px;"></div>
+            <div class="receipt-row" style="font-weight:700;color:var(--navy);font-size:13px;"><span>ยอดชำระทั้งสิ้น</span><span>฿ 1,500</span></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-gold">💳 ชำระเงิน</button>
+            <button class="btn btn-outline">ยกเลิก</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">ใบเสร็จรับเงิน</div>
+          <div class="receipt">
+            <div class="receipt-head">
+              <div style="font-size:20px;margin-bottom:4px;">🏋️</div>
+              <h3>กรมพลศึกษา</h3>
+              <div style="font-size:10px;color:var(--muted);">ใบเสร็จรับเงินค่าอบรม</div>
+            </div>
+            <div class="receipt-row"><span style="color:var(--muted);">เลขที่:</span><span>RC-68-0045</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);">วันที่:</span><span>1 เม.ย. 68</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);">ผู้ชำระ:</span><span>สมชาย ใจดี</span></div>
+            <div class="receipt-row"><span style="color:var(--muted);">หลักสูตร:</span><span>ผู้ตัดสินกีฬา</span></div>
+            <div class="receipt-row" style="color:var(--muted);font-size:10px;"><span>วิธีชำระ:</span><span>Bill Payment</span></div>
+            <div class="receipt-total receipt-row"><span>ยอดชำระ</span><span>฿ 1,500</span></div>
+            <div style="margin-top:12px;text-align:center;">
+              <div class="qr-box" style="margin:0 auto;width:70px;height:70px;"></div>
+              <div style="font-size:10px;color:var(--muted);margin-top:4px;">สแกนตรวจสอบ</div>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top:10px;">
+            <button class="btn btn-outline btn-sm">🖨️ พิมพ์</button>
+            <button class="btn btn-primary btn-sm">📥 บันทึก PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S10: BACKEND DASHBOARD ═══════════════════ -->
+<div class="section" id="s10">
+  <div class="section-title">
+    <span class="num">10</span>
+    Backend Dashboard
+    <span class="tor">TOR (๘) พัฒนา/ปรับปรุงฐานข้อมูลและระบบจัดการหลังบ้าน</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">⚙️ Backend Admin Dashboard <span class="badge">Admin / เจ้าหน้าที่</span></div>
+    <div class="wf-body" style="padding:0;">
+      <div class="navbar">
+        <div class="logo">🏋️</div>
+        <div class="site-name">ระบบหลังบ้าน — กรมพลศึกษา Service MiniApp</div>
+        <div class="nav-links">
+          <div class="nav-link">คำขอ</div>
+          <div class="nav-link active">Dashboard</div>
+          <div class="nav-link">หลักสูตร</div>
+          <div class="nav-link">รายงาน</div>
+          <div class="nav-link">API / ตั้งค่า</div>
+        </div>
+        <div class="nav-user">A</div>
+      </div>
+      <div class="app-layout">
+        <div class="sidebar">
+          <div class="sb-section">งานบริการ</div>
+          <div class="sb-item"><div class="dot"></div>คำขอรออนุมัติ<span class="sb-badge">5</span></div>
+          <div class="sb-item"><div class="dot"></div>หลักสูตรอบรม</div>
+          <div class="sb-item"><div class="dot"></div>ตารางอบรม</div>
+          <div class="sb-section">รายงาน</div>
+          <div class="sb-item active"><div class="dot"></div>Dashboard</div>
+          <div class="sb-item"><div class="dot"></div>สถิติการสมัคร</div>
+          <div class="sb-item"><div class="dot"></div>รายรับ</div>
+          <div class="sb-section">ระบบ</div>
+          <div class="sb-item"><div class="dot"></div>ตั้งค่า API</div>
+          <div class="sb-item"><div class="dot"></div>Log ระบบ</div>
+        </div>
+        <div class="main-content">
+          <div class="breadcrumb"><span>หน้าหลัก</span><span class="sep">›</span><span class="active">Dashboard</span></div>
+          <div class="page-label">TOR (๘)</div>
+          <div class="page-heading">Backend Dashboard — ภาพรวมระบบ</div>
+          <div class="stat-row">
+            <div class="stat-card"><div class="stat-num">248</div><div class="stat-label">คำขอทั้งหมด</div></div>
+            <div class="stat-card red"><div class="stat-num">5</div><div class="stat-label">รออนุมัติ</div></div>
+            <div class="stat-card green"><div class="stat-num">215</div><div class="stat-label">สำเร็จ</div></div>
+            <div class="stat-card gold"><div class="stat-num">28</div><div class="stat-label">รอชำระเงิน</div></div>
+          </div>
+          <div class="report-grid">
+            <div class="report-card">
+              <h4>📊 สถิติการสมัครรายเดือน</h4>
+              <div class="chart-bars">
+                <div><div class="bar" style="height:40px;"></div><div class="bar-label">ต.ค.</div></div>
+                <div><div class="bar" style="height:55px;"></div><div class="bar-label">พ.ย.</div></div>
+                <div><div class="bar" style="height:35px;"></div><div class="bar-label">ธ.ค.</div></div>
+                <div><div class="bar gold" style="height:68px;"></div><div class="bar-label">ม.ค.</div></div>
+                <div><div class="bar" style="height:48px;"></div><div class="bar-label">ก.พ.</div></div>
+                <div><div class="bar gold" style="height:72px;"></div><div class="bar-label">มี.ค.</div></div>
+              </div>
+            </div>
+            <div class="report-card">
+              <h4>🔗 สถานะ API Connection (TOR ๘)</h4>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
+                <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#2E8B57;display:inline-block;flex-shrink:0;"></span>
+                  <span>แพลตฟอร์มกลาง — User Profile API</span>
+                  <span class="tag tag-active" style="margin-left:auto;">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#2E8B57;display:inline-block;flex-shrink:0;"></span>
+                  <span>Notification Service</span>
+                  <span class="tag tag-active" style="margin-left:auto;">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#2E8B57;display:inline-block;flex-shrink:0;"></span>
+                  <span>e-Payment / Bill Payment</span>
+                  <span class="tag tag-active" style="margin-left:auto;">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:5px 0;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#E67E22;display:inline-block;flex-shrink:0;"></span>
+                  <span>Service Tracking API</span>
+                  <span class="tag tag-pend" style="margin-left:auto;">Syncing</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <div class="page-label" style="margin-bottom:8px;">หลักสูตรยอดนิยม</div>
+            <div class="progress-row"><div class="progress-label">ผู้ฝึกสอนฟุตบอล</div><div class="progress-bar-wrap"><div class="progress-bar gold" style="width:88%;"></div></div><div class="progress-val">88%</div></div>
+            <div class="progress-row"><div class="progress-label">นักนันทนาการ</div><div class="progress-bar-wrap"><div class="progress-bar" style="width:72%;"></div></div><div class="progress-val">72%</div></div>
+            <div class="progress-row"><div class="progress-label">ผู้ตัดสินกีฬา</div><div class="progress-bar-wrap"><div class="progress-bar" style="width:55%;"></div></div><div class="progress-val">55%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S11: จัดการหลักสูตร ═══════════════════ -->
+<div class="section" id="s11">
+  <div class="section-title">
+    <span class="num">11</span>
+    จัดการหลักสูตรอบรม
+    <span class="tor">TOR (๘) ระบบจัดการหลังบ้านปัจจุบัน</span>
+  </div>
+  <div class="wf-card">
+    <div class="wf-label">📚 จัดการหลักสูตรอบรม — Course Management <span class="badge">Admin</span></div>
+    <div class="wf-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div class="page-heading" style="margin-bottom:0;">รายการหลักสูตร</div>
+        <button class="btn btn-gold">+ เพิ่มหลักสูตร</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active">หลักสูตรทั้งหมด</div>
+        <div class="tab">เปิดรับสมัคร</div>
+        <div class="tab">ปิดรับแล้ว</div>
+      </div>
+      <table class="wf-table">
+        <thead>
+          <tr><th>รหัส</th><th>หลักสูตร</th><th>รุ่น</th><th>วันอบรม</th><th>ที่นั่ง</th><th>ค่าลงทะเบียน</th><th>สถานะ</th><th>จัดการ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CRS-001</td>
+            <td>ผู้ฝึกสอนกีฬา (ฟุตบอล) ระดับ 1</td>
+            <td>3/68</td>
+            <td>5–10 เม.ย. 68</td>
+            <td>18/30</td>
+            <td>฿ 1,500</td>
+            <td><span class="tag tag-active">เปิดรับ</span></td>
+            <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">แก้ไข</button><button class="btn btn-danger btn-sm">ลบ</button></div></td>
+          </tr>
+          <tr>
+            <td>CRS-002</td>
+            <td>นักนันทนาการชุมชน</td>
+            <td>1/68</td>
+            <td>1–5 พ.ค. 68</td>
+            <td>30/30</td>
+            <td>฿ 800</td>
+            <td><span class="tag tag-exp">เต็มแล้ว</span></td>
+            <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">แก้ไข</button></div></td>
+          </tr>
+          <tr>
+            <td>CRS-003</td>
+            <td>ผู้ตัดสินกีฬา</td>
+            <td>1/68</td>
+            <td>20–22 มี.ค. 68</td>
+            <td>25/25</td>
+            <td>฿ 1,200</td>
+            <td><span class="tag tag-blue">ปิดแล้ว</span></td>
+            <td><span style="font-size:11px;color:var(--muted);">เสร็จสิ้น</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-outline btn-sm">📥 Export Excel</button>
+        <button class="btn btn-outline btn-sm">📄 Export PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ S12: ARCHITECTURE ═══════════════════ -->
+<div class="section" id="s12">
+  <div class="section-title">
+    <span class="num">12</span>
+    สถาปัตยกรรมระบบ — System Architecture
+    <span class="tor">TOR (๑)–(๘) ภาพรวมการเชื่อมโยง</span>
+  </div>
+  
+<div class="architecture-premium">
+  <div class="arch-head">
+    <div class="arch-head-title">🧭 แผนผังการเชื่อมโยง Service MiniApp กับแพลตฟอร์มกลาง</div>
+    <div class="arch-badge">TOR ครบถ้วน</div>
+  </div>
+
+  <div class="arch-flow">
+    <div class="arch-node-light citizen">
+      <div class="arch-node-icon">👤</div>
+      <h3>ประชาชน / ภาคธุรกิจ</h3>
+      <p>ใช้งานผ่าน Mobile / Web Browser</p>
+      <div class="arch-list">
+        <div>Responsive UI ตาม TOR (๑)</div>
+        <div>e-Form / Prefill ตาม TOR (๒)(๔)</div>
+        <div>ดูข้อมูลของตนเอง ตาม TOR (๓)</div>
+        <div>Service Tracking ตาม TOR (๖)</div>
+        <div>Notification ตาม TOR (๗)</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-light">↔</div>
+
+    <div class="arch-node-light platform">
+      <div class="arch-node-icon">🏛️</div>
+      <h3>แพลตฟอร์มกลาง<br>งานบริการภาครัฐ</h3>
+      <p>Biz Portal / Citizen Portal</p>
+      <div class="arch-list">
+        <div>User Profile API</div>
+        <div>Notification Service</div>
+        <div>e-Payment Gateway</div>
+        <div>Service Tracking API</div>
+        <div>Authentication / OAuth</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-light">↔</div>
+
+    <div class="arch-node-light miniapp">
+      <div class="arch-node-icon">🏋️</div>
+      <h3>Service MiniApp<br>กรมพลศึกษา</h3>
+      <p>ระบบอบรมบุคลากรกีฬา</p>
+      <div class="arch-list">
+        <div>Backend API ตาม TOR (๘)</div>
+        <div>Approval Flow ตาม TOR (๕)</div>
+        <div>Admin Dashboard</div>
+        <div>Database</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-dataflow">
+    <h4>🔄 Data Flow ตาม TOR ข้อ 4.2.6</h4>
+    <div class="flow-grid">
+      <div class="flow-item"><b>① Login:</b> ประชาชนเข้าสู่ระบบผ่านแพลตฟอร์มกลาง → MiniApp รับ User Profile เพื่อ Prefill <b>(TOR ๒)</b></div>
+      <div class="flow-item"><b>② e-Form:</b> ประชาชนกรอกคำขอ → MiniApp บันทึกข้อมูล → ส่งให้เจ้าหน้าที่ตรวจสอบ <b>(TOR ๔)</b></div>
+      <div class="flow-item"><b>③ Approval:</b> เจ้าหน้าที่อนุมัติ → MiniApp แจ้ง Platform กลาง → Push Notification <b>(TOR ๕)(๗)</b></div>
+      <div class="flow-item"><b>④ Payment & Tracking:</b> ประชาชนชำระเงิน → MiniApp อัปเดตสถานะ → Tracking API <b>(TOR ๖)</b></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<a class="floating-top" href="#top">↑</a>
