@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wireframe v2.18 — ระบบขอใช้อาคารสถานกีฬา TOR 4.2.5</title>
+<style>
+:root {
+  --gd: #1B4332; --gm: #2D6A4F; --gl: #52B788; --gp: #D8F3DC;
+  --go: #C9A84C; --gol: #F0D080; --gop: #FDF6E3;
+  --w: #fff; --g50: #F9F9F9; --g100: #F4F4F4; --g200: #E0E0E0;
+  --g400: #9E9E9E; --g600: #616161; --g700: #424242; --td: #1A2E1A;
+  --r: 8px; --sh: 0 2px 10px rgba(0,0,0,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tahoma','Segoe UI',sans-serif;background:#EAEEEB;color:var(--td);font-size:13px;line-height:1.55;}
+.pw{width:1320px;margin:0 auto;padding:28px 24px 48px;}
+
+/* DOC HEADER */
+.dh{background:var(--gd);border-radius:12px;padding:20px 28px;margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;}
+.dh h1{font-size:18px;font-weight:700;color:var(--gol);line-height:1.4;}
+.dh .sub{font-size:11px;color:rgba(255,255,255,0.65);margin-top:4px;}
+.tor{background:var(--go);color:var(--gd);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;white-space:nowrap;align-self:flex-start;}
+
+/* SECTION */
+.sh{display:flex;align-items:center;gap:10px;margin:28px 0 14px;flex-wrap:wrap;}
+.sp{background:var(--gd);color:var(--gol);padding:3px 14px;border-radius:20px;font-size:12px;font-weight:700;}
+.st{font-size:15px;font-weight:700;color:var(--gd);}
+.tr{font-size:11px;color:var(--go);font-weight:700;}
+
+/* GRIDS */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* SCREEN CARD */
+.sc{background:var(--w);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;border:1px solid var(--g200);}
+.sl{background:var(--g100);border-bottom:1px solid var(--g200);padding:5px 10px;font-size:10px;font-weight:700;color:var(--g700);display:flex;justify-content:space-between;align-items:center;}
+.sn{color:var(--go);font-weight:700;}
+
+/* TOPBAR */
+.tb{background:var(--gd);display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:36px;}
+.tb .logo{font-weight:700;font-size:12px;color:var(--gol);}
+.tb .ni{display:flex;gap:10px;}
+.tb .ni a{font-size:10px;color:rgba(255,255,255,0.7);text-decoration:none;}
+.tb .ni a.act{color:var(--gol);border-bottom:1.5px solid var(--go);}
+.tb .ub{background:var(--go);color:var(--gd);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;}
+
+/* SIDEBAR */
+.ls{display:flex;min-height:300px;}
+.sb{width:130px;background:var(--gp);flex-shrink:0;padding:10px 0;border-right:1px solid var(--g200);}
+.sbi{padding:7px 12px;font-size:10px;color:var(--gd);cursor:pointer;display:flex;align-items:center;gap:6px;}
+.sbi.act{background:var(--gd);color:var(--gol);font-weight:600;}
+.sbd{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.sbg{font-size:9px;color:var(--g400);padding:8px 12px 3px;text-transform:uppercase;letter-spacing:0.5px;}
+.ct{flex:1;padding:12px 14px;overflow:hidden;}
+
+/* FORM */
+.fg{margin-bottom:8px;}
+.fl{font-size:9px;color:var(--g700);margin-bottom:3px;font-weight:700;display:block;}
+.fl .req{color:#C0392B;}
+.fi{width:100%;border:1px solid var(--g200);border-radius:5px;height:26px;background:var(--w);padding:0 8px;font-size:10px;color:var(--g400);font-family:inherit;}
+.fi.f{border-color:var(--gm);color:var(--td);}
+.fi.pf{background:var(--gp);border-color:var(--gl);color:var(--td);}
+.fsel{width:100%;border:1px solid var(--g200);border-radius:5px;height:26px;background:var(--w);padding:0 8px;font-size:10px;color:var(--g400);font-family:inherit;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.fta{width:100%;border:1px solid var(--g200);border-radius:5px;background:var(--w);padding:6px 8px;font-size:10px;color:var(--g400);font-family:inherit;min-height:52px;resize:none;}
+
+/* INNER CARD */
+.ic{background:var(--g100);border:1px solid var(--g200);border-radius:7px;padding:8px 10px;margin-bottom:8px;}
+.it{font-size:10px;font-weight:700;color:var(--gd);margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid var(--go);display:flex;align-items:center;gap:5px;}
+.itd{width:6px;height:6px;border-radius:50%;background:var(--go);flex-shrink:0;}
+
+/* BUTTONS */
+.gb{background:var(--go);color:var(--gd);border:none;border-radius:5px;padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;}
+.gbf{width:100%;height:30px;font-size:11px;}
+.ob{background:var(--w);border:1px solid var(--gm);color:var(--gm);border-radius:5px;padding:4px 10px;font-size:10px;cursor:pointer;font-family:inherit;}
+.grb{background:var(--gm);color:var(--w);border:none;border-radius:5px;padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;}
+.bsm{padding:2px 8px;font-size:9px;}
+
+/* BADGE */
+.bd{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;font-weight:700;}
+.bg{background:var(--gp);color:var(--gd);}
+.bo{background:var(--gop);color:#7B6010;border:1px solid var(--go);}
+.bgy{background:var(--g200);color:var(--g600);}
+.br{background:#FFEBEE;color:#B71C1C;}
+.bb{background:#E3F2FD;color:#1565C0;}
+.bor{background:#FFF8E1;color:#E65100;}
+.bpu{background:#EDE7F6;color:#512DA8;}
+
+/* NOTICE */
+.no{border-radius:5px;padding:6px 9px;font-size:9px;margin-bottom:7px;}
+.nog{background:var(--gop);border-left:3px solid var(--go);color:#7B5F10;}
+.ngg{background:var(--gp);border-left:3px solid var(--gl);color:var(--gd);}
+.nbl{background:#E3F2FD;border-left:3px solid #1976D2;color:#1565C0;}
+.nor{background:#FFF8E1;border-left:3px solid #F9A825;color:#6D4C00;}
+.nrd{background:#FFEBEE;border-left:3px solid #C62828;color:#B71C1C;}
+
+/* STEP BAR */
+.stpb{display:flex;align-items:center;margin-bottom:10px;padding:0 4px;}
+.stpi{display:flex;flex-direction:column;align-items:center;flex:1;}
+.stpc{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-bottom:3px;}
+.done{background:var(--gm);color:var(--w);}
+.actv{background:var(--go);color:var(--gd);}
+.pend{background:var(--g200);color:var(--g400);}
+.stpl{font-size:8px;color:var(--g600);text-align:center;line-height:1.2;}
+.stpln{flex:1;height:1.5px;background:var(--g200);margin-top:-13px;}
+.stpld{background:var(--gm);}
+
+/* TABLE */
+.mt{width:100%;border-collapse:collapse;font-size:10px;}
+.mt th{background:var(--gd);color:var(--gol);padding:5px 8px;text-align:left;font-weight:700;}
+.mt td{padding:5px 8px;border-bottom:1px solid var(--g200);vertical-align:middle;}
+.mt tr:nth-child(even) td{background:var(--g50);}
+
+/* SUMMARY */
+.sr{display:flex;justify-content:space-between;padding:4px 0;font-size:10px;border-bottom:1px solid var(--g200);}
+.srt{font-weight:700;color:var(--gd);border-top:2px solid var(--go);border-bottom:none;margin-top:2px;padding-top:5px;}
+
+/* TABS */
+.tabr{display:flex;border-bottom:2px solid var(--g200);margin-bottom:8px;}
+.tabi{padding:5px 12px;font-size:10px;cursor:pointer;color:var(--g400);}
+.tabi.act{color:var(--gd);font-weight:700;border-bottom:2px solid var(--go);margin-bottom:-2px;}
+
+/* UPLOAD */
+.upz{border:2px dashed var(--gl);border-radius:6px;padding:10px;text-align:center;background:var(--gp);font-size:9px;color:var(--gm);cursor:pointer;}
+
+/* CALENDAR */
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;}
+.cdn{font-weight:700;color:var(--g400);padding:2px;font-size:8px;}
+.cd{padding:3px;border-radius:3px;cursor:pointer;font-size:9px;}
+.cd.tod{background:var(--gd);color:var(--w);font-weight:700;}
+.cd.bkd{background:var(--gp);color:var(--gd);}
+.cd.sel{background:var(--go);color:var(--gd);font-weight:700;}
+.cd.oth{color:var(--g400);}
+.cd.rest{background:#FFF3BF;color:#7B6010;border:1px solid #E0B52B;font-weight:700;}
+.cd.closed{background:#E53935;color:#fff;cursor:not-allowed;text-decoration:line-through;font-weight:700;}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:700;color:var(--gd);font-size:10px;}
+
+/* STATS */
+.sts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.stb{background:var(--w);border:1px solid var(--g200);border-radius:7px;padding:8px 10px;text-align:center;border-top:3px solid var(--go);}
+.stn{font-size:20px;font-weight:700;color:var(--gd);}
+.stl{font-size:8px;color:var(--g400);}
+
+/* CHART */
+.cbr{display:flex;align-items:flex-end;gap:6px;height:70px;padding:0 4px;}
+.cb{background:var(--gm);border-radius:3px 3px 0 0;flex:1;opacity:0.85;}
+.cb.gld{background:var(--go);}
+.clr{display:flex;gap:6px;padding:3px 4px 0;}
+.cl{flex:1;text-align:center;font-size:8px;color:var(--g400);}
+
+/* PAYMENT */
+.pm{border:1px solid var(--g200);border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;}
+.pm.sel{border-color:var(--go);background:var(--gop);}
+.pr{width:12px;height:12px;border-radius:50%;border:2px solid var(--g400);flex-shrink:0;}
+.pr.sel{border-color:var(--go);background:var(--go);}
+.pn{font-size:10px;font-weight:600;}
+.pd{font-size:9px;color:var(--g400);}
+
+/* FOOTER NAV */
+.fn{display:flex;justify-content:flex-end;gap:8px;padding:8px 0 0;}
+
+/* MODAL */
+.mo{background:rgba(27,67,50,0.2);padding:16px;border-radius:var(--r);}
+.mb{background:var(--w);border-radius:var(--r);padding:16px;border-top:4px solid var(--go);max-width:320px;margin:0 auto;box-shadow:0 8px 24px rgba(0,0,0,0.18);}
+.mbt{font-size:12px;font-weight:700;color:var(--gd);margin-bottom:10px;}
+
+/* NOTIF */
+.nc{border-left:3px solid var(--gm);padding:7px 9px;margin-bottom:6px;background:var(--g50);border-radius:0 6px 6px 0;}
+.nc.unr{border-color:var(--go);background:var(--gop);}
+.nct{font-size:10px;font-weight:700;color:var(--gd);}
+.ncb{font-size:9px;color:var(--g600);margin-top:2px;}
+.nctm{font-size:8px;color:var(--g400);margin-top:3px;}
+
+/* PROGRESS */
+.pb{height:6px;background:var(--g200);border-radius:3px;overflow:hidden;margin-top:4px;}
+.pf{height:100%;background:var(--gm);border-radius:3px;}
+
+
+
+
+/* THAID */
+.thaid-card{background:var(--gd);border-radius:10px;padding:16px;color:var(--w);text-align:center;margin:8px 0;}
+.thaid-logo{font-size:24px;font-weight:700;color:var(--gol);letter-spacing:2px;}
+
+/* QR */
+.qr-box{width:130px;height:130px;border:3px solid var(--go);border-radius:8px;background:var(--w);margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative;}
+.qr-inner{width:110px;height:110px;background:repeating-conic-gradient(var(--gd) 0% 25%,var(--w) 0% 50%) 0 0 / 8px 8px;}
+
+/* BARCODE */
+.barcode{display:flex;gap:1px;align-items:flex-end;height:50px;justify-content:center;padding:4px;}
+.barcode .bar{background:var(--gd);border-radius:1px;}
+
+/* DETAIL IMG */
+.det-img{width:100%;height:80px;background:linear-gradient(135deg,var(--gm),var(--gl));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;}
+
+/* SUCCESS CIRCLE */
+.succ{width:52px;height:52px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--w);font-weight:700;margin:0 auto 8px;}
+
+/* INFO ROW */
+.inr{display:flex;gap:6px;margin-bottom:5px;font-size:9px;}
+.inl{color:var(--g400);width:80px;flex-shrink:0;}
+.inv{color:var(--td);font-weight:600;}
+
+/* CHIP */
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--gp);border:1px solid var(--gl);border-radius:4px;padding:2px 8px;font-size:9px;color:var(--gd);margin:2px;}
+
+/* EXPORT */
+.exp-opt{border:1px solid var(--g200);border-radius:6px;padding:8px 10px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.exp-opt.sel{border-color:var(--go);background:var(--gop);}
+
+/* TIMELINE */
+.tli{display:flex;gap:10px;margin-bottom:8px;}
+.tldc{display:flex;flex-direction:column;align-items:center;}
+.tld{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.tld.dn{background:var(--gm);}
+.tld.av{background:var(--go);}
+.tld.pd{background:var(--g200);}
+.tll{width:2px;flex:1;background:var(--g200);margin:2px 0;min-height:16px;}
+.tlld{background:var(--gl);}
+.tlc{flex:1;padding-bottom:6px;}
+.tls{font-size:10px;font-weight:700;color:var(--gd);}
+.tls.pd{color:var(--g400);}
+.tlt{font-size:8px;color:var(--g400);}
+
+.login-wrap{padding:24px;background:var(--gp);min-height:300px;display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--w);border-radius:10px;padding:20px 22px;width:220px;border-top:4px solid var(--go);box-shadow:var(--sh);}
+.divider{border:none;border-top:1px solid var(--g200);margin:16px 0;}
+
+</style>
+</head>
+<body>
+
+<div class="pw">
+
+<!-- HEADER -->
+<div class="dh">
+  <div>
+    <h1>Wireframe v2.18 — ระบบบริการขอใช้อาคารสถานกีฬา</h1>
+    <div class="sub">TOR 4.2.5 | บุคคลธรรมดา &amp; นิติบุคคล | 22 หน้าจอ | ครบทุก Flow</div>
+    <div class="sub" style="margin-top:4px;color:rgba(255,255,255,0.5);">v2.1 Flow-Corrected — S-03/S-03b: สมัครนิติบุคคล ไม่แนบเอกสาร (แนบตอนยื่นคำขอ S-06 เท่านั้น)</div>
+  </div>
+  <div class="tor">TOR 4.2.5</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ① ระบบสมาชิก  (S-01 – S-03b)
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">① ระบบสมาชิก</span>
+  <span class="st">S-01 · S-02 · S-02b · S-02c · S-03 · S-03b</span>
+  <span class="tr">TOR 1.1–1.3 | ครบ 3 Step</span>
+</div>
+
+<div class="g3">
+
+<!-- S-01 Login -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-01</span> หน้าเข้าสู่ระบบ</span><span class="bd bo">TOR 1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span style="font-size:9px;color:rgba(255,255,255,0.5)">ระบบบริการสนามกีฬา</span></div>
+  <div class="login-wrap">
+    <div class="login-box">
+      <div style="text-align:center;margin-bottom:14px;">
+        <img src="data:image/png;base64,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" style="width:44px;height:auto;display:block;margin:0 auto 6px;" alt="กรมพลศึกษา"/>
+        <div style="font-size:12px;font-weight:700;color:var(--gd);">เข้าสู่ระบบ</div>
+        <div style="font-size:9px;color:var(--g400);">ระบบบริการอาคารสถานกีฬา</div>
+      </div>
+      <div class="fg"><label class="fl">ชื่อผู้ใช้ / เลขบัตรประชาชน</label><div class="fi f" style="line-height:26px;">1-1234-56789-12-3</div></div>
+      <div class="fg"><label class="fl">รหัสผ่าน</label><div class="fi f" style="line-height:26px;letter-spacing:4px;">••••••••</div></div>
+      <button class="gb gbf" style="margin-top:8px;">เข้าสู่ระบบ</button>
+      <div style="text-align:center;margin-top:10px;">
+        <div style="font-size:9px;color:var(--gm);margin-bottom:6px;cursor:pointer;">สมัครสมาชิกใหม่ | ลืมรหัสผ่าน?</div>
+        <div style="background:var(--gd);color:var(--gol);border-radius:5px;padding:5px 8px;font-size:9px;font-weight:700;cursor:pointer;">🪪 เข้าสู่ระบบด้วย ThaID</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S-02 สมัครบุคคลธรรมดา Step 1 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-02</span> สมัครสมาชิก — บุคคลธรรมดา (Step 1/3)</span><span class="bd bo">TOR 1.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc actv">1</div><div class="stpl">ข้อมูล<br/>ส่วนตัว</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">2</div><div class="stpl">ยืนยัน<br/>ThaID</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">3</div><div class="stpl">เสร็จสิ้น</div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>ข้อมูลส่วนตัว (บุคคลธรรมดา)</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">ชื่อ <span class="req">*</span></label><div class="fi f">สมชาย</div></div>
+        <div class="fg"><label class="fl">นามสกุล <span class="req">*</span></label><div class="fi f">ใจดี</div></div>
+      </div>
+      <div class="fg"><label class="fl">เลขบัตรประชาชน <span class="req">*</span></label><div class="fi f">1-1234-56789-12-3</div></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">วันเกิด</label><div class="fi">01/01/2530</div></div>
+        <div class="fg"><label class="fl">เพศ</label><div class="fsel" style="line-height:24px;">ชาย</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">โทรศัพท์ <span class="req">*</span></label><div class="fi">081-xxx-xxxx</div></div>
+        <div class="fg"><label class="fl">อีเมล <span class="req">*</span></label><div class="fi">email@example.com</div></div>
+      </div>
+      <div class="fg"><label class="fl">ที่อยู่</label><div class="fi">123 ถ.พระราม 9 กรุงเทพฯ</div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เอกสารประกอบการสมัคร</div>
+      <div style="margin-bottom:6px;">
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">1. สำเนาบัตรประชาชน <span class="req">*</span></div>
+        <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);">
+          <div style="width:26px;height:26px;background:var(--gm);border-radius:3px;"></div>
+          <div style="flex:1;font-size:9px;"><div style="font-weight:700;">ID_Card.pdf</div><div style="color:var(--g400);">1.2 MB</div></div>
+          <span class="bd bg">✓ อัปโหลดแล้ว</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">2. สำเนาทะเบียนบ้าน (ถ้ามี)</div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG ไม่เกิน 10 MB</div></div>
+      </div>
+    </div>
+    <div class="fn"><button class="gb">ถัดไป: ยืนยัน ThaID →</button></div>
+  </div>
+</div>
+
+<!-- S-02b ยืนยัน ThaID Step 2 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-02b</span> ยืนยันตัวตน ThaID (Step 2/3)</span><span class="bd bg">TOR 1.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">ข้อมูล<br/>ส่วนตัว</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">2</div><div class="stpl">ยืนยัน<br/>ThaID</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">3</div><div class="stpl">เสร็จสิ้น</div></div>
+    </div>
+    <div class="thaid-card">
+      <div class="thaid-logo">ThaID</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:4px;">กรมการปกครอง กระทรวงมหาดไทย</div>
+      <div style="margin-top:10px;font-size:10px;">สแกน QR ด้วยแอป ThaID เพื่อยืนยันตัวตน</div>
+      <div style="width:80px;height:80px;background:var(--w);border-radius:6px;margin:10px auto;display:flex;align-items:center;justify-content:center;">
+        <div style="width:64px;height:64px;background:repeating-conic-gradient(#1B4332 0% 25%,#fff 0% 50%) 0 0/6px 6px;border-radius:3px;"></div>
+      </div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.6);">QR หมดอายุใน 05:00 นาที</div>
+    </div>
+    <div class="no nbl" style="margin-top:10px;font-size:9px;">กรุณาเปิดแอป ThaID แล้วสแกน QR ด้านบนเพื่อยืนยันตัวตน</div>
+  </div>
+</div>
+
+</div><!-- end g3 -->
+
+<div class="g3" style="margin-top:18px;">
+
+<!-- S-02c สมัครสำเร็จ Step 3 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-02c</span> สมัครสมาชิกสำเร็จ (Step 3/3)</span><span class="bd bg">TOR 1.3</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">ข้อมูล</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">ThaID</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เสร็จสิ้น</div></div>
+    </div>
+    <div style="text-align:center;padding:12px 0 8px;">
+      <div class="succ">✓</div>
+      <div style="font-size:14px;font-weight:700;color:var(--gd);">สมัครสมาชิกสำเร็จ!</div>
+      <div style="font-size:9px;color:var(--g400);margin-top:4px;">ยืนยันตัวตนผ่าน ThaID เรียบร้อยแล้ว</div>
+    </div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:6px;">ข้อมูลสมาชิกของท่าน</div>
+      <div class="inr"><span class="inl">รหัสสมาชิก</span><span class="inv" style="color:var(--go);font-size:12px;font-weight:700;">MEM-2568-00456</span></div>
+      <div class="inr"><span class="inl">ชื่อ-นามสกุล</span><span class="inv">สมชาย ใจดี</span></div>
+      <div class="inr"><span class="inl">เลขบัตรประชาชน</span><span class="inv">1-xxxx-xxxxx-xx-3</span></div>
+      <div class="inr"><span class="inl">สถานะ ThaID</span><span class="inv"><span class="bd bg">✓ ยืนยันแล้ว</span></span></div>
+      <div class="inr"><span class="inl">วันที่สมัคร</span><span class="inv">10/07/2568</span></div>
+    </div>
+    <div class="no ngg">ระบบส่งอีเมลยืนยันสมาชิกแล้ว กรุณาตรวจสอบกล่องจดหมาย</div>
+    <div style="display:flex;gap:8px;">
+      <button class="ob" style="flex:1;height:28px;">พิมพ์บัตรสมาชิก</button>
+      <button class="gb" style="flex:1;height:28px;">เริ่มขอใช้บริการ</button>
+    </div>
+  </div>
+</div>
+
+<!-- S-03 สมัครนิติบุคคล Step 1 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-03</span> สมัครสมาชิก — นิติบุคคล (Step 1/2)</span><span class="bd bo">TOR 1.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc actv">1</div><div class="stpl">ข้อมูล<br/>นิติบุคคล</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">2</div><div class="stpl">ยืนยัน<br/>สถานะ</div></div>
+    </div>
+    <div class="tabr">
+      <div class="tabi">บุคคลธรรมดา</div>
+      <div class="tabi act">นิติบุคคล</div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>ข้อมูลองค์กร / นิติบุคคล</div>
+      <div class="fg"><label class="fl">ชื่อนิติบุคคล <span class="req">*</span></label><div class="fi f">บริษัท เอบีซี จำกัด</div></div>
+      <div class="fg"><label class="fl">เลขทะเบียนนิติบุคคล <span class="req">*</span></label><div class="fi f">0105565xxxxxx</div></div>
+      <div class="fg"><label class="fl">ประเภทนิติบุคคล <span class="req">*</span></label><div class="fsel" style="line-height:24px;">บริษัทจำกัด</div></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">ชื่อผู้มีอำนาจลงนาม <span class="req">*</span></label><div class="fi">ชื่อ-นามสกุล</div></div>
+        <div class="fg"><label class="fl">ตำแหน่ง <span class="req">*</span></label><div class="fi">กรรมการผู้จัดการ</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">เบอร์โทร <span class="req">*</span></label><div class="fi">02-xxx-xxxx</div></div>
+        <div class="fg"><label class="fl">อีเมล <span class="req">*</span></label><div class="fi">biz@example.com</div></div>
+      </div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เอกสารประกอบการสมัคร</div>
+      <div style="margin-bottom:6px;">
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">1. หนังสือรับรองนิติบุคคล (กรมพัฒน์ฯ) <span class="req">*</span></div>
+        <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);">
+          <div style="width:26px;height:26px;background:var(--gm);border-radius:3px;"></div>
+          <div style="flex:1;font-size:9px;"><div style="font-weight:700;">หนังสือรับรองนิติบุคคล.pdf</div><div style="color:var(--g400);">2.1 MB ✓</div></div>
+          <span class="bd bg">✓ อัปโหลดแล้ว</span>
+        </div>
+      </div>
+      <div style="margin-bottom:6px;">
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">2. หนังสือมอบอำนาจ (กรณีตัวแทน) <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG ไม่เกิน 10 MB</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">3. สำเนาบัตรประชาชนผู้มีอำนาจลงนาม <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG ไม่เกิน 10 MB</div></div>
+      </div>
+    </div>
+    <div class="no nog" style="font-size:8px;">⚠ ระบบจะตรวจสอบสถานะนิติบุคคลจากกรมพัฒนาธุรกิจการค้าอัตโนมัติในขั้นตอนถัดไป</div>
+    <div class="fn"><button class="gb">ถัดไป: ตรวจสอบสถานะ →</button></div>
+  </div>
+</div>
+
+<!-- S-03b ตรวจสอบสถานะนิติบุคคล Step 2 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-03b</span> ผลตรวจสอบสถานะนิติบุคคล (Step 2/2)</span><span class="bd bg">TOR 1.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">ข้อมูล<br/>นิติบุคคล</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">2</div><div class="stpl">ยืนยัน<br/>สถานะ</div></div>
+    </div>
+    <div class="no nbl" style="font-size:9px;">ระบบตรวจสอบเลขทะเบียนกับ <strong>กรมพัฒนาธุรกิจการค้า (DBD)</strong> อัตโนมัติ</div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>ผลการตรวจสอบจากกรมพัฒนาธุรกิจการค้า</div>
+      <div style="display:flex;gap:8px;align-items:center;padding:8px;background:var(--gp);border-radius:6px;border:1px solid var(--gl);margin-bottom:8px;">
+        <div style="font-size:24px;">✅</div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--gd);">นิติบุคคลดำเนินการอยู่</div>
+          <div style="font-size:9px;color:var(--g600);">ยืนยันสถานะจากฐานข้อมูล DBD สำเร็จ</div>
+        </div>
+      </div>
+      <div class="inr"><span class="inl">ชื่อบริษัท</span><span class="inv">บริษัท เอบีซี จำกัด</span></div>
+      <div class="inr"><span class="inl">เลขทะเบียน</span><span class="inv">0105565xxxxxx</span></div>
+      <div class="inr"><span class="inl">ประเภท</span><span class="inv">บริษัทจำกัด</span></div>
+      <div class="inr"><span class="inl">วันจดทะเบียน</span><span class="inv">01/06/2565</span></div>
+      <div class="inr"><span class="inl">สถานะ</span><span class="inv"><span class="bd bg">ยังดำเนินการ</span></span></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เอกสารที่แนบมา</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);margin-bottom:4px;">
+        <div style="width:24px;height:24px;background:var(--gm);border-radius:3px;"></div>
+        <div style="flex:1;font-size:9px;"><div style="font-weight:700;">หนังสือรับรองนิติบุคคล.pdf</div><div style="color:var(--g400);">2.1 MB</div></div>
+        <span class="bd bg">✓ ครบ</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);margin-bottom:4px;">
+        <div style="width:24px;height:24px;background:var(--gm);border-radius:3px;"></div>
+        <div style="flex:1;font-size:9px;"><div style="font-weight:700;">หนังสือมอบอำนาจ.pdf</div><div style="color:var(--g400);">1.5 MB</div></div>
+        <span class="bd bg">✓ ครบ</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);">
+        <div style="width:24px;height:24px;background:var(--gm);border-radius:3px;"></div>
+        <div style="flex:1;font-size:9px;"><div style="font-weight:700;">สำเนาบัตรประชาชนผู้มีอำนาจ.pdf</div><div style="color:var(--g400);">0.9 MB</div></div>
+        <span class="bd bg">✓ ครบ</span>
+      </div>
+    </div>
+    <div class="no ngg" style="font-size:9px;">✓ ข้อมูลและเอกสารครบถ้วน — พร้อมยืนยันสมัครสมาชิก</div>
+    <div style="display:flex;gap:8px;">
+      <button class="ob" style="flex:1;height:28px;font-size:9px;">ย้อนกลับแก้ไข</button>
+      <button class="gb" style="flex:1;height:28px;font-size:9px;">ยืนยันสมัครสมาชิก</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g3 row 2 -->
+
+<!-- ════════════════════════════════════════
+     ② ขอใช้บริการ  (S-04 – S-06b)
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">② ขอใช้บริการ</span>
+  <span class="st">S-04 · S-04b · S-05 · S-06 · S-06b</span>
+  <span class="tr">TOR 2.1–2.9 | ครบ 4 Step</span>
+</div>
+
+<div class="g3">
+
+<!-- S-04 ค้นหาสนาม -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-04</span> ดูข้อมูลสนาม / อาคาร / ห้องพัก</span><span class="bd bo">TOR 2.1–2.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><div class="ni"><a href="#" class="act">ขอใช้บริการ</a><a href="#">ประวัติ</a><a href="#">รายงาน</a></div><span class="ub">สมชาย</span></div>
+  <div class="ls">
+    <div class="sb">
+      <div class="sbg">เมนูหลัก</div>
+      <div class="sbi act"><div class="sbd"></div>ขอใช้สนามกีฬา</div>
+      <div class="sbi"><div class="sbd"></div>ขอใช้อาคาร</div>
+      <div class="sbi"><div class="sbd"></div>ขอใช้ห้องพัก</div>
+      <div class="sbg">ประวัติ</div>
+      <div class="sbi"><div class="sbd"></div>รายการจอง</div>
+      <div class="sbi"><div class="sbd"></div>ประวัติชำระ</div>
+    </div>
+    <div class="ct">
+      <div class="ic">
+        <div class="it"><div class="itd"></div>ค้นหาสนาม / อาคาร</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">ประเภทสิ่งอำนวยฯ</label><div class="fsel" style="line-height:24px;">สนามกีฬา</div></div>
+          <div class="fg"><label class="fl">จังหวัด</label><div class="fsel" style="line-height:24px;">กรุงเทพมหานคร</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">ประเภทกีฬา</label><div class="fsel" style="line-height:24px;">ฟุตบอล</div></div>
+          <div class="fg"><label class="fl">วันที่ต้องการ</label><div class="fi">01/07/2568</div></div>
+        </div>
+        <button class="gb gbf">ค้นหา</button>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:6px;">ผลการค้นหา (3 รายการ)</div>
+      <div style="border:1px solid var(--g200);border-radius:7px;overflow:hidden;font-size:10px;">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--g200);background:var(--gp);cursor:pointer;">
+          <div style="width:36px;height:36px;background:var(--gm);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">⚽</div>
+          <div style="flex:1;"><div style="font-weight:700;color:var(--gd);">สนามศุภชลาศัย</div><div style="color:var(--g400);font-size:9px;">ความจุ 500 คน | สนามหญ้าเทียม</div></div>
+          <div style="text-align:right;"><div style="color:var(--go);font-weight:700;">อัตราตามประเภทกิจกรรม</div><button class="gb bsm" style="margin-top:2px;">ดูรายละเอียด</button></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--g200);">
+          <div style="width:36px;height:36px;background:var(--g200);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🏟️</div>
+          <div style="flex:1;"><div style="font-weight:700;">สนามฟุตบอล B</div><div style="color:var(--g400);font-size:9px;">ความจุ 300 คน | สนามหญ้า</div></div>
+          <div style="text-align:right;"><div style="color:var(--go);font-weight:700;">อัตราตามประเภทกิจกรรม</div><button class="ob bsm" style="margin-top:2px;">ดูรายละเอียด</button></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;">
+          <div style="width:36px;height:36px;background:var(--g200);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🏢</div>
+          <div style="flex:1;"><div style="font-weight:700;">อาคารอเนกประสงค์ C</div><div style="color:var(--g400);font-size:9px;">ความจุ 1,000 คน | ห้องแอร์</div></div>
+          <div style="text-align:right;"><div style="color:var(--go);font-weight:700;">อัตราตามประเภทกิจกรรม</div><button class="ob bsm" style="margin-top:2px;">ดูรายละเอียด</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S-04b รายละเอียดสนาม -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-04b</span> เลือกสนาม กิจกรรม และอัตราค่าบริการ</span><span class="bd bg">TOR 2.1–2.4</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="det-img">⚽</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div><div style="font-size:13px;font-weight:700;color:var(--gd);">สนามศุภชลาศัย</div><div style="font-size:9px;color:var(--g400);">ศูนย์กีฬาแห่งชาติ | กรุงเทพมหานคร</div></div><span class="bd bg">ว่าง</span></div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div class="it" style="border-color:var(--go);"><div class="itd"></div>เงื่อนไขสำหรับดึงอัตราจาก Master</div>
+      <div class="fr"><div class="fg"><label class="fl">สนาม / อาคาร <span class="req">*</span></label><div class="fsel" style="line-height:24px;">สนามศุภชลาศัย</div></div><div class="fg"><label class="fl">ประเภทกิจกรรม <span class="req">*</span></label><div class="fsel" style="line-height:24px;">กีฬาและนันทนาการ</div></div></div>
+      <div class="fr"><div class="fg"><label class="fl">กลุ่มผู้ใช้บริการ <span class="req">*</span></label><div class="fsel" style="line-height:24px;">สมาคม / หน่วยงานไม่แสวงหารายได้</div></div><div class="fg"><label class="fl">ช่วงเวลาการใช้บริการ <span class="req">*</span></label><div class="fsel" style="line-height:24px;">ไม่เกิน 5 ชั่วโมง</div></div></div>
+      <div class="no ngg" style="font-size:8px;">อ้างอิงอัตราค่าบริการ <b>RATE-2026-0001</b> จาก S-10c</div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>อัตราค่าบริการที่ดึงจาก Master <span style="color:var(--g400);font-size:8px;font-weight:400;">แก้ไขได้เฉพาะคำขอนี้</span></div>
+      <div class="fr"><div class="fg"><label class="fl">ค่าบริการสนามและอาคาร (บาท/วัน)</label><input class="fi" value="20,000.00" style="height:24px;text-align:right;"></div><div class="fg"><label class="fl">สกอร์บอร์ด (บาท/ชั่วโมง)</label><input class="fi" value="5,000.00" style="height:24px;text-align:right;"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">เครื่องเสียง (บาท/ชั่วโมง)</label><input class="fi" value="2,000.00" style="height:24px;text-align:right;"></div><div class="fg"><label class="fl">ค่าไฟฟ้าส่องสนาม (บาท/ชั่วโมง)</label><input class="fi" value="5,000.00" style="height:24px;text-align:right;"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ (บาท/ชั่วโมง)</label><input class="fi" value="0.00" style="height:24px;text-align:right;"></div><div class="fg"><label class="fl">ค่าสาธารณูปโภค (บาท/วัน)</label><input class="fi" value="5,000.00" style="height:24px;text-align:right;"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">ค่าบริการพิเศษ (บาท/วัน)</label><input class="fi" value="0.00" style="height:24px;text-align:right;"></div><div class="fg"><label class="fl">หลักประกันความเสียหาย (บาท/ครั้ง)</label><input class="fi" value="10,000.00" style="height:24px;text-align:right;"></div></div>
+      <div style="font-size:8px;color:var(--g500);margin-top:6px;">การแก้ไขราคาในหน้านี้มีผลเฉพาะคำขอปัจจุบัน และไม่เปลี่ยนอัตราใน Master</div>
+    </div>
+    <button class="gb gbf">ยืนยันอัตราและเลือกวันเวลา →</button>
+  </div>
+</div>
+
+<!-- S-05 ปฏิทิน -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-05</span> ปฏิทิน &amp; กำหนดเงื่อนไขเวลา</span><span class="bd bo">TOR 2.3–2.6</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เลือกสนาม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">2</div><div class="stpl">วันเวลา</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">3</div><div class="stpl">แบบฟอร์ม</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">4</div><div class="stpl">เอกสาร</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">5</div><div class="stpl">ยืนยัน</div></div>
+    </div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);"><div class="it" style="border-color:var(--go);"><div class="itd"></div>อัตราค่าบริการที่ใช้</div><div class="fr"><div class="fg"><label class="fl">Rate ID</label><div class="fi pf">RATE-2026-0001</div></div><div class="fg"><label class="fl">สนาม / กิจกรรม</label><div class="fi pf">สนามศุภชลาศัย / กีฬาและนันทนาการ</div></div></div><div style="font-size:8px;color:var(--g500);">กลุ่มผู้ใช้: สมาคม / หน่วยงานไม่แสวงหารายได้ · ช่วงเวลา: ไม่เกิน 5 ชั่วโมง</div></div>
+    <div class="tabr">
+      <div class="tabi act">ปฏิทิน</div>
+      <div class="tabi">ตาราง</div>
+      <div class="tabi">สรุปการใช้งาน</div>
+    </div>
+    <div class="fr">
+      <div class="ic" style="margin-bottom:0;">
+        <div class="ch"><span>‹</span><span>กรกฎาคม 2568</span><span>›</span></div>
+        <div class="cg">
+          <div class="cdn">อา</div><div class="cdn">จ</div><div class="cdn">อ</div><div class="cdn">พ</div><div class="cdn">พฤ</div><div class="cdn">ศ</div><div class="cdn">ส</div>
+          <div class="cd oth">30</div><div class="cd">1</div><div class="cd rest">2</div><div class="cd">3</div><div class="cd closed">4</div><div class="cd">5</div><div class="cd bkd">6</div>
+          <div class="cd bkd">7</div><div class="cd">8</div><div class="cd">9</div><div class="cd tod">10</div><div class="cd rest">11</div><div class="cd closed">12</div><div class="cd">13</div>
+          <div class="cd">14</div><div class="cd">15</div><div class="cd sel">16</div><div class="cd sel">17</div><div class="cd">18</div><div class="cd">19</div><div class="cd">20</div>
+        </div>
+        <div style="margin-top:5px;font-size:8px;display:flex;gap:7px;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--go);display:inline-block;"></span>วันที่เลือก</span>
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--gp);border:1px solid var(--gm);display:inline-block;"></span>มีการจอง</span>
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#FFF3BF;border:1px solid #E0B52B;display:inline-block;"></span>วันพักสนาม (จองได้)</span>
+          <span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#C62828;display:inline-block;"></span>ปิดสนาม (ห้ามจอง)</span>
+        </div>
+      </div>
+      <div class="ic" style="margin-bottom:0;">
+        <div class="it"><div class="itd"></div>กำหนดเงื่อนไขเวลา</div>
+        <div class="fg"><label class="fl">วันที่จอง <span class="req">*</span></label><div class="fi pf">10/07/2568</div></div>
+        <div class="fg"><label class="fl">วันใช้สถานที่ <span class="req">*</span> <span style="font-weight:400;color:var(--g400);">(เพิ่มได้หลายวัน)</span></label></div>
+        <div class="fr" style="grid-template-columns:1.2fr .8fr;margin-bottom:5px;">
+          <div class="fi f" style="line-height:24px;">16/07/2568</div><div class="fi" style="line-height:24px;">09:00–12:00</div>
+        </div>
+        <div class="fr" style="grid-template-columns:1.2fr .8fr;margin-bottom:5px;">
+          <div class="fi f" style="line-height:24px;">17/07/2568</div><div class="fi" style="line-height:24px;">09:00–12:00</div>
+        </div>
+        <button class="ob bsm" style="width:100%;margin-bottom:6px;">＋ เพิ่มวันใช้สถานที่</button>
+        <div class="fr">
+          <div class="fg"><label class="fl">Email <span class="req">*</span></label><div class="fi">somchai@email.com</div></div>
+          <div class="fg"><label class="fl">LINE ID</label><div class="fi">somchai.dpe</div></div>
+        </div>
+        <div class="no ngg" style="font-size:8px;">วันที่เลือกว่างและพร้อมใช้งานทั้ง 2 วัน</div>
+      </div>
+    </div>
+    <div style="background:var(--gop);border:1px solid var(--go);border-radius:6px;padding:8px;font-size:10px;margin-top:8px;">
+      <div style="font-weight:700;color:var(--gd);margin-bottom:5px;">ค่าใช้จ่ายโดยประมาณ</div>
+
+      <div class="sr"><span>1. ค่าบริการสนามและอาคาร</span><span>6,000 บาท</span></div>
+
+      <div style="padding:6px 0 4px;">
+        <div style="font-weight:700;color:var(--gd);margin-bottom:5px;">2. ค่าอำนวยความสะดวก</div>
+        <div style="display:grid;grid-template-columns:1.25fr .42fr .42fr .72fr;gap:5px 6px;align-items:center;font-size:9px;">
+          <span style="font-weight:700;color:var(--g500);">รายการ</span><span style="font-weight:700;color:var(--g500);text-align:center;">จำนวน</span><span style="font-weight:700;color:var(--g500);text-align:center;">หน่วย</span><span style="font-weight:700;color:var(--g500);text-align:right;">จำนวนเงิน</span>
+          <span>สกอร์บอร์ด <small>(500 บาท/ชม.)</small></span><input class="fi" type="text" value="3" style="height:22px;text-align:center;"><span style="text-align:center;">ชั่วโมง</span><span style="text-align:right;font-weight:600;">15,000.00 บาท</span>
+          <span>เครื่องเสียง <small>(300 บาท/ชม.)</small></span><input class="fi" type="text" value="3" style="height:22px;text-align:center;"><span style="text-align:center;">ชั่วโมง</span><span style="text-align:right;font-weight:600;">6,000.00 บาท</span>
+          <span>ค่าไฟฟ้าส่องสนาม <small>(800 บาท/ชม.)</small></span><input class="fi" type="text" value="3" style="height:22px;text-align:center;"><span style="text-align:center;">ชั่วโมง</span><span style="text-align:right;font-weight:600;">15,000.00 บาท</span>
+          <span>ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ <small>(1,500 บาท/ชม.)</small></span><input class="fi" type="text" value="0" style="height:22px;text-align:center;"><span style="text-align:center;">ชั่วโมง</span><span style="text-align:right;font-weight:600;">0.00 บาท</span>
+          <span>ค่าสาธารณูปโภค <small>(500 บาท/วัน)</small></span><input class="fi" type="text" value="2" style="height:22px;text-align:center;"><span style="text-align:center;">วัน</span><span style="text-align:right;font-weight:600;">5,000.00 บาท</span>
+          <span>ค่าบริการพิเศษ <small>(1,000 บาท/วัน)</small></span><input class="fi" type="text" value="0" style="height:22px;text-align:center;"><span style="text-align:center;">วัน</span><span style="text-align:right;font-weight:600;">0.00 บาท</span>
+          <span>หลักประกันความเสียหาย <small>(2,000 บาท/ครั้ง)</small></span><input class="fi" type="text" value="1" style="height:22px;text-align:center;"><span style="text-align:center;">ครั้ง</span><span style="text-align:right;font-weight:600;">10,000.00 บาท</span>
+        </div>
+        <div class="sr" style="margin-top:5px;font-weight:700;"><span>รวมค่าอำนวยความสะดวก</span><span>55,000.00 บาท</span></div>
+      </div>
+
+      <div class="sr srt"><span>3. รวมทั้งสิ้น</span><span style="color:var(--go);">75,000.00 บาท</span></div>
+    </div>
+    <div class="fn"><button class="ob">ย้อนกลับ</button><button class="gb">ถัดไป: กรอกแบบฟอร์ม →</button></div>
+  </div>
+</div>
+
+</div><!-- end g3 -->
+
+<div class="g3" style="margin-top:18px;">
+
+<!-- S-05d แบบฟอร์มขอใช้สนาม -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-05d</span> แบบฟอร์มขอใช้สนาม</span><span class="bd bo">TOR 2.5</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="no ngg" style="font-size:8px;margin-bottom:7px;"><b>อ้างอิงอัตรา RATE-2026-0001</b> · สนามศุภชลาศัย · กีฬาและนันทนาการ · สมาคม / หน่วยงานไม่แสวงหารายได้ · ไม่เกิน 5 ชั่วโมง</div>
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เลือกสนาม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">วันเวลา</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">3</div><div class="stpl">แบบฟอร์ม</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">4</div><div class="stpl">เอกสาร</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">5</div><div class="stpl">ยืนยัน</div></div>
+    </div>
+    <div class="tabr">
+      <div class="tabi act">บุคคลธรรมดา</div>
+      <div class="tabi">นิติบุคคล &amp; สมาคม</div>
+      <div class="tabi">หน่วยงานราชการ</div>
+    </div>
+    <div class="ic">
+    <div class="ic" style="background:var(--gop);border-color:var(--go);margin-bottom:8px;">
+      <div class="it" style="border-color:var(--go);"><div class="itd"></div>สรุปการจองที่เลือกไว้</div>
+      <div class="fr">
+        <div class="inr"><span class="inl">สนาม</span><span class="inv">สนามศุภชลาศัย</span></div>
+        <div class="inr"><span class="inl">วันที่จอง</span><span class="inv">10/07/2568</span></div>
+      </div>
+      <div class="inr"><span class="inl">วันใช้สถานที่</span><span class="inv">16/07/2568 เวลา 09:00–12:00 น.</span></div>
+      <div class="inr"><span class="inl"></span><span class="inv">17/07/2568 เวลา 09:00–12:00 น.</span></div>
+      <div class="sr"><span>ค่าบริการสนามและอาคาร</span><span>20,000.00 บาท</span></div>
+      <div style="font-size:9px;font-weight:700;color:var(--gd);margin-top:6px;margin-bottom:2px;">ค่าอำนวยความสะดวก</div>
+      <div style="background:var(--w);border:1px solid var(--g200);border-radius:5px;padding:4px 8px;margin-bottom:4px;">
+        <div class="sr"><span>สกอร์บอร์ด — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+        <div class="sr"><span>เครื่องเสียง — 3 ชั่วโมง × 2,000 บาท</span><span>6,000.00 บาท</span></div>
+        <div class="sr"><span>ค่าไฟฟ้าส่องสนาม — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+        <div class="sr"><span>ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ — 0 ชั่วโมง × 0 บาท</span><span>0.00 บาท</span></div>
+        <div class="sr"><span>ค่าสาธารณูปโภค — 1 วัน × 5,000 บาท</span><span>5,000.00 บาท</span></div>
+        <div class="sr"><span>ค่าบริการพิเศษ — 0 วัน × 0 บาท</span><span>0.00 บาท</span></div>
+        <div class="sr" style="border:none;"><span>หลักประกันความเสียหาย — 1 ครั้ง × 10,000 บาท</span><span>10,000.00 บาท</span></div>
+        <div class="sr srt"><span>รวมค่าอำนวยความสะดวก</span><span>55,000.00 บาท</span></div>
+      </div>
+      <div class="sr srt"><span>รวมทั้งสิ้น</span><span style="color:var(--go);font-weight:700;">75,000.00 บาท</span></div>
+      <div style="text-align:right;margin-top:4px;"><button class="ob bsm">← แก้ไขวันเวลา</button></div>
+    </div>
+    <div class="it"><div class="itd"></div>ข้อมูลผู้ขอ (ดึงจากสมาชิกอัตโนมัติ)</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">ชื่อ-นามสกุล</label><div class="fi pf">สมชาย ใจดี</div></div>
+        <div class="fg"><label class="fl">เลขบัตรประชาชน</label><div class="fi pf">1-1234-56789-12-3</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">โทรศัพท์</label><div class="fi pf">081-xxx-xxxx</div></div>
+        <div class="fg"><label class="fl">อีเมล</label><div class="fi pf">email@example.com</div></div>
+      </div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>รายละเอียดการขอใช้</div>
+      <div class="fg"><label class="fl">วัตถุประสงค์การใช้งาน <span class="req">*</span></label><div class="fsel" style="line-height:24px;">การแข่งขันกีฬา</div></div>
+      <div class="fg"><label class="fl">รายละเอียดกิจกรรม <span class="req">*</span></label><div class="fta">การแข่งขันฟุตบอลระดับเขต รุ่นอายุไม่เกิน 18 ปี...</div></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">จำนวนผู้เข้าร่วม <span class="req">*</span></label><div class="fi f">150</div></div>
+        <div class="fg"><label class="fl">จำนวนทีม / กลุ่ม</label><div class="fi">8</div></div>
+      </div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>ผู้ประสานงาน / ผู้ติดต่อในวันงาน</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">ชื่อผู้ประสานงาน <span class="req">*</span></label><div class="fi f">สมชาย ใจดี</div></div>
+        <div class="fg"><label class="fl">เบอร์โทรวันงาน <span class="req">*</span></label><div class="fi f">081-xxx-xxxx</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Email <span class="req">*</span> <span style="font-weight:400;color:var(--g400);">(ดึงจาก S-05 อัตโนมัติ)</span></label><div class="fi pf">somchai@email.com</div></div>
+        <div class="fg"><label class="fl">LINE ID <span style="font-weight:400;color:var(--g400);">(ดึงจาก S-05 อัตโนมัติ)</span></label><div class="fi pf">somchai.dpe</div></div>
+      </div>
+    </div>
+    <!-- นิติบุคคล แตกต่าง (แสดงเป็น hint) -->
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div class="it" style="border-color:var(--go);"><div class="itd"></div>Tab นิติบุคคล — ฟิลด์เพิ่มเติม</div>
+      <div style="font-size:9px;color:var(--g700);margin-bottom:2px;">+ ชื่อบริษัท / เลขทะเบียนนิติบุคคล (auto)</div>
+      <div style="font-size:9px;color:var(--g700);margin-bottom:2px;">+ ชื่อผู้มีอำนาจลงนาม / ตำแหน่ง (auto)</div>
+      <div style="font-size:9px;color:var(--g700);">+ วัตถุประสงค์เชิงพาณิชย์ (ถ้ามี)</div>
+    </div>
+    <div class="fn"><button class="ob">ย้อนกลับ</button><button class="gb">ถัดไป: แนบเอกสาร →</button></div>
+  </div>
+</div>
+
+<!-- S-06 แนบเอกสาร — แสดงแยกตามประเภทผู้ขอ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-06</span> แนบเอกสารประกอบคำขอ</span><span class="bd bo">TOR 2.5</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เลือกสนาม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">วันเวลา</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">แบบฟอร์ม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">4</div><div class="stpl">เอกสาร</div></div>
+      <div class="stpln"></div>
+      <div class="stpi"><div class="stpc pend">5</div><div class="stpl">ยืนยัน</div></div>
+    </div>
+    <!-- Tab แยกประเภทผู้ขอ -->
+    <div class="tabr">
+      <div class="tabi act">บุคคลธรรมดา</div>
+      <div class="tabi">นิติบุคคล</div>
+    </div>
+    <!-- บุคคลธรรมดา (active) -->
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เอกสาร — บุคคลธรรมดา</div>
+      <div class="no ngg" style="font-size:8px;">สำเนาบัตรประชาชน / ทะเบียนบ้าน — แนบแล้วตอนสมัครสมาชิก</div>
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">หนังสือขอใช้สนาม <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG, PNG ไม่เกิน 10 MB</div></div>
+      </div>
+    </div>
+    <!-- นิติบุคคล & สมาคม -->
+    <div class="ic" style="background:var(--gp);border-color:var(--gl);">
+      <div class="it" style="border-color:var(--gl);"><div class="itd"></div>เอกสาร — นิติบุคคล &amp; สมาคม</div>
+      <div class="no ngg" style="font-size:8px;">เอกสารองค์กรแนบแล้วตอนสมัครสมาชิก <span class="bd bg">✓</span></div>
+      <div style="font-size:9px;color:var(--g700);margin-bottom:3px;display:flex;align-items:center;gap:4px;"><span class="bd bg">✓</span> หนังสือรับรองนิติบุคคล/สมาคม.pdf</div>
+      <div style="font-size:9px;color:var(--g700);margin-bottom:3px;display:flex;align-items:center;gap:4px;"><span class="bd bg">✓</span> หนังสือมอบอำนาจ.pdf</div>
+      <div style="font-size:9px;color:var(--g700);margin-bottom:8px;display:flex;align-items:center;gap:4px;"><span class="bd bg">✓</span> สำเนาบัตรประชาชนผู้มีอำนาจลงนาม.pdf</div>
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">หนังสือขอใช้สนาม (ออกในนามนิติบุคคล/สมาคม) <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF ไม่เกิน 10 MB</div></div>
+      </div>
+    </div>
+    <!-- หน่วยงานราชการ -->
+    <div class="ic" style="background:#FFF8E1;border-color:#E0B52B;">
+      <div class="it" style="border-color:#E0B52B;"><div class="itd"></div>เอกสาร — หน่วยงานราชการ</div>
+      <div class="no nor" style="font-size:8px;">กรุณาแนบหนังสือราชการที่มีตราครุฑ พร้อมบัตรประชาชนของผู้รับมอบอำนาจ</div>
+      <div style="margin-bottom:7px;">
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">หนังสือราชการที่มีตราครุฑ <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG, PNG ไม่เกิน 10 MB</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">บัตรประชาชนของผู้รับมอบอำนาจ <span class="req">*</span></div>
+        <div class="upz"><div>คลิกหรือลากไฟล์มาวางที่นี่</div><div style="color:var(--g400);font-size:8px;margin-top:2px;">PDF, JPG, PNG ไม่เกิน 10 MB</div></div>
+      </div>
+    </div>
+    <div class="fn"><button class="ob">ย้อนกลับ</button><button class="gb">ถัดไป: ยืนยัน →</button></div>
+  </div>
+</div>
+
+<!-- S-06b ยืนยันคำขอ Step 4 -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-06b</span> ยืนยันคำขอ (Step 4/4)</span><span class="bd bg">TOR 2.7–2.9</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="no ngg" style="font-size:8px;margin-bottom:7px;"><b>อ้างอิงอัตรา RATE-2026-0001</b> · สนามศุภชลาศัย · กีฬาและนันทนาการ · สมาคม / หน่วยงานไม่แสวงหารายได้ · ไม่เกิน 5 ชั่วโมง</div>
+    <div class="stpb">
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เลือกสนาม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">วันเวลา</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">แบบฟอร์ม</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc done">✓</div><div class="stpl">เอกสาร</div></div>
+      <div class="stpln stpld"></div>
+      <div class="stpi"><div class="stpc actv">5</div><div class="stpl">ยืนยัน</div></div>
+    </div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div class="it" style="border-color:var(--go);"><div class="itd"></div>สรุปคำขอทั้งหมด</div>
+      <div class="inr"><span class="inl">สนาม</span><span class="inv">สนามศุภชลาศัย</span></div>
+      <div class="inr"><span class="inl">วันที่</span><span class="inv">16/07/2568</span></div>
+      <div class="inr"><span class="inl">เวลา</span><span class="inv">09:00 – 12:00 น. (3 ชม.)</span></div>
+      <div class="inr"><span class="inl">วัตถุประสงค์</span><span class="inv">การแข่งขัน</span></div>
+      <div class="inr"><span class="inl">จำนวนคน</span><span class="inv">150 คน</span></div>
+      <div class="inr"><span class="inl">ผู้ขอ</span><span class="inv">สมาคมกีฬาตัวอย่าง (ORG-2568-00124)</span></div>
+      <div class="inr"><span class="inl">ประเภท</span><span class="inv"><span class="bd bb">สมาคม</span></span></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>สรุปค่าใช้จ่าย</div>
+      <div class="sr"><span>ค่าบริการสนามและอาคาร</span><span>20,000.00 บาท</span></div>
+      <div style="font-size:9px;font-weight:700;color:var(--gd);padding-top:5px;">ค่าอำนวยความสะดวก</div>
+      <div class="sr"><span>สกอร์บอร์ด — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+      <div class="sr"><span>เครื่องเสียง — 3 ชั่วโมง × 2,000 บาท</span><span>6,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าไฟฟ้าส่องสนาม — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ — 0 ชั่วโมง × 0 บาท</span><span>0.00 บาท</span></div>
+      <div class="sr"><span>ค่าสาธารณูปโภค — 1 วัน × 5,000 บาท</span><span>5,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าบริการพิเศษ — 0 วัน × 0 บาท</span><span>0.00 บาท</span></div>
+      <div class="sr"><span>หลักประกันความเสียหาย — 1 ครั้ง × 10,000 บาท</span><span>10,000.00 บาท</span></div>
+      <div class="sr" style="font-weight:700;"><span>รวมค่าอำนวยความสะดวก</span><span>55,000.00 บาท</span></div>
+      <div class="sr srt"><span>รวมทั้งสิ้น</span><span style="color:var(--go);font-size:13px;">75,000.00 บาท</span></div>
+    </div>
+    <div class="ic" style="background:#FFF8E1;border-color:#E0B52B;">
+      <div class="it" style="border-color:#E0B52B;justify-content:space-between;"><span style="display:flex;align-items:center;gap:5px;"><span class="itd"></span>การขอยกเว้นค่าบริการ</span><span class="bd bor">เฉพาะสมาคม / หน่วยงานราชการ</span></div>
+      <div class="no nor" style="font-size:8px;"><b>ระบบแสดงส่วนนี้อัตโนมัติเฉพาะผู้ยื่นประเภทสมาคมหรือหน่วยงานราชการ</b><br>เลือกเหตุผลตามระเบียบที่เข้าข่ายเพื่อเสนอขออนุมัติอธิบดี</div>
+      <label style="display:flex;align-items:flex-start;gap:6px;font-size:9px;padding:4px 0;border-bottom:1px solid var(--g200);cursor:pointer;">
+        <input type="radio" name="fee-waiver" style="margin-top:2px;">
+        <span><b>ระเบียบข้อ 1</b> การจัดกิจกรรมของส่วนราชการหรือหน่วยงานของรัฐที่เป็นประโยชน์ต่อสาธารณะ — ขออนุมัติอธิบดี</span>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:6px;font-size:9px;padding:4px 0;border-bottom:1px solid var(--g200);cursor:pointer;">
+        <input type="radio" name="fee-waiver" style="margin-top:2px;">
+        <span><b>ระเบียบข้อ 2</b> การจัดกิจกรรมส่งเสริมกีฬาและนันทนาการที่ไม่มีวัตถุประสงค์เพื่อแสวงหากำไร — ขออนุมัติอธิบดี</span>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:6px;font-size:9px;padding:4px 0;border-bottom:1px solid var(--g200);cursor:pointer;">
+        <input type="radio" name="fee-waiver" style="margin-top:2px;">
+        <span><b>ระเบียบข้อ 3</b> การจัดกิจกรรมช่วยเหลือสังคม การกุศล หรือกิจกรรมเพื่อประโยชน์ส่วนรวม — ขออนุมัติอธิบดี</span>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:6px;font-size:9px;padding:4px 0;cursor:pointer;">
+        <input type="radio" name="fee-waiver" style="margin-top:2px;">
+        <span><b>ระเบียบข้อ 4</b> กรณีอื่นตามที่กรมพลศึกษาพิจารณาเห็นสมควร — ขออนุมัติอธิบดี</span>
+      </label>
+      <div class="fg" style="margin-top:7px;">
+        <label class="fl">เหตุผลประกอบการขอยกเว้น</label>
+        <div class="fta">ระบุเหตุผลและรายละเอียดประกอบการพิจารณา...</div>
+      </div>
+      <div style="background:var(--gp);border:1px solid var(--gl);border-radius:6px;padding:7px 8px;margin-top:7px;">
+        <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:5px;">สำหรับเจ้าหน้าที่กรมพลศึกษา</div>
+        <div class="fr">
+          <div class="fg" style="margin-bottom:0;">
+            <label class="fl">จำนวนเงินที่ยกเว้นค่าบริการ</label>
+            <div class="fi f" style="text-align:right;color:var(--td);">0.00</div>
+          </div>
+          <div class="fg" style="margin-bottom:0;">
+            <label class="fl">ผลหลังหักค่ายกเว้น</label>
+            <div class="fi pf" style="text-align:right;">75,000.00 บาท</div>
+          </div>
+        </div>
+        <div style="font-size:8px;color:var(--g600);margin-top:4px;">เจ้าหน้าที่ระบุยอดยกเว้นค่าบริการภายหลังตรวจสอบเงื่อนไขและได้รับอนุมัติ</div>
+      </div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เอกสารที่แนบ</div>
+      <div style="font-size:9px;"><span class="bd bg">✓</span> สำเนาบัตรประชาชน.pdf &nbsp; <span class="bd bg">✓</span> หนังสือขอใช้สนาม.pdf</div>
+    </div>
+    <div class="no nbl" style="font-size:9px;">เมื่อส่งคำขอแล้ว ระบบจะแจ้งผลการอนุมัติผ่านอีเมลภายใน 2 วันทำการ</div>
+    <div style="display:flex;gap:8px;">
+      <button class="ob" style="flex:1;height:28px;font-size:9px;">ย้อนกลับ</button>
+      <button class="gb" style="flex:2;height:28px;font-size:10px;">ส่งคำขอรับบริการ</button>
+    </div>
+  </div>
+</div>
+
+<!-- S-09 ประวัติ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-09</span> ประวัติการใช้บริการ</span><span class="bd bo">TOR 2.8, 1.3</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ls">
+    <div class="sb">
+      <div class="sbg">เมนู</div>
+      <div class="sbi"><div class="sbd"></div>ขอใช้บริการ</div>
+      <div class="sbi act"><div class="sbd"></div>ประวัติการจอง</div>
+      <div class="sbi"><div class="sbd"></div>ใบเสร็จ</div>
+    </div>
+    <div class="ct">
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:7px;">ประวัติการใช้บริการ</div>
+      <div class="fr" style="margin-bottom:8px;">
+        <div class="fg"><label class="fl">ช่วงเวลา</label><div class="fsel" style="line-height:24px;">3 เดือนล่าสุด</div></div>
+        <div class="fg"><label class="fl">สถานะ</label><div class="fsel" style="line-height:24px;">ทั้งหมด</div></div>
+      </div>
+      <table class="mt">
+        <thead><tr><th>วันที่</th><th>สนาม</th><th>เวลา</th><th>สถานะ</th></tr></thead>
+        <tbody>
+          <tr><td>16/07/68</td><td>สนาม A</td><td>09:00–12:00</td><td><span class="bd bg">อนุมัติ</span></td></tr>
+          <tr><td>05/07/68</td><td>อาคาร C</td><td>13:00–17:00</td><td><span class="bd bb">ชำระแล้ว</span></td></tr>
+          <tr><td>28/06/68</td><td>สนาม B</td><td>08:00–10:00</td><td><span class="bd bor">รออนุมัติ</span></td></tr>
+          <tr><td>15/06/68</td><td>สนาม A</td><td>10:00–12:00</td><td><span class="bd br">ปฏิเสธ</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g3 row 2 -->
+
+<!-- ════════════════════════════════════════
+     ③ ชำระค่าบริการ  (S-07 – S-08)
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">③ ชำระค่าบริการ</span>
+  <span class="st">S-07 · S-07b · S-08</span>
+  <span class="tr">TOR 3.1–3.3</span>
+</div>
+
+<div class="g3">
+
+<!-- S-07 เลือกวิธีชำระ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-07</span> เลือกวิธีชำระเงิน</span><span class="bd bo">TOR 3.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:5px;">สรุปรายการ</div>
+      <div class="sr"><span>สนามศุภชลาศัย</span><span>16/07/2568</span></div>
+      <div class="sr"><span>เวลาใช้บริการ</span><span>09:00–12:00 น. (3 ชม.)</span></div>
+      <div class="sr"><span>ค่าบริการสนามและอาคาร</span><span>20,000.00 บาท</span></div>
+      <div style="font-size:9px;font-weight:700;color:var(--gd);padding-top:5px;">ค่าอำนวยความสะดวก</div>
+      <div class="sr"><span>สกอร์บอร์ด — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+      <div class="sr"><span>เครื่องเสียง — 3 ชั่วโมง × 2,000 บาท</span><span>6,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าไฟฟ้าส่องสนาม — 3 ชั่วโมง × 5,000 บาท</span><span>15,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ — 0 ชั่วโมง × 0 บาท</span><span>0.00 บาท</span></div>
+      <div class="sr"><span>ค่าสาธารณูปโภค — 1 วัน × 5,000 บาท</span><span>5,000.00 บาท</span></div>
+      <div class="sr"><span>ค่าบริการพิเศษ — 0 วัน × 0 บาท</span><span>0.00 บาท</span></div>
+      <div class="sr"><span>หลักประกันความเสียหาย — 1 ครั้ง × 10,000 บาท</span><span>10,000.00 บาท</span></div>
+      <div class="sr"><span>รวมค่าอำนวยความสะดวก</span><span>55,000.00 บาท</span></div>
+      <div class="sr"><span>ยกเว้นค่าบริการ</span><span>0.00 บาท</span></div>
+      <div class="sr srt"><span>ยอดชำระสุทธิ</span><span style="color:var(--go);font-size:14px;">75,000.00 บาท</span></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:6px;">เลือกวิธีชำระเงิน</div>
+    <div class="pm sel">
+      <div class="pr sel"></div>
+      <div><div class="pn">Bill Payment (ธนาคาร)</div><div class="pd">ชำระผ่าน Counter ธนาคาร / ATM / Mobile Banking</div></div>
+    </div>
+    <div class="pm">
+      <div class="pr"></div>
+      <div><div class="pn">Cross Bank / พร้อมเพย์</div><div class="pd">โอนเงินข้ามธนาคาร</div></div>
+    </div>
+    <div class="pm">
+      <div class="pr"></div>
+      <div><div class="pn">QR Code</div><div class="pd">สแกนจ่ายผ่านแอปธนาคาร</div></div>
+    </div>
+    <div class="pm">
+      <div class="pr"></div>
+      <div><div class="pn">เช็ค</div><div class="pd">ชำระด้วยเช็คตามชื่อและเงื่อนไขที่กรมพลศึกษากำหนด</div></div>
+    </div>
+    <div class="pm">
+      <div class="pr"></div>
+      <div><div class="pn">เงินสด</div><div class="pd">ชำระที่จุดรับชำระเงินของกรมพลศึกษา</div></div>
+    </div>
+    <div style="background:var(--gp);border:1px solid var(--gl);border-radius:6px;padding:8px 10px;font-size:9px;margin-top:8px;">
+      <div style="font-weight:700;color:var(--gd);margin-bottom:3px;">รหัส Bill Payment</div>
+      <div style="font-size:16px;font-weight:700;color:var(--gd);letter-spacing:3px;">0299 9876 5432 10</div>
+      <div style="color:var(--g400);margin-top:3px;">ชำระภายใน 3 วันทำการ | ใช้ได้ถึง 19/07/2568</div>
+    </div>
+    <button class="gb gbf" style="margin-top:8px;">ดู QR Code →</button>
+  </div>
+</div>
+
+<!-- S-07b QR Code ชำระเงิน -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-07b</span> QR Code / Barcode ชำระเงิน</span><span class="bd bg">TOR 3.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="tabr">
+      <div class="tabi">Bill Payment</div>
+      <div class="tabi act">QR Code</div>
+      <div class="tabi">Barcode</div>
+    </div>
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:10px;color:var(--g600);margin-bottom:8px;">สแกน QR Code เพื่อชำระเงิน</div>
+      <div class="qr-box"><div class="qr-inner"></div></div>
+      <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--gd);">6,500.00 บาท</div>
+      <div style="font-size:9px;color:var(--g400);">REF: REF-2568-0001234</div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
+        <span class="chip">🏦 ธนาคารกรุงเทพ</span>
+        <span class="chip">📱 PromptPay</span>
+        <span class="chip">🏛️ ธ.กรุงไทย</span>
+      </div>
+    </div>
+    <hr class="divider"/>
+    <div style="text-align:center;">
+      <div style="font-size:10px;color:var(--g600);margin-bottom:6px;">หรือใช้ Barcode</div>
+      <div class="barcode">
+        <div class="bar" style="width:2px;height:40px;"></div><div class="bar" style="width:1px;height:35px;"></div><div class="bar" style="width:3px;height:40px;"></div><div class="bar" style="width:1px;height:30px;"></div><div class="bar" style="width:2px;height:40px;"></div><div class="bar" style="width:1px;height:38px;"></div><div class="bar" style="width:3px;height:40px;"></div><div class="bar" style="width:1px;height:32px;"></div><div class="bar" style="width:2px;height:40px;"></div><div class="bar" style="width:1px;height:36px;"></div><div class="bar" style="width:2px;height:40px;"></div><div class="bar" style="width:3px;height:38px;"></div><div class="bar" style="width:1px;height:40px;"></div><div class="bar" style="width:2px;height:34px;"></div><div class="bar" style="width:1px;height:40px;"></div>
+      </div>
+      <div style="font-size:8px;color:var(--g400);letter-spacing:2px;margin-top:3px;">0299 9876 5432 10 2568</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;">
+      <button class="ob" style="flex:1;height:26px;font-size:9px;">📥 บันทึก QR</button>
+      <button class="ob" style="flex:1;height:26px;font-size:9px;">📤 แชร์</button>
+      <button class="gb" style="flex:1;height:26px;font-size:9px;">ตรวจสอบการชำระ</button>
+    </div>
+    <div class="no nor" style="margin-top:8px;font-size:9px;">QR / Barcode หมดอายุใน <strong>71:32:15</strong> ชั่วโมง</div>
+  </div>
+</div>
+
+<!-- S-08 ใบเสร็จ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-08</span> ผลการชำระเงิน / ใบเสร็จ</span><span class="bd bo">TOR 3.2–3.3</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="no ngg" style="font-size:8px;margin-bottom:7px;"><b>อ้างอิงอัตรา RATE-2026-0001</b> · สนามศุภชลาศัย · กีฬาและนันทนาการ · สมาคม / หน่วยงานไม่แสวงหารายได้ · ไม่เกิน 5 ชั่วโมง</div>
+    <div style="text-align:center;padding:14px 0 10px;">
+      <div class="succ">✓</div>
+      <div style="font-size:14px;font-weight:700;color:var(--gd);">ชำระเงินสำเร็จ</div>
+      <div style="font-size:9px;color:var(--g400);">เลขอ้างอิง: REF-2568-0001234</div>
+    </div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:5px;">ใบเสร็จรับเงิน</div>
+      <div class="inr"><span class="inl">วันที่ชำระ</span><span class="inv">10/07/2568 14:32</span></div>
+      <div class="inr"><span class="inl">วิธีชำระ</span><span class="inv">QR Code (PromptPay)</span></div>
+      <div class="inr"><span class="inl">รายการ</span><span class="inv">สนามศุภชลาศัย</span></div>
+      <div class="inr"><span class="inl">วันใช้บริการ</span><span class="inv">16/07/2568</span></div>
+      <div class="inr"><span class="inl">เวลาใช้บริการ</span><span class="inv">09:00–12:00 น. (3 ชม.)</span></div>
+      <div class="inr"><span class="inl">เลขที่คำขอ</span><span class="inv">REQ-2568-00125</span></div>
+      <div class="sr"><span>ค่าบริการสนามและอาคาร</span><span>20,000.00 บาท</span></div>
+      <div class="sr"><span>รวมค่าอำนวยความสะดวก</span><span>55,000.00 บาท</span></div>
+      <div class="sr"><span>ยกเว้นค่าบริการ</span><span>0.00 บาท</span></div>
+      <div class="sr srt"><span>ยอดที่ชำระ</span><span style="color:var(--go);font-size:14px;">75,000.00 บาท</span></div>
+    </div>
+    <div class="no ngg">สถานะการจอง: <strong>ได้รับการยืนยัน</strong> — ส่งอีเมลยืนยันแล้ว</div>
+
+    <!-- Timeline สถานะ -->
+    <div class="ic">
+      <div class="it"><div class="itd"></div>สถานะคำขอ [TOR 3.3]</div>
+      <div class="tli"><div class="tldc"><div class="tld dn"></div><div class="tll tlld"></div></div><div class="tlc"><div class="tls">ส่งคำขอรับบริการสำเร็จ</div><div class="tlt">10/07/68 10:00</div></div></div>
+      <div class="tli"><div class="tldc"><div class="tld dn"></div><div class="tll tlld"></div></div><div class="tlc"><div class="tls">ได้รับการอนุมัติ</div><div class="tlt">10/07/68 13:00</div></div></div>
+      <div class="tli"><div class="tldc"><div class="tld dn"></div></div><div class="tlc"><div class="tls">ชำระเงินสำเร็จ</div><div class="tlt">10/07/68 14:32</div></div></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="ob" style="flex:1;height:28px;font-size:9px;">📥 ดาวน์โหลดใบเสร็จ</button>
+      <button class="gb" style="flex:1;height:28px;font-size:9px;">กลับหน้าหลัก</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g3 -->
+
+<!-- ════════════════════════════════════════
+     ④ บริหารจัดการ  (S-10 – S-11b)
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">④ บริหารจัดการ</span>
+  <span class="st">S-10 · S-10b · S-11 · S-11b</span>
+  <span class="tr">TOR 4.1–4.8 (Admin)</span>
+</div>
+
+<div class="g2">
+
+<!-- S-10 ตารางคำขอ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-10</span> อนุมัติ / ยกเลิกคำขอ</span><span class="bd bo">TOR 4.1–4.3</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา [Admin]</span><div class="ni"><a href="#" class="act">จัดการคำขอ</a><a href="#">จัดการสนาม</a><a href="#">รายงาน</a></div><span class="ub" style="background:var(--gol);color:var(--gd);">Admin</span></div>
+  <div class="ls">
+    <div class="sb">
+      <div class="sbg">จัดการ</div>
+      <div class="sbi act"><div class="sbd"></div>รออนุมัติ</div>
+      <div class="sbi"><div class="sbd"></div>คำขอทั้งหมด</div>
+      <div class="sbi"><div class="sbd"></div>จัดการสนาม</div>
+      <div class="sbg">แจ้งเตือน</div>
+      <div class="sbi"><div class="sbd"></div>จองซ้ำซ้อน</div>
+      <div class="sbi"><div class="sbd"></div>ส่งอีเมล</div>
+    </div>
+    <div class="ct">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gd);">คำขอรออนุมัติ <span class="bd bo">3 รายการ</span></div>
+        <div style="display:flex;gap:6px;">
+          <div class="fsel" style="width:110px;height:24px;font-size:9px;line-height:22px;">ทุกหลักสูตร</div>
+          <button class="gb bsm">เพิ่มสนาม / อาคาร</button>
+        </div>
+      </div>
+      <table class="mt">
+        <thead><tr><th>เลขที่</th><th>ผู้ขอ</th><th>สนาม</th><th>วันที่</th><th>ประเภท</th><th>เอกสาร</th><th>การดำเนินการ</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="#" style="color:var(--gm);font-size:9px;">REQ-001</a></td>
+            <td>สมชาย ใจดี</td><td>สนาม A</td><td>16/07/68</td>
+            <td><span class="bd bg">บุคคล</span></td>
+            <td><span class="bd bg">ครบ</span></td>
+            <td style="display:flex;gap:3px;flex-wrap:wrap;">
+              <button class="gb bsm">อนุมัติ</button>
+              <button class="ob bsm">ปฏิเสธ</button>
+              <button class="ob bsm">ดู</button>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="#" style="color:var(--gm);font-size:9px;">REQ-002</a></td>
+            <td>บ.เอบีซี จก.</td><td>อาคาร C</td><td>20/07/68</td>
+            <td><span class="bd bo">นิติบุคคล</span></td>
+            <td><span class="bd bg">ครบ</span></td>
+            <td style="display:flex;gap:3px;"><button class="gb bsm">อนุมัติ</button><button class="ob bsm">ปฏิเสธ</button><button class="ob bsm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><a href="#" style="color:var(--gm);font-size:9px;">REQ-003</a></td>
+            <td>วิไล รักดี</td><td>สนาม B</td><td>22/07/68</td>
+            <td><span class="bd bg">บุคคล</span></td>
+            <td><span class="bd br">ไม่ครบ</span></td>
+            <td style="display:flex;gap:3px;"><button class="ob bsm">ขอเอกสาร</button><button class="ob bsm">ดู</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="no nor" style="margin-top:8px;font-size:9px;">ระบบจะส่งอีเมลแจ้งเตือนอัตโนมัติ [TOR 4.4–4.7]</div>
+    </div>
+  </div>
+</div>
+
+<!-- S-10b รายละเอียดคำขอ + ตรวจเอกสาร -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-10b</span> รายละเอียดคำขอ + ตรวจเอกสาร</span><span class="bd bg">TOR 4.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา [Admin]</span><span class="ub" style="background:var(--gol);color:var(--gd);">Admin</span></div>
+  <div class="ct">
+    <div class="no ngg" style="font-size:8px;margin-bottom:7px;"><b>อ้างอิงอัตรา RATE-2026-0001</b> · สนามศุภชลาศัย · กีฬาและนันทนาการ · สมาคม / หน่วยงานไม่แสวงหารายได้ · ไม่เกิน 5 ชั่วโมง</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+      <div style="font-size:12px;font-weight:700;color:var(--gd);">REQ-2568-00125</div>
+      <span class="bd bor">รออนุมัติ</span>
+      <button class="ob bsm" style="margin-left:auto;">← กลับรายการ</button>
+    </div>
+    <div class="fr">
+      <div style="grid-column:1/-1;" class="ic"><div class="it"><div class="itd"></div>ตรวจสอบอัตราค่าบริการและการ Override</div><table class="mt" style="font-size:8px;"><thead><tr><th>รายการ</th><th>อัตรา Master</th><th>อัตราที่ใช้จริง</th><th>ผลตรวจสอบ</th></tr></thead><tbody><tr><td>ค่าบริการสนามและอาคาร</td><td>20,000 บาท/วัน</td><td>20,000 บาท/วัน</td><td><span class="bd bg">ตรง Master</span></td></tr><tr><td>สกอร์บอร์ด</td><td>5,000 บาท/ชั่วโมง</td><td>5,000 บาท/ชั่วโมง</td><td><span class="bd bg">ตรง Master</span></td></tr><tr><td>เครื่องเสียง</td><td>2,000 บาท/ชั่วโมง</td><td>2,000 บาท/ชั่วโมง</td><td><span class="bd bg">ตรง Master</span></td></tr></tbody></table></div>
+
+      <div>
+        <div class="ic">
+          <div class="it"><div class="itd"></div>ข้อมูลคำขอ</div>
+          <div class="inr"><span class="inl">ผู้ขอ</span><span class="inv">สมชาย ใจดี</span></div>
+          <div class="inr"><span class="inl">ประเภท</span><span class="inv"><span class="bd bg">บุคคลธรรมดา</span></span></div>
+          <div class="inr"><span class="inl">สนาม</span><span class="inv">สนามศุภชลาศัย</span></div>
+          <div class="inr"><span class="inl">วันที่</span><span class="inv">16/07/2568</span></div>
+          <div class="inr"><span class="inl">เวลา</span><span class="inv">09:00–12:00 น. (3 ชม.)</span></div>
+          <div class="inr"><span class="inl">วัตถุประสงค์</span><span class="inv">การแข่งขัน</span></div>
+          <div class="inr"><span class="inl">จำนวนคน</span><span class="inv">150 คน</span></div>
+          <div class="inr"><span class="inl">ค่าบริการสนามและอาคาร</span><span class="inv">20,000.00 บาท</span></div>
+          <div class="inr"><span class="inl">ค่าอำนวยความสะดวก</span><span class="inv">55,000.00 บาท</span></div>
+          <div class="inr"><span class="inl">ยกเว้นค่าบริการ</span><span class="inv">0.00 บาท</span></div>
+          <div class="inr"><span class="inl">ยอดชำระสุทธิ</span><span class="inv" style="color:var(--go);font-weight:700;">75,000.00 บาท</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="ic">
+          <div class="it"><div class="itd"></div>ตรวจสอบเอกสาร</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);margin-bottom:4px;">
+            <div style="width:24px;height:24px;background:var(--gm);border-radius:3px;"></div>
+            <div style="flex:1;font-size:9px;"><div style="font-weight:700;">สำเนาบัตรประชาชน.pdf</div><div style="color:var(--g400);">1.2 MB</div></div>
+            <div style="display:flex;gap:3px;"><button class="gb bsm">ดู</button><span class="bd bg">✓</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px;border:1px solid var(--gl);border-radius:5px;background:var(--gp);">
+            <div style="width:24px;height:24px;background:var(--gm);border-radius:3px;"></div>
+            <div style="flex:1;font-size:9px;"><div style="font-weight:700;">หนังสือขอใช้สนาม.pdf</div><div style="color:var(--g400);">0.8 MB</div></div>
+            <div style="display:flex;gap:3px;"><button class="gb bsm">ดู</button><span class="bd bg">✓</span></div>
+          </div>
+        </div>
+        <div class="ic">
+          <div class="it"><div class="itd"></div>หมายเหตุเจ้าหน้าที่</div>
+          <div class="fta" style="min-height:40px;">ระบุเหตุผลปฏิเสธ (ถ้ามี)...</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="ob" style="flex:1;height:30px;font-size:9px;">📧 ขอเอกสารเพิ่ม</button>
+      <button class="ob" style="flex:1;height:30px;font-size:9px;border-color:#C62828;color:#C62828;">✗ ปฏิเสธ</button>
+      <button class="gb" style="flex:2;height:30px;">✓ อนุมัติ REQ-00125</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g2 row 1 -->
+
+<div class="g2" style="margin-top:18px;">
+
+<!-- S-10c Master อัตราค่าบริการ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-10c</span> Master อัตราค่าบริการสนามและอาคารสถานกีฬา</span><span class="bd bg">TOR 4.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา [Admin]</span><span class="ub" style="background:var(--gol);color:var(--gd);">Admin</span></div>
+  <div class="ls">
+    <div class="sb">
+      <div class="sbg">สถานที่</div>
+      <div class="sbi act"><div class="sbd"></div>สนามศุภชลาศัย</div>
+      <div class="sbi"><div class="sbd"></div>อาคารกีฬานิมิบุตร</div>
+      <div class="sbi"><div class="sbd"></div>สระว่ายน้ำวิสุทธารมณ์</div>
+      <div class="sbi"><div class="sbd"></div>สนามวอร์ม 200 เมตร</div>
+      <div class="sbi"><div class="sbd"></div>ลานอเนกประสงค์</div>
+    </div>
+    <div class="ct">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--gd);">Master อัตราค่าบริการ</div>
+          <div style="font-size:8px;color:var(--g500);">แนบท้ายระเบียบกรมพลศึกษาว่าด้วยการใช้สนามและอาคารสถานกีฬา</div>
+        </div>
+        <button class="gb bsm">+ เพิ่มอัตราใหม่</button>
+      </div>
+
+      <table class="mt" style="margin-bottom:8px;font-size:8px;">
+        <thead><tr><th>Rate ID</th><th>ประเภทกิจกรรม</th><th>ช่วงเวลา</th><th>ค่าบริการ</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+        <tbody>
+          <tr><td>RATE-2026-0001</td><td>กีฬา/นันทนาการ</td><td>ไม่เกิน 5 ชม.</td><td style="color:var(--go);font-weight:700;">20,000 บาท</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr>
+          <tr><td>RATE-2026-0002</td><td>กีฬา/นันทนาการ</td><td>5–10 ชม.</td><td style="color:var(--go);font-weight:700;">40,000 บาท</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr>
+          <tr><td>RATE-2026-0003</td><td>กิจกรรมเพื่อหารายได้</td><td>วันจัดกิจกรรม</td><td style="color:var(--go);font-weight:700;">300,000 บาท</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr>
+        </tbody>
+      </table>
+
+      <div class="ic" style="background:var(--gop);border-color:var(--go);">
+        <div class="it" style="border-color:var(--go);"><div class="itd"></div>เพิ่ม / แก้ไขอัตราค่าบริการ</div>
+        <div class="fr"><div class="fg"><label class="fl">Rate ID</label><div class="fi pf">RATE-2026-0001</div></div><div class="fg"><label class="fl">เวอร์ชันอัตรา</label><div class="fi pf">ประกาศใช้ 01/07/2568</div></div></div>
+        <div class="fr">
+          <div class="fg"><label class="fl">สถานที่ <span class="req">*</span></label><div class="fsel" style="line-height:24px;">สนามศุภชลาศัย</div></div>
+          <div class="fg"><label class="fl">ประเภทกิจกรรม <span class="req">*</span></label><div class="fsel" style="line-height:24px;">กิจกรรมทางการกีฬา นันทนาการ วิทยาศาสตร์การกีฬา</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">กลุ่มผู้ใช้บริการ</label><div class="fsel" style="line-height:24px;">ภาครัฐ / เอกชน / หน่วยงานไม่แสวงหารายได้</div></div>
+          <div class="fg"><label class="fl">ช่วงเวลาการใช้บริการ</label><div class="fsel" style="line-height:24px;">ตั้งแต่ 5 ชม. ไม่เกิน 10 ชม.</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">ค่าบริการสนามและอาคาร (บาท/วัน)</label><div class="fi f">40,000</div></div>
+          <div class="fg"><label class="fl">สกอร์บอร์ด (บาท/ชั่วโมง)</label><div class="fi">5,000</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">เครื่องเสียง (บาท/ชั่วโมง)</label><div class="fi">2,000</div></div>
+          <div class="fg"><label class="fl">ค่าไฟฟ้าส่องสนาม (บาท/ชั่วโมง)</label><div class="fi">5,000</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">ค่าไฟฟ้าระบบปรับอากาศชีลเลอร์ (บาท/ชั่วโมง)</label><div class="fi">0</div></div>
+          <div class="fg"><label class="fl">ค่าสาธารณูปโภค (บาท/วัน)</label><div class="fi">5,000</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">ค่าบริการพิเศษ (บาท/วัน)</label><div class="fi">0</div></div>
+          <div class="fg"><label class="fl">หลักประกันความเสียหาย (บาท/ครั้ง)</label><div class="fi">10,000</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">หมายเหตุ</label><div class="fi">-</div></div>
+          <div class="fg"><label class="fl">สถานะการใช้งาน</label><div class="fsel" style="line-height:24px;">เปิดใช้งาน</div></div>
+        </div>
+        <div style="font-size:8px;color:var(--g500);margin:3px 0 5px;">กรณีไม่มีค่าบริการ ให้ระบุ 0 เพื่อให้ระบบนำไปคำนวณและแสดงผลได้อย่างถูกต้อง</div>
+        <div style="display:flex;gap:6px;"><button class="ob" style="flex:1;height:26px;font-size:9px;">ยกเลิก</button><button class="gb" style="flex:1;height:26px;font-size:9px;">บันทึก Master</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S-11 Modal แจ้งเตือนซ้ำ + S-11b Log -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-11</span> แจ้งเตือนจองซ้ำ &amp; <span class="sn">S-11b</span> Log แจ้งเตือน</span><span class="bd bo">TOR 4.4–4.7</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา [Admin]</span></div>
+  <div class="ct">
+    <div class="mo">
+      <div class="mb">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:#FEF3C7;display:flex;align-items:center;justify-content:center;color:#92400E;font-weight:700;font-size:12px;">!</div>
+          <div class="mbt" style="margin-bottom:0;">ตรวจพบการจองซ้ำซ้อน</div>
+        </div>
+        <div style="font-size:10px;color:var(--g700);margin-bottom:8px;"><strong>สนามศุภชลาศัย</strong> 16/07/68 เวลา 10:00–12:00 มีการจองทับซ้อน</div>
+        <table class="mt" style="margin-bottom:8px;font-size:9px;">
+          <thead><tr><th>คำขอ</th><th>ผู้ขอ</th><th>เวลา</th></tr></thead>
+          <tbody>
+            <tr><td>REQ-001</td><td>สมชาย</td><td>09:00–12:00</td></tr>
+            <tr><td>REQ-004</td><td>ประยุทธ์</td><td>10:00–13:00</td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;gap:6px;"><button class="gb bsm">อนุมัติ REQ-001</button><button class="ob bsm">แจ้ง REQ-004</button></div>
+        <div class="no nor" style="margin-top:6px;font-size:8px;">ระบบจะส่งอีเมลแจ้ง REQ-004 อัตโนมัติ [TOR 4.5]</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gd);margin-bottom:6px;">Log การแจ้งเตือน [S-11b]</div>
+      <table class="mt" style="margin-bottom:8px;">
+        <thead><tr><th>เวลา</th><th>ผู้รับ</th><th>ประเภท</th><th>ช่องทาง</th><th>สถานะ</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:9px;">10:32</td><td>สมชาย ใจดี</td><td style="font-size:9px;">อนุมัติคำขอ</td><td style="font-size:9px;">Email</td><td><span class="bd bg">ส่งแล้ว</span></td></tr>
+          <tr><td style="font-size:9px;">10:15</td><td>วิไล รักดี</td><td style="font-size:9px;">ขอเอกสาร</td><td style="font-size:9px;">Email</td><td><span class="bd bg">ส่งแล้ว</span></td></tr>
+          <tr><td style="font-size:9px;">09:45</td><td>ประยุทธ์</td><td style="font-size:9px;">จองซ้ำซ้อน</td><td style="font-size:9px;">Email</td><td><span class="bd bg">ส่งแล้ว</span></td></tr>
+          <tr><td style="font-size:9px;">08:30</td><td>บ.เอบีซี จก.</td><td style="font-size:9px;">รับเรื่อง</td><td style="font-size:9px;">Email</td><td><span class="bd bb">รอส่ง</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g2 row 2 -->
+
+<div class="g2" style="margin-top:18px;">
+
+<!-- S-11c จัดการประเภทกิจกรรม -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-11c</span> จัดการประเภทกิจกรรม</span><span class="bd bg">Master Data</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา [Admin]</span><span class="ub" style="background:var(--gol);color:var(--gd);">Admin</span></div>
+  <div class="ct">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div><div style="font-size:11px;font-weight:700;color:var(--gd);">Master ประเภทกิจกรรม</div><div style="font-size:8px;color:var(--g500);">รายการนี้ถูกนำไปใช้ใน Dropdown ของ S-04b และเงื่อนไขอัตราใน S-10c</div></div><button class="gb bsm">+ เพิ่มประเภทกิจกรรม</button></div>
+    <table class="mt" style="font-size:8px;margin-bottom:9px;"><thead><tr><th>รหัส</th><th>ประเภทกิจกรรม</th><th>หมวดกิจกรรม</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody><tr><td>ACT-001</td><td>กีฬาและนันทนาการ</td><td>กีฬา</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr><tr><td>ACT-002</td><td>การแข่งขันกีฬา</td><td>กีฬา</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr><tr><td>ACT-003</td><td>คอนเสิร์ต / การแสดง</td><td>บันเทิง</td><td><span class="bd bg">ใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr><tr><td>ACT-004</td><td>ประชุม / สัมมนา</td><td>วิชาการ</td><td><span class="bd bb">ปิดใช้งาน</span></td><td><button class="gb bsm">แก้ไข</button></td></tr></tbody></table>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);"><div class="it" style="border-color:var(--go);"><div class="itd"></div>เพิ่ม / แก้ไขประเภทกิจกรรม</div><div class="fr"><div class="fg"><label class="fl">รหัสกิจกรรม</label><div class="fi pf">ACT-005</div></div><div class="fg"><label class="fl">ชื่อประเภทกิจกรรม <span class="req">*</span></label><input class="fi" value="นิทรรศการ"></div></div><div class="fr"><div class="fg"><label class="fl">หมวดกิจกรรม</label><div class="fsel" style="line-height:24px;">งานแสดง / นิทรรศการ</div></div><div class="fg"><label class="fl">สถานะ</label><div class="fsel" style="line-height:24px;">เปิดใช้งาน</div></div></div><div class="fg"><label class="fl">รายละเอียด / เงื่อนไขเพิ่มเติม</label><div class="fta">ใช้เป็นเงื่อนไขเชื่อมโยงกับ Master อัตราค่าบริการ S-10c</div></div><div style="display:flex;gap:6px;"><button class="ob" style="flex:1;">ยกเลิก</button><button class="gb" style="flex:1;">บันทึกประเภทกิจกรรม</button></div></div>
+  </div>
+</div>
+
+<!-- S-04b-2 + S-04b-3 รายละเอียดอาคาร/ห้องพัก -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-04b-2</span> รายละเอียดอาคาร &amp; <span class="sn">S-04b-3</span> ห้องพัก</span><span class="bd bg">TOR 2.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="tabr">
+      <div class="tabi act">อาคาร / ห้องประชุม</div>
+      <div class="tabi">ห้องพัก</div>
+    </div>
+    <!-- อาคาร -->
+    <div class="det-img" style="background:linear-gradient(135deg,#2D6A4F,#52B788);">🏢</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+      <div><div style="font-size:13px;font-weight:700;color:var(--gd);">อาคารอเนกประสงค์ C</div><div style="font-size:9px;color:var(--g400);">ศูนย์กีฬาแห่งชาติ | กรุงเทพมหานคร</div></div>
+      <span class="bd bg">ว่าง</span>
+    </div>
+    <div class="fr">
+      <div class="ic" style="margin-bottom:0;">
+        <div class="it"><div class="itd"></div>ข้อมูลอาคาร</div>
+        <div class="inr"><span class="inl">ความจุ</span><span class="inv">1,000 คน</span></div>
+        <div class="inr"><span class="inl">ขนาด</span><span class="inv">40 × 60 เมตร</span></div>
+        <div class="inr"><span class="inl">ห้องแอร์</span><span class="inv">✓ มี</span></div>
+        <div class="inr"><span class="inl">อุปกรณ์ AV</span><span class="inv">โปรเจกเตอร์ / ไมค์ / จอ LED</span></div>
+        <div class="inr"><span class="inl">Layout</span><span class="inv">Theatre / Classroom / U-Shape</span></div>
+        <div class="inr"><span class="inl">เวลาเปิด</span><span class="inv">06:00–22:00 น.</span></div>
+      </div>
+      <div class="ic" style="margin-bottom:0;">
+        <div class="it"><div class="itd"></div>อัตราค่าบริการอาคาร</div>
+        <div class="sr"><span>บุคคลธรรมดา (ครึ่งวัน)</span><span style="color:var(--go);font-weight:700;">8,000 ฿</span></div>
+        <div class="sr"><span>บุคคลธรรมดา (เต็มวัน)</span><span style="color:var(--go);font-weight:700;">15,000 ฿</span></div>
+        <div class="sr"><span>นิติบุคคล (ครึ่งวัน)</span><span style="color:var(--go);font-weight:700;">12,000 ฿</span></div>
+        <div class="sr" style="border:none;"><span>นิติบุคคล (เต็มวัน)</span><span style="color:var(--go);font-weight:700;">22,000 ฿</span></div>
+        <div style="margin-top:8px;">
+          <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:4px;">สิ่งอำนวยความสะดวก</div>
+          <span class="chip">❄️ แอร์</span><span class="chip">📽️ โปรเจกเตอร์</span><span class="chip">🎤 ไมค์</span><span class="chip">🚗 ที่จอดรถ</span>
+        </div>
+        <div style="margin-top:8px;padding:6px;background:var(--gop);border-radius:5px;border:1px solid var(--go);">
+          <div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:4px;">ห้องพัก (Tab ถัดไป)</div>
+          <div class="inr"><span class="inl">ห้องมาตรฐาน</span><span class="inv" style="color:var(--go);font-weight:700;">800 ฿/คืน</span></div>
+          <div class="inr"><span class="inl">ห้อง VIP</span><span class="inv" style="color:var(--go);font-weight:700;">1,500 ฿/คืน</span></div>
+          <div class="inr" style="border:none;"><span class="inl">จำนวนเตียง</span><span class="inv">2 / 4 เตียง</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="gb gbf" style="margin-top:8px;">จองอาคารนี้ →</button>
+  </div>
+</div>
+
+</div><!-- end g2 row 3 -->
+
+<!-- ════════════════════════════════════════
+     ② ขอใช้บริการ — S-05b Table View + S-05c สรุปการใช้งาน
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">② ขอใช้บริการ (เพิ่มเติม)</span>
+  <span class="st">S-05b Table View · S-05c สรุปการใช้งาน</span>
+  <span class="tr">TOR 2.6–2.7</span>
+</div>
+
+<div class="g2">
+
+<!-- S-05b Table View ปฏิทิน -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-05b</span> Table View — ตารางการจอง</span><span class="bd bg">TOR 2.6</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="tabr">
+      <div class="tabi">ปฏิทิน</div>
+      <div class="tabi act">ตาราง</div>
+      <div class="tabi">สรุปการใช้งาน</div>
+    </div>
+    <div class="fr" style="margin-bottom:8px;">
+      <div class="fg"><label class="fl">สนาม</label><div class="fsel" style="line-height:24px;">สนามศุภชลาศัย</div></div>
+      <div class="fg"><label class="fl">สัปดาห์</label><div class="fi f">14–20 ก.ค. 2568</div></div>
+    </div>
+    <div class="no nbl" style="font-size:8px;">TOR 2.6 กำหนดให้มีทั้งแบบปฏิทินและแบบตาราง</div>
+    <!-- Table View -->
+    <div style="overflow-x:auto;">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th style="width:60px;">เวลา</th>
+            <th>จ 14</th><th>อ 15</th><th>พ 16</th><th>พฤ 17</th><th>ศ 18</th><th>ส 19</th><th>อา 20</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">08:00</td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">สมชาย</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">09:00</td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">สมชาย</td>
+            <td></td>
+            <td style="background:var(--go);font-size:9px;color:var(--gd);">เลือกนี้</td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">10:00</td>
+            <td></td><td></td>
+            <td style="background:var(--go);font-size:9px;color:var(--gd);">เลือกนี้</td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">วิไล</td>
+            <td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">11:00</td>
+            <td></td><td></td>
+            <td style="background:var(--go);font-size:9px;color:var(--gd);">เลือกนี้</td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">วิไล</td>
+            <td></td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">ประยุทธ์</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">12:00</td>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">ประยุทธ์</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="font-size:9px;color:var(--g400);">13:00</td>
+            <td></td><td></td><td></td><td></td>
+            <td style="background:var(--gp);font-size:9px;color:var(--gd);">บ.เอบีซี</td>
+            <td></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px;font-size:8px;align-items:center;">
+      <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:10px;background:var(--go);border-radius:2px;display:inline-block;"></span>ช่วงที่เลือก</span>
+      <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:10px;background:var(--gp);border:1px solid var(--gm);border-radius:2px;display:inline-block;"></span>มีการจอง</span>
+      <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:10px;background:var(--w);border:1px solid var(--g200);border-radius:2px;display:inline-block;"></span>ว่าง</span>
+    </div>
+    <div class="fn" style="margin-top:8px;"><button class="gb">จองช่วงเวลาที่เลือก →</button></div>
+  </div>
+</div>
+
+<!-- S-05c สรุปการใช้งาน (ฝั่งผู้ใช้) -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-05c</span> สรุปการใช้งานสนาม (ฝั่งผู้ใช้)</span><span class="bd bg">TOR 2.7</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">สมชาย</span></div>
+  <div class="ct">
+    <div class="tabr">
+      <div class="tabi">ปฏิทิน</div>
+      <div class="tabi">ตาราง</div>
+      <div class="tabi act">สรุปการใช้งาน</div>
+    </div>
+    <div class="fr" style="margin-bottom:8px;">
+      <div class="fg"><label class="fl">สนาม</label><div class="fsel" style="line-height:24px;">ทุกสนาม</div></div>
+      <div class="fg"><label class="fl">ช่วงเวลา</label><div class="fsel" style="line-height:24px;">รายเดือน (ก.ค. 68)</div></div>
+    </div>
+    <div class="no nbl" style="font-size:8px;">TOR 2.7 กำหนดให้แสดงสรุปการใช้งานประจำวัน/เดือน/ปี</div>
+    <!-- สรุป stats -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+      <div class="stb"><div class="stn" style="font-size:16px;">8</div><div class="stl">ครั้งที่จอง</div></div>
+      <div class="stb"><div class="stn" style="font-size:16px;color:var(--gm);">6</div><div class="stl">อนุมัติแล้ว</div></div>
+      <div class="stb"><div class="stn" style="font-size:16px;color:var(--go);">28</div><div class="stl">ชั่วโมงรวม</div></div>
+    </div>
+    <!-- สรุปรายวัน -->
+    <div class="ic">
+      <div class="it"><div class="itd"></div>การใช้งานรายวัน (ก.ค. 2568)</div>
+      <div class="cbr" style="height:60px;">
+        <div class="cb" style="height:20px;"></div>
+        <div class="cb" style="height:35px;"></div>
+        <div class="cb gld" style="height:50px;"></div>
+        <div class="cb" style="height:25px;"></div>
+        <div class="cb" style="height:40px;"></div>
+        <div class="cb" style="height:30px;"></div>
+        <div class="cb" style="height:15px;"></div>
+      </div>
+      <div class="clr"><div class="cl">1</div><div class="cl">5</div><div class="cl">10</div><div class="cl">15</div><div class="cl">16</div><div class="cl">20</div><div class="cl">25</div></div>
+    </div>
+    <!-- ประวัติย่อ -->
+    <div class="ic">
+      <div class="it"><div class="itd"></div>รายการล่าสุดเดือนนี้</div>
+      <div class="sr"><span>16/07/68 สนาม A 09:00–12:00</span><span><span class="bd bg">อนุมัติ</span></span></div>
+      <div class="sr"><span>10/07/68 สนาม B 08:00–10:00</span><span><span class="bd bb">ชำระแล้ว</span></span></div>
+      <div class="sr" style="border:none;"><span>05/07/68 อาคาร C เต็มวัน</span><span><span class="bd bg">อนุมัติ</span></span></div>
+    </div>
+    <!-- ส่งออก -->
+    <div class="fn">
+      <button class="ob" style="height:26px;font-size:9px;">📊 Export Excel</button>
+      <button class="gb" style="height:26px;font-size:9px;">🖨️ พิมพ์รายงาน</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g2 -->
+
+<!-- ════════════════════════════════════════
+     ⑤ รายงาน  (S-12 – S-12c – S-13)
+     ════════════════════════════════════════ -->
+<div class="sh">
+  <span class="sp">⑤ รายงาน &amp; วิเคราะห์</span>
+  <span class="st">S-12 · S-12b · S-12c · S-13</span>
+  <span class="tr">TOR 5.1–5.3</span>
+</div>
+
+<div class="g2">
+
+<!-- S-12 Dashboard -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-12</span> Dashboard สรุปการใช้บริการ</span><span class="bd bo">TOR 5.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><div class="ni"><a href="#" class="act">Dashboard</a><a href="#">รายงาน</a><a href="#">วิเคราะห์</a></div><span class="ub">Admin</span></div>
+  <div class="ct">
+    <div class="fr" style="margin-bottom:8px;">
+      <div class="fg"><label class="fl">ช่วงเวลา</label><div class="fsel" style="line-height:24px;">กรกฎาคม 2568</div></div>
+      <div class="fg"><label class="fl">ประเภท</label><div class="fsel" style="line-height:24px;">ทั้งหมด</div></div>
+    </div>
+    <div class="sts">
+      <div class="stb"><div class="stn">142</div><div class="stl">คำขอทั้งหมด</div></div>
+      <div class="stb"><div class="stn" style="color:var(--gm);">118</div><div class="stl">อนุมัติแล้ว</div></div>
+      <div class="stb"><div class="stn" style="color:#C0392B;">8</div><div class="stl">ปฏิเสธ</div></div>
+      <div class="stb"><div class="stn" style="color:var(--go);">16</div><div class="stl">รออนุมัติ</div></div>
+    </div>
+    <div class="fr">
+      <div class="ic" style="margin-bottom:0;">
+        <div class="it"><div class="itd"></div>การใช้งานรายวัน</div>
+        <div class="cbr"><div class="cb" style="height:40px;"></div><div class="cb" style="height:55px;"></div><div class="cb" style="height:35px;"></div><div class="cb" style="height:60px;"></div><div class="cb gld" style="height:45px;"></div><div class="cb" style="height:50px;"></div><div class="cb" style="height:30px;"></div></div>
+        <div class="clr"><div class="cl">จ</div><div class="cl">อ</div><div class="cl">พ</div><div class="cl">พฤ</div><div class="cl">ศ</div><div class="cl">ส</div><div class="cl">อา</div></div>
+      </div>
+      <div class="ic" style="margin-bottom:0;">
+        <div class="it"><div class="itd"></div>สัดส่วนผู้ใช้</div>
+        <div style="display:flex;gap:10px;align-items:center;justify-content:center;min-height:75px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--gm) 0% 65%,var(--go) 65% 100%);"></div>
+          <div style="font-size:9px;">
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><div style="width:8px;height:8px;background:var(--gm);border-radius:2px;"></div>บุคคลธรรมดา 65%</div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;background:var(--go);border-radius:2px;"></div>นิติบุคคล 35%</div>
+          </div>
+        </div>
+        <div class="sr"><span>รายได้รวม</span><span style="font-weight:700;color:var(--go);">284,500 ฿</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S-12b Export -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-12b</span> Export รายงาน</span><span class="bd bg">TOR 5.2</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">Admin</span></div>
+  <div class="ct">
+    <div class="ic">
+      <div class="it"><div class="itd"></div>เลือกรายงาน</div>
+      <div class="exp-opt sel"><div><div style="font-size:10px;font-weight:700;color:var(--gd);">📊 รายงานการใช้งานสนาม</div><div style="font-size:9px;color:var(--g400);">สรุปสนาม/อาคาร/ห้องพักทั้งหมด</div></div><div class="pr sel"></div></div>
+      <div class="exp-opt"><div><div style="font-size:10px;font-weight:700;color:var(--gd);">💰 รายงานรายได้</div><div style="font-size:9px;color:var(--g400);">สรุปรายได้ตามช่วงเวลา</div></div><div class="pr"></div></div>
+      <div class="exp-opt"><div><div style="font-size:10px;font-weight:700;color:var(--gd);">👥 รายงานผู้ใช้บริการ</div><div style="font-size:9px;color:var(--g400);">บุคคลธรรมดา / นิติบุคคล</div></div><div class="pr"></div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>ช่วงเวลาและรูปแบบ</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">วันที่เริ่ม</label><div class="fi f">01/07/2568</div></div>
+        <div class="fg"><label class="fl">วันที่สิ้นสุด</label><div class="fi f">31/07/2568</div></div>
+      </div>
+      <div class="fg"><label class="fl">ประเภทสถานที่</label><div class="fsel" style="line-height:24px;">ทั้งหมด</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;">
+        <div style="border:2px solid var(--go);border-radius:6px;padding:6px;text-align:center;background:var(--gop);cursor:pointer;"><div style="font-size:14px;">📊</div><div style="font-size:9px;font-weight:700;color:var(--gd);">Excel</div></div>
+        <div style="border:1px solid var(--g200);border-radius:6px;padding:6px;text-align:center;cursor:pointer;"><div style="font-size:14px;">📄</div><div style="font-size:9px;color:var(--g600);">PDF</div></div>
+        <div style="border:1px solid var(--g200);border-radius:6px;padding:6px;text-align:center;cursor:pointer;"><div style="font-size:14px;">📝</div><div style="font-size:9px;color:var(--g600);">CSV</div></div>
+        <div style="border:1px solid var(--g200);border-radius:6px;padding:6px;text-align:center;cursor:pointer;"><div style="font-size:14px;">🖨️</div><div style="font-size:9px;color:var(--g600);">Print</div></div>
+      </div>
+    </div>
+    <button class="gb gbf">📥 Export รายงาน</button>
+  </div>
+</div>
+
+</div><!-- end g2 -->
+
+<div class="g2" style="margin-top:18px;">
+
+<!-- S-12c รายงานแยกตาม 3 ประเภท -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-12c</span> รายงานแยกตาม 3 ประเภท — สนาม / อาคาร / ห้องพัก</span><span class="bd bg">TOR 5.1</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">Admin</span></div>
+  <div class="ct">
+    <div class="no nbl" style="font-size:8px;">TOR 5.1 กำหนดให้แสดงรายงานแยก สนามกีฬา / อาคาร / ห้องพัก</div>
+    <div class="tabr">
+      <div class="tabi act">สนามกีฬา</div>
+      <div class="tabi">อาคาร</div>
+      <div class="tabi">ห้องพัก</div>
+    </div>
+    <div class="sts" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stb"><div class="stn" style="font-size:16px;">96</div><div class="stl">ครั้งที่จอง</div></div>
+      <div class="stb"><div class="stn" style="font-size:16px;color:var(--gm);">89</div><div class="stl">อนุมัติแล้ว</div></div>
+      <div class="stb"><div class="stn" style="font-size:16px;color:var(--go);">192,000</div><div class="stl">รายได้ (฿)</div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>สรุปรายสนามกีฬา</div>
+      <table class="mt">
+        <thead><tr><th>สนาม</th><th>ครั้ง/เดือน</th><th>อัตราการใช้</th><th>รายได้</th></tr></thead>
+        <tbody>
+          <tr><td>สนามศุภชลาศัย</td><td>48</td><td><div class="pb"><div class="pf" style="width:90%;"></div></div></td><td style="color:var(--go);font-weight:700;">96,000 ฿</td></tr>
+          <tr><td>สนามฟุตบอล B</td><td>32</td><td><div class="pb"><div class="pf" style="width:64%;"></div></div></td><td style="color:var(--go);font-weight:700;">48,000 ฿</td></tr>
+          <tr><td>สนามบาสเกตบอล C</td><td>16</td><td><div class="pb"><div class="pf" style="width:32%;"></div></div></td><td style="color:var(--go);font-weight:700;">19,200 ฿</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ic" style="background:var(--gop);border-color:var(--go);">
+      <div class="it" style="border-color:var(--go);"><div class="itd"></div>อาคาร + ห้องพัก (Tab ถัดไป)</div>
+      <div class="fr">
+        <div><div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">อาคาร</div><div class="inr"><span class="inl">อาคาร C</span><span class="inv" style="color:var(--go);font-weight:700;">32 ครั้ง | 160,000 ฿</span></div></div>
+        <div><div style="font-size:9px;font-weight:700;color:var(--gd);margin-bottom:3px;">ห้องพัก</div><div class="inr"><span class="inl">ห้องพักรวม</span><span class="inv" style="color:var(--go);font-weight:700;">45 คืน | 54,000 ฿</span></div></div>
+      </div>
+    </div>
+    <div class="fn">
+      <button class="ob" style="height:26px;font-size:9px;">Export Excel</button>
+      <button class="gb" style="height:26px;font-size:9px;">พิมพ์รายงาน</button>
+    </div>
+  </div>
+</div>
+
+<!-- S-13 วิเคราะห์ -->
+<div class="sc">
+  <div class="sl"><span><span class="sn">S-13</span> รายงานวิเคราะห์เชิงลึก</span><span class="bd bo">TOR 5.3</span></div>
+  <div class="tb"><span class="logo">กรมพลศึกษา</span><span class="ub">Admin</span></div>
+  <div class="ct">
+    <div class="tabr">
+      <div class="tabi act">สรุปรายเดือน</div>
+      <div class="tabi">ประเภทการใช้</div>
+      <div class="tabi">ความพึงพอใจ</div>
+    </div>
+    <div class="fr" style="margin-bottom:8px;">
+      <div class="fg"><label class="fl">ปีงบประมาณ</label><div class="fsel" style="line-height:24px;">2568</div></div>
+      <div class="fg"><label class="fl">ประเภทสถานที่</label><div class="fsel" style="line-height:24px;">ทั้งหมด</div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>การใช้งานรายเดือน (ปี 2568)</div>
+      <div class="cbr" style="height:80px;"><div class="cb" style="height:45px;"></div><div class="cb" style="height:52px;"></div><div class="cb" style="height:38px;"></div><div class="cb" style="height:70px;"></div><div class="cb gld" style="height:80px;"></div><div class="cb" style="height:60px;"></div><div class="cb" style="height:55px;"></div></div>
+      <div class="clr"><div class="cl">ม.ค.</div><div class="cl">ก.พ.</div><div class="cl">มี.ค.</div><div class="cl">เม.ย.</div><div class="cl">พ.ค.</div><div class="cl">มิ.ย.</div><div class="cl">ก.ค.</div></div>
+    </div>
+    <div class="ic">
+      <div class="it"><div class="itd"></div>วิเคราะห์เพื่อตัดสินใจ [TOR 5.3]</div>
+      <table class="mt">
+        <thead><tr><th>สถานที่</th><th>ประเภท</th><th>ครั้ง/เดือน</th><th>อัตราใช้</th><th>รายได้</th></tr></thead>
+        <tbody>
+          <tr><td>สนามศุภชลาศัย</td><td><span class="bd bg">สนาม</span></td><td>48</td><td><div class="pb"><div class="pf" style="width:90%;"></div></div></td><td style="color:var(--go);font-weight:700;">96,000 ฿</td></tr>
+          <tr><td>อาคาร C</td><td><span class="bd bo">อาคาร</span></td><td>32</td><td><div class="pb"><div class="pf" style="width:64%;"></div></div></td><td style="color:var(--go);font-weight:700;">160,000 ฿</td></tr>
+          <tr><td>ห้องพักมาตรฐาน</td><td><span class="bd bb">ห้องพัก</span></td><td>22</td><td><div class="pb"><div class="pf" style="width:44%;"></div></div></td><td style="color:var(--go);font-weight:700;">17,600 ฿</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fn">
+      <button class="ob">Export Excel</button>
+      <button class="gb">พิมพ์รายงาน</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end g2 last -->
+
+</div><!-- .pw -->
+</body>
+</html>
