@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Management – Sprint 4</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#1976D2;--primary-dark:#0F4F8A;--secondary:#42A5F5;
+  --bg:#F5FAFF;--card:#fff;--border:#D7EAF8;--text:#17324A;--muted:#73879A;
+  --success:#1F8B5B;--warning:#D9872B;--danger:#D64545;--shadow:0 12px 30px rgba(25,118,210,.10);
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:"Kanit",sans-serif;background:linear-gradient(180deg,#edf7ff,#f8fbff 220px,#f5faff);color:var(--text)}
+button,input{font:inherit} a{text-decoration:none;color:inherit}
+.app{display:grid;grid-template-columns:278px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#0D4B83,#0F5D9F);color:#fff;padding:22px 16px;overflow:auto;box-shadow:8px 0 30px rgba(13,75,131,.16)}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 18px}
+.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#fff,#c9e7ff);display:grid;place-items:center;color:#0E4E88;font-weight:700}
+.brand h1{font-size:17px;line-height:1.35;margin:0}.brand small{display:block;color:#cfeaff;font-size:11px;margin-top:3px}
+.side-title{font-size:11px;color:#bfe1fb;letter-spacing:.08em;text-transform:uppercase;margin:16px 10px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;margin:4px 0;color:#eef8ff;cursor:pointer;transition:.2s}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.15)}
+.nav-code{min-width:38px;height:29px;border-radius:9px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:12px;font-weight:600}
+.nav-item span:last-child{font-size:13px}
+.main{min-width:0}
+.topbar{position:sticky;top:0;z-index:20;height:78px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px}
+.crumb{font-size:12px;color:var(--muted)}.title{font-size:21px;font-weight:600;margin-top:3px}
+.top-actions{display:flex;gap:10px}.icon-btn,.btn{border:1px solid var(--border);background:#fff;border-radius:11px;padding:9px 12px;cursor:pointer;color:var(--text)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.content{padding:26px;max-width:1700px;margin:auto}
+.hero{background:linear-gradient(135deg,#0E5595,#1976D2 60%,#56B0F7);color:#fff;border-radius:24px;padding:26px 28px;display:grid;grid-template-columns:1.7fr 1fr;gap:20px;box-shadow:var(--shadow)}
+.hero h2{font-size:28px;margin:0 0 8px}.hero p{margin:0;color:#dff1ff;font-size:14px;line-height:1.7}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.flow-step{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);padding:8px 10px;border-radius:10px;font-size:11px}.flow-arrow{opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:20px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:17px;padding:16px;box-shadow:0 7px 20px rgba(25,118,210,.06)}
+.kpi-top{display:flex;justify-content:space-between;align-items:center}.kpi-icon{width:38px;height:38px;border-radius:12px;background:#eaf4fd;color:var(--primary);display:grid;place-items:center;font-weight:700}
+.kpi-value{font-size:25px;font-weight:700;margin-top:12px}.kpi-label{font-size:12px;color:var(--muted)}.trend{font-size:11px;color:var(--success)}
+.grid-2{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}.grid-3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px;margin-top:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:17px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-head h3{margin:0;font-size:17px}.card-head p{margin:3px 0 0;font-size:11px;color:var(--muted)}
+.card-body{padding:18px}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quick-btn{border:1px solid var(--border);background:#fbfdff;border-radius:14px;padding:14px;text-align:left;cursor:pointer;transition:.2s}
+.quick-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(25,118,210,.10);border-color:#9acdf2}
+.quick-btn strong{display:block;font-size:13px}.quick-btn span{font-size:11px;color:var(--muted)}
+.search-row{display:flex;gap:10px}.search-row input{flex:1;border:1px solid var(--border);border-radius:11px;padding:10px 12px;outline:none}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:11px;color:#46657E;background:#eef7ff;padding:11px}td{padding:11px;border-bottom:1px solid #edf4f9;font-size:12px}
+.member-cell{display:flex;gap:9px;align-items:center}.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#9dd5fb,#1976D2);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:600}
+.status{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px}.active{background:#e8f7ef;color:var(--success)}.expire{background:#fff4e8;color:var(--warning)}
+.timeline{display:grid;gap:12px}.timeline-item{display:grid;grid-template-columns:10px 1fr;gap:10px}.dot{width:9px;height:9px;border-radius:50%;background:var(--primary);margin-top:5px}.timeline-item strong{font-size:12px}.timeline-item p{font-size:11px;color:var(--muted);margin:2px 0 0}
+.bar-row{margin:12px 0}.bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}.bar{height:9px;background:#eaf3fa;border-radius:999px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#1976D2,#58B3F8);border-radius:999px}
+.notice{padding:13px;border:1px solid var(--border);border-radius:12px;background:#fbfdff;margin-bottom:10px}.notice strong{font-size:12px}.notice p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.screen{display:none}.screen.active-screen{display:block}
+.coming{background:#fff;border:1px solid var(--border);border-radius:20px;padding:50px;text-align:center;box-shadow:var(--shadow)}.coming h2{margin:0 0 8px}.coming p{color:var(--muted)}
+.footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.form-grid.three{grid-template-columns:repeat(3,1fr)}
+.field{display:grid;gap:6px}.field label{font-size:11px;color:#4f6980}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:#fff;border-radius:11px;padding:10px 11px;outline:none;color:var(--text)}
+.field textarea{min-height:88px;resize:vertical}.field.full{grid-column:1/-1}
+.filter-row{display:flex;gap:10px;flex-wrap:wrap}.filter-row .field{min-width:170px;flex:1}
+.screen-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px}
+.screen-hero h2{margin:0;font-size:22px}.screen-hero p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.meta-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.meta-pill{background:#eaf4fd;color:var(--primary);border-radius:999px;padding:6px 9px;font-size:10px}
+.actions-row{display:flex;gap:9px;flex-wrap:wrap}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:14px 2px 0;color:var(--muted);font-size:11px}
+.page-buttons{display:flex;gap:6px}.page-buttons button{border:1px solid var(--border);background:#fff;border-radius:8px;min-width:31px;height:31px;cursor:pointer}
+.page-buttons button.current{background:var(--primary);color:#fff;border-color:var(--primary)}
+.wizard{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.wizard-step{padding:12px;border:1px solid var(--border);background:#fff;border-radius:12px;font-size:11px;color:var(--muted)}.wizard-step strong{display:block;color:var(--text);font-size:12px;margin-bottom:2px}.wizard-step.current{background:#eaf4fd;border-color:#93c9ef}.wizard-step.done{background:#eaf8f1;border-color:#b8e2cb}
+.photo-box{height:178px;border:1px dashed #9bc9eb;border-radius:14px;background:#f7fbff;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:11px}
+.profile-layout{display:grid;grid-template-columns:280px 1fr;gap:18px}
+.profile-card{text-align:center}.profile-photo{width:112px;height:112px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,#b7ddf8,#1976D2);color:#fff;display:grid;place-items:center;font-size:32px;font-weight:600}
+.member-id{font-size:11px;color:var(--muted)}.profile-name{font-size:20px;font-weight:600;margin:5px 0}
+.info-list{display:grid;gap:10px;margin-top:16px}.info-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #edf4f9;font-size:11px}.info-row span:first-child{color:var(--muted)}
+.tabs{display:flex;gap:5px;overflow:auto;border-bottom:1px solid var(--border);padding:0 18px}.tab-btn{border:0;background:transparent;padding:13px 12px;cursor:pointer;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-panel{display:none;padding:18px}.tab-panel.active{display:block}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.summary-box{border:1px solid var(--border);border-radius:13px;padding:13px;background:#fbfdff}.summary-box strong{display:block;font-size:18px}.summary-box span{font-size:10px;color:var(--muted)}
+.alert-box{border-radius:13px;padding:13px 14px;font-size:11px;margin-bottom:12px}.alert-info{background:#eaf4fd;color:#185b8e}.alert-warning{background:#fff5e8;color:#8a5724}
+.modal-backdrop{position:fixed;inset:0;background:rgba(12,42,68,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}.modal-backdrop.show{display:flex}.modal{width:min(560px,100%);background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(10,50,80,.25);overflow:hidden}.modal-head,.modal-foot{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.modal-foot{border-top:1px solid var(--border);border-bottom:0;justify-content:flex-end;gap:9px}.modal-body{padding:18px}
+@media(max-width:1000px){.profile-layout{grid-template-columns:1fr}.summary-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.form-grid,.form-grid.three{grid-template-columns:1fr}.wizard{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr}.screen-hero{flex-direction:column}}
+
+
+.package-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.package-card{border:1px solid var(--border);border-radius:16px;padding:17px;background:#fff;cursor:pointer;transition:.2s;position:relative}
+.package-card:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(25,118,210,.10)}
+.package-card.selected{border:2px solid var(--primary);background:#f2f8fe}
+.package-card h4{margin:0 0 5px;font-size:16px}.package-price{font-size:25px;font-weight:700;color:var(--primary);margin:10px 0}
+.package-card ul{padding-left:18px;margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.8}
+.recommend{position:absolute;right:12px;top:12px;background:#e9f7ef;color:var(--success);padding:5px 8px;border-radius:999px;font-size:9px}
+.order-summary{display:grid;gap:10px}.summary-line{display:flex;justify-content:space-between;gap:14px;font-size:12px;padding:8px 0;border-bottom:1px solid #edf4f9}.summary-line.total{font-size:16px;font-weight:600;border-top:1px solid var(--border);border-bottom:0;margin-top:4px;padding-top:13px}
+.invoice-layout{display:grid;grid-template-columns:1.5fr .8fr;gap:18px}
+.invoice-paper{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.invoice-head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #dcecf8;padding-bottom:18px;margin-bottom:18px}
+.invoice-no{font-size:12px;color:var(--muted)}.invoice-table{width:100%;border-collapse:collapse;margin-top:16px}.invoice-table th,.invoice-table td{padding:11px;border-bottom:1px solid #edf4f9;font-size:11px}
+.member-card-preview{max-width:520px;min-height:300px;border-radius:24px;background:linear-gradient(135deg,#0e4f89,#1976D2 58%,#69baf6);color:#fff;padding:24px;box-shadow:0 20px 40px rgba(15,79,138,.24);position:relative;overflow:hidden}
+.member-card-preview:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.09);right:-60px;bottom:-80px}
+.card-brand{display:flex;justify-content:space-between;align-items:center}.card-member{display:flex;gap:16px;align-items:center;margin-top:32px}.card-photo{width:82px;height:82px;border-radius:18px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:24px;font-weight:600;border:1px solid rgba(255,255,255,.25)}
+.card-qr{width:88px;height:88px;background:#fff;border-radius:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:8px;margin-left:auto}
+.card-qr i{background:#17324A;border-radius:1px}.card-footer-info{display:flex;justify-content:space-between;gap:10px;margin-top:26px;font-size:10px;color:#dff1ff}
+.kiosk{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.scan-panel{min-height:420px;background:linear-gradient(180deg,#0f3655,#132b40);border-radius:20px;padding:22px;color:#fff;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden}
+.scan-frame{width:230px;height:230px;border:3px solid #59b9fa;border-radius:22px;position:relative;box-shadow:0 0 30px rgba(89,185,250,.35)}
+.scan-line{position:absolute;left:14px;right:14px;height:2px;background:#6ed0ff;top:20px;animation:scan 2.2s infinite}
+@keyframes scan{0%{top:18px}50%{top:205px}100%{top:18px}}
+.scan-corners:before,.scan-corners:after{content:"";position:absolute;width:34px;height:34px;border-color:#fff}.scan-corners:before{left:-4px;top:-4px;border-left:4px solid;border-top:4px solid;border-radius:12px 0 0 0}.scan-corners:after{right:-4px;bottom:-4px;border-right:4px solid;border-bottom:4px solid;border-radius:0 0 12px 0}
+.access-result{border-radius:16px;padding:18px;text-align:center}.access-success{background:#e8f7ef;color:var(--success);border:1px solid #b7e3cb}.access-denied{background:#fdecec;color:var(--danger);border:1px solid #f3bcbc}
+.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pay-method{border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;cursor:pointer}.pay-method.selected{background:#eaf4fd;border-color:#78b9e9;color:var(--primary)}
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:11px}.toggle input{width:34px;height:18px}
+@media(max-width:1050px){.package-grid{grid-template-columns:1fr}.invoice-layout,.kiosk{grid-template-columns:1fr}}
+@media(max-width:700px){.payment-methods{grid-template-columns:1fr}.member-card-preview{min-height:340px}.card-member{align-items:flex-start;flex-wrap:wrap}.card-qr{margin-left:0}}
+
+
+.history-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.history-kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px}
+.history-kpi strong{font-size:22px;display:block}.history-kpi span{font-size:10px;color:var(--muted)}
+.calendar-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.calendar-day{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px;text-align:center;font-size:11px}.calendar-day strong{display:block;font-size:16px}.calendar-day.active{background:#eaf4fd;border-color:#8cc5ed;color:var(--primary)}
+.channel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.channel-card{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;cursor:pointer}.channel-card.selected{background:#eaf4fd;border-color:#83bee8;color:var(--primary)}
+.recipient-box{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fbfdff;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.template-list{display:grid;gap:10px}.template-item{border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;background:#fff}.template-item:hover{border-color:#8ec7ed}.template-item strong{display:block;font-size:12px}.template-item span{font-size:10px;color:var(--muted)}
+.survey-layout{display:grid;grid-template-columns:320px 1fr;gap:18px}
+.question-bank{display:grid;gap:10px}.question-tool{border:1px dashed #8fc3e7;background:#f7fbff;border-radius:12px;padding:12px;cursor:pointer;font-size:11px}.question-tool:hover{background:#eef7ff}
+.question-card{border:1px solid var(--border);border-radius:14px;background:#fff;padding:15px;margin-bottom:12px}.question-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.question-no{width:28px;height:28px;border-radius:9px;background:#eaf4fd;color:var(--primary);display:grid;place-items:center;font-size:11px;font-weight:600}
+.rating-row{display:flex;gap:10px;flex-wrap:wrap}.rating-option{width:44px;height:44px;border:1px solid var(--border);border-radius:50%;display:grid;place-items:center;cursor:pointer}.rating-option.selected{background:var(--primary);color:#fff;border-color:var(--primary)}
+.survey-preview{max-width:760px;margin:auto}.survey-cover{background:linear-gradient(135deg,#0f5594,#1976D2,#5bb7f5);color:#fff;border-radius:20px;padding:25px;margin-bottom:18px}.survey-cover h2{margin:0 0 7px}.survey-cover p{margin:0;color:#dff1ff;font-size:12px}
+.progress-wrap{height:9px;background:#e7f1f8;border-radius:999px;overflow:hidden}.progress-value{height:100%;background:linear-gradient(90deg,#1976D2,#5db9f7);width:25%}
+.response-option{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:11px;margin:8px 0;cursor:pointer}.response-option.selected{background:#eaf4fd;border-color:#85c1eb}
+.success-screen{text-align:center;padding:50px 20px}.success-icon{width:80px;height:80px;border-radius:50%;margin:0 auto 15px;background:#e8f7ef;color:var(--success);display:grid;place-items:center;font-size:38px}
+.chart-bars{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:16px}.chart-col{flex:1;display:grid;align-items:end;gap:6px;text-align:center;font-size:9px;color:var(--muted)}.chart-col i{display:block;background:linear-gradient(180deg,#54b2f5,#1976D2);border-radius:8px 8px 2px 2px;min-height:8px}
+@media(max-width:1000px){.history-kpis{grid-template-columns:repeat(2,1fr)}.channel-grid{grid-template-columns:repeat(2,1fr)}.survey-layout{grid-template-columns:1fr}}
+@media(max-width:650px){.history-kpis,.channel-grid{grid-template-columns:1fr}.calendar-strip{grid-template-columns:repeat(4,1fr)}}
+
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(3,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.flow{justify-content:flex-start}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.topbar{height:auto;padding:14px 16px;align-items:flex-start;gap:10px;flex-direction:column}.content{padding:15px}.kpis{grid-template-columns:1fr}.quick{grid-template-columns:1fr}.hero{padding:21px}.hero h2{font-size:23px}.top-actions{width:100%}.top-actions .btn{flex:1}}
+</style>
+
+<style>
+.portal-home-button{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-radius:14px;background:#1976D2;color:#fff!important;
+  text-decoration:none;font-family:"Kanit",sans-serif;font-size:12px;font-weight:600;
+  box-shadow:0 12px 28px rgba(25,118,210,.30);
+  border:1px solid rgba(255,255,255,.35);transition:.2s
+}
+.portal-home-button:hover{transform:translateY(-2px);background:#0F5CA3}
+.portal-home-icon{font-size:18px;line-height:1}
+@media(max-width:700px){
+  .portal-home-button{right:12px;bottom:12px;padding:10px 12px}
+  .portal-home-label{display:none}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="brand"><div class="logo">DPE</div><div><h1>Member Management</h1><small> </small></div></div>
+<div class="side-title">ภาพรวม</div>
+<div class="nav-item active" data-screen="m01"><div class="nav-code">M-01</div><span>Dashboard สมาชิก</span></div>
+<div class="side-title">Member Lifecycle</div>
+<div class="nav-item" data-screen="m02"><div class="nav-code">M-02</div><span>ค้นหาและรายการสมาชิก</span></div>
+<div class="nav-item" data-screen="m03"><div class="nav-code">M-03</div><span>ลงทะเบียนสมาชิก</span></div>
+<div class="nav-item" data-screen="m04"><div class="nav-code">M-04</div><span>รายละเอียดสมาชิก 360°</span></div>
+<div class="side-title">Package &amp; Service</div>
+<div class="nav-item" data-screen="m05"><div class="nav-code">M-05</div><span>แพ็กเกจ / ต่ออายุ</span></div>
+<div class="nav-item" data-screen="m06"><div class="nav-code">M-06</div><span>สร้างรายการชำระเงิน</span></div>
+<div class="nav-item" data-screen="m07"><div class="nav-code">M-07</div><span>ออกบัตรสมาชิก</span></div>
+<div class="nav-item" data-screen="m08"><div class="nav-code">M-08</div><span>Check-in / Check-out</span></div>
+<div class="nav-item" data-screen="m09"><div class="nav-code">M-09</div><span>ประวัติการเข้าใช้</span></div>
+<div class="side-title">CRM &amp; Survey</div>
+<div class="nav-item" data-screen="m10"><div class="nav-code">M-10</div><span>แจ้งเตือนสมาชิก</span></div>
+<div class="nav-item" data-screen="m11"><div class="nav-code">M-11</div><span>จัดการแบบประเมิน</span></div>
+<div class="nav-item" data-screen="m12"><div class="nav-code">M-12</div><span>ตอบแบบประเมิน</span></div>
+</aside>
+<main class="main">
+<header class="topbar">
+<div><div class="crumb">Interactive System Design / Member Management / <span id="crumbCode">M-01</span></div><div class="title" id="pageTitle">Dashboard สมาชิก</div></div>
+<div class="top-actions"><button class="icon-btn">🔔</button><button class="icon-btn">ผู้ดูแลระบบ</button><button class="btn primary" onclick="goScreen('m03')">+ สมัครสมาชิก</button></div>
+</header>
+<div class="content">
+<section class="screen active-screen" id="m01">
+<div class="hero">
+<div><h2>M-01 Dashboard สมาชิก</h2><p>ภาพรวมข้อมูลสมาชิก การเข้าใช้บริการ แพ็กเกจ การชำระเงิน การออกกำลังกาย และความพึงพอใจ เพื่อให้เจ้าหน้าที่ติดตามสถานการณ์และเข้าถึงงานสำคัญได้จากหน้าจอเดียว</p></div>
+<div class="flow">
+<div class="flow-step">Register</div><div class="flow-arrow">→</div><div class="flow-step">Package</div><div class="flow-arrow">→</div><div class="flow-step">Payment</div><div class="flow-arrow">→</div><div class="flow-step">Member Card</div><div class="flow-arrow">→</div><div class="flow-step">Check-in</div><div class="flow-arrow">→</div><div class="flow-step">Survey</div>
+</div>
+</div>
+<div class="kpis">
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">M</div><span class="trend">+8.4%</span></div><div class="kpi-value">12,486</div><div class="kpi-label">สมาชิกทั้งหมด</div></div>
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">+</div><span class="trend">+26 คน</span></div><div class="kpi-value">26</div><div class="kpi-label">สมาชิกใหม่วันนี้</div></div>
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">!</div><span style="font-size:11px;color:var(--warning)">ภายใน 30 วัน</span></div><div class="kpi-value">184</div><div class="kpi-label">ใกล้หมดอายุ</div></div>
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">IN</div><span class="trend">+12.1%</span></div><div class="kpi-value">642</div><div class="kpi-label">Check-in วันนี้</div></div>
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">฿</div><span class="trend">+6.8%</span></div><div class="kpi-value">58,420</div><div class="kpi-label">รายได้วันนี้ (บาท)</div></div>
+<div class="kpi"><div class="kpi-top"><div class="kpi-icon">C</div><span style="font-size:11px;color:var(--primary)">8 คลาส</span></div><div class="kpi-value">214</div><div class="kpi-label">ผู้จองคลาสวันนี้</div></div>
+</div>
+<div class="grid-2">
+<div class="card">
+<div class="card-head"><div><h3>Quick Actions</h3><p>งานที่เจ้าหน้าที่ใช้งานบ่อย</p></div></div>
+<div class="card-body quick">
+<button class="quick-btn" onclick="goScreen('m03')"><strong>+ สมัครสมาชิก</strong><span>ลงทะเบียนสมาชิกใหม่</span></button>
+<button class="quick-btn" onclick="goScreen('m08')"><strong>Check-in</strong><span>สแกนบัตร QR / RFID</span></button>
+<button class="quick-btn" onclick="goScreen('m07')"><strong>ออกบัตรสมาชิก</strong><span>สร้างหรือพิมพ์บัตรใหม่</span></button>
+<button class="quick-btn" onclick="goScreen('m06')"><strong>สร้าง Invoice</strong><span>ค่าบริการและแพ็กเกจ</span></button>
+<button class="quick-btn" onclick="alert('เชื่อมไปยังระบบจัดการตารางคลาส')"><strong>จองคลาส</strong><span>ค้นหาและจองคลาสให้สมาชิก</span></button>
+<button class="quick-btn" onclick="alert('เชื่อมไปยังระบบ Workout Tracking')"><strong>ผลทดสอบสมรรถภาพ</strong><span>ดูผลจากระบบ/API ที่เกี่ยวข้อง</span></button>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>Member Overview</h3><p>สมาชิกเป็นศูนย์กลางของทุกระบบ</p></div></div>
+<div class="card-body">
+<div class="bar-row"><div class="bar-label"><span>Membership Active</span><strong>91%</strong></div><div class="bar"><i style="width:91%"></i></div></div>
+<div class="bar-row"><div class="bar-label"><span>Attendance Engagement</span><strong>76%</strong></div><div class="bar"><i style="width:76%"></i></div></div>
+<div class="bar-row"><div class="bar-label"><span>Workout Plan Adoption</span><strong>68%</strong></div><div class="bar"><i style="width:68%"></i></div></div>
+<div class="bar-row"><div class="bar-label"><span>Payment Completion</span><strong>94%</strong></div><div class="bar"><i style="width:94%"></i></div></div>
+<div class="bar-row"><div class="bar-label"><span>Satisfaction Response</span><strong>72%</strong></div><div class="bar"><i style="width:72%"></i></div></div>
+</div>
+</div>
+</div>
+<div class="grid-3">
+<div class="card">
+<div class="card-head"><div><h3>สมาชิกล่าสุด</h3><p>รายการลงทะเบียนล่าสุด</p></div><button class="btn" onclick="goScreen('m02')">ดูทั้งหมด</button></div>
+<div class="card-body" style="padding:0">
+<table>
+<thead><tr><th>สมาชิก</th><th>แพ็กเกจ</th><th>สถานะ</th><th>วันที่สมัคร</th></tr></thead>
+<tbody>
+<tr><td><div class="member-cell"><div class="avatar">กพ</div><div><strong>กิตติพงษ์ พรหมมา</strong><div style="font-size:10px;color:var(--muted)">MB-260721-1042</div></div></div></td><td>รายปี</td><td><span class="status active">ใช้งาน</span></td><td>21 ก.ค. 2569</td></tr>
+<tr><td><div class="member-cell"><div class="avatar">สว</div><div><strong>สุภาวดี วัฒนะ</strong><div style="font-size:10px;color:var(--muted)">MB-260721-1041</div></div></div></td><td>ราย 6 เดือน</td><td><span class="status active">ใช้งาน</span></td><td>21 ก.ค. 2569</td></tr>
+<tr><td><div class="member-cell"><div class="avatar">ธช</div><div><strong>ธนชาติ ชัยวัฒน์</strong><div style="font-size:10px;color:var(--muted)">MB-260721-1040</div></div></div></td><td>รายเดือน</td><td><span class="status active">ใช้งาน</span></td><td>21 ก.ค. 2569</td></tr>
+<tr><td><div class="member-cell"><div class="avatar">นพ</div><div><strong>นภัส พงศ์ไพบูลย์</strong><div style="font-size:10px;color:var(--muted)">MB-260721-1039</div></div></div></td><td>รายปี</td><td><span class="status active">ใช้งาน</span></td><td>21 ก.ค. 2569</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>ใกล้หมดอายุ</h3><p>ควรติดตามภายใน 30 วัน</p></div></div>
+<div class="card-body">
+<div class="notice"><strong>อรทัย พูนทรัพย์</strong><p>แพ็กเกจรายปี · เหลือ 3 วัน</p></div>
+<div class="notice"><strong>สมศักดิ์ จันทร์ดี</strong><p>แพ็กเกจราย 6 เดือน · เหลือ 5 วัน</p></div>
+<div class="notice"><strong>ปวีณา เกียรติกุล</strong><p>แพ็กเกจรายเดือน · เหลือ 7 วัน</p></div>
+<button class="btn" onclick="goScreen('m10')" style="width:100%">ส่งแจ้งเตือนสมาชิก</button>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>Activity Timeline</h3><p>กิจกรรมล่าสุดของระบบ</p></div></div>
+<div class="card-body timeline">
+<div class="timeline-item"><div class="dot"></div><div><strong>ออกบัตรสมาชิกใหม่</strong><p>MB-260721-1042 · 2 นาทีที่แล้ว</p></div></div>
+<div class="timeline-item"><div class="dot"></div><div><strong>ชำระค่าบริการสำเร็จ</strong><p>Invoice INV-260721-084 · 8 นาทีที่แล้ว</p></div></div>
+<div class="timeline-item"><div class="dot"></div><div><strong>Check-in ผ่าน QR Code</strong><p>ประตูทางเข้าหลัก · 11 นาทีที่แล้ว</p></div></div>
+<div class="timeline-item"><div class="dot"></div><div><strong>บันทึกแบบประเมิน</strong><p>แบบประเมินความพึงพอใจบริการ · 18 นาทีที่แล้ว</p></div></div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m02">
+<div class="screen-hero">
+<div>
+<h2>M-02 ค้นหาและรายการสมาชิก</h2>
+<p>ค้นหา กรอง ตรวจสอบสถานะ และเลือกสมาชิกเพื่อเข้าสู่กระบวนการให้บริการ</p>
+<div class="meta-strip"><span class="meta-pill">User: Admin / Front Desk</span><span class="meta-pill">TOR 1.1</span><span class="meta-pill">Output: Member List</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="exportMembers()">ส่งออก Excel</button><button class="btn primary" onclick="goScreen('m03')">+ ลงทะเบียนสมาชิก</button></div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>ค้นหาและกรองข้อมูล</h3><p>ค้นหาจากรหัส ชื่อ เลขประจำตัวประชาชน โทรศัพท์ หรือสถานะสมาชิก</p></div></div>
+<div class="card-body">
+<div class="filter-row">
+<div class="field" style="flex:2"><label>คำค้นหา</label><input id="memberSearch" oninput="filterMembers()" placeholder="เช่น MB-260721-1042 หรือชื่อสมาชิก"/></div>
+<div class="field"><label>สถานะสมาชิก</label><select id="statusFilter" onchange="filterMembers()"><option value="">ทั้งหมด</option><option>ใช้งาน</option><option>ใกล้หมดอายุ</option><option>หมดอายุ</option></select></div>
+<div class="field"><label>ประเภทแพ็กเกจ</label><select id="packageFilter" onchange="filterMembers()"><option value="">ทั้งหมด</option><option>รายเดือน</option><option>ราย 6 เดือน</option><option>รายปี</option></select></div>
+<div class="field"><label>วันที่สมัคร</label><input type="date"/></div>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>รายการสมาชิก</h3><p id="memberCountText">แสดง 8 รายการ</p></div><div class="actions-row"><button class="btn" onclick="clearMemberFilters()">ล้างตัวกรอง</button></div></div>
+<div class="card-body" style="padding:0;overflow:auto">
+<table id="memberTable" style="min-width:980px">
+<thead><tr><th><input type="checkbox"/></th><th>สมาชิก</th><th>เลขบัตรประชาชน</th><th>แพ็กเกจ</th><th>วันหมดอายุ</th><th>เข้าใช้ล่าสุด</th><th>สถานะ</th><th>การดำเนินการ</th></tr></thead>
+<tbody>
+<tr data-package="รายปี" data-status="ใช้งาน"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">กพ</div><div><strong>กิตติพงษ์ พรหมมา</strong><div class="member-id">MB-260721-1042</div></div></div></td><td>1-1001-*****-42-1</td><td>รายปี</td><td>20 ก.ค. 2570</td><td>วันนี้ 16:10</td><td><span class="status active">ใช้งาน</span></td><td><button class="btn" onclick="openMember('กิตติพงษ์ พรหมมา','MB-260721-1042')">ดูรายละเอียด</button></td></tr>
+<tr data-package="ราย 6 เดือน" data-status="ใช้งาน"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">สว</div><div><strong>สุภาวดี วัฒนะ</strong><div class="member-id">MB-260721-1041</div></div></div></td><td>1-1002-*****-13-5</td><td>ราย 6 เดือน</td><td>20 ม.ค. 2570</td><td>วันนี้ 14:42</td><td><span class="status active">ใช้งาน</span></td><td><button class="btn" onclick="openMember('สุภาวดี วัฒนะ','MB-260721-1041')">ดูรายละเอียด</button></td></tr>
+<tr data-package="รายปี" data-status="ใกล้หมดอายุ"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">อพ</div><div><strong>อรทัย พูนทรัพย์</strong><div class="member-id">MB-250724-0832</div></div></div></td><td>1-1004-*****-62-9</td><td>รายปี</td><td>24 ก.ค. 2569</td><td>20 ก.ค. 2569</td><td><span class="status expire">ใกล้หมดอายุ</span></td><td><button class="btn" onclick="openMember('อรทัย พูนทรัพย์','MB-250724-0832')">ดูรายละเอียด</button></td></tr>
+<tr data-package="รายเดือน" data-status="ใช้งาน"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">ธช</div><div><strong>ธนชาติ ชัยวัฒน์</strong><div class="member-id">MB-260721-1040</div></div></div></td><td>1-1003-*****-04-2</td><td>รายเดือน</td><td>20 ส.ค. 2569</td><td>วันนี้ 10:18</td><td><span class="status active">ใช้งาน</span></td><td><button class="btn" onclick="openMember('ธนชาติ ชัยวัฒน์','MB-260721-1040')">ดูรายละเอียด</button></td></tr>
+<tr data-package="ราย 6 เดือน" data-status="หมดอายุ"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">กส</div><div><strong>กมลชนก สุวรรณ</strong><div class="member-id">MB-251212-0768</div></div></div></td><td>1-1006-*****-21-7</td><td>ราย 6 เดือน</td><td>12 มิ.ย. 2569</td><td>9 มิ.ย. 2569</td><td><span class="status" style="background:#fdecec;color:var(--danger)">หมดอายุ</span></td><td><button class="btn" onclick="openMember('กมลชนก สุวรรณ','MB-251212-0768')">ดูรายละเอียด</button></td></tr>
+<tr data-package="รายปี" data-status="ใช้งาน"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">นพ</div><div><strong>นภัส พงศ์ไพบูลย์</strong><div class="member-id">MB-260721-1039</div></div></div></td><td>1-1005-*****-39-4</td><td>รายปี</td><td>20 ก.ค. 2570</td><td>วันนี้ 09:12</td><td><span class="status active">ใช้งาน</span></td><td><button class="btn" onclick="openMember('นภัส พงศ์ไพบูลย์','MB-260721-1039')">ดูรายละเอียด</button></td></tr>
+<tr data-package="รายเดือน" data-status="ใกล้หมดอายุ"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">ปก</div><div><strong>ปวีณา เกียรติกุล</strong><div class="member-id">MB-260628-0981</div></div></div></td><td>1-1007-*****-55-8</td><td>รายเดือน</td><td>28 ก.ค. 2569</td><td>19 ก.ค. 2569</td><td><span class="status expire">ใกล้หมดอายุ</span></td><td><button class="btn" onclick="openMember('ปวีณา เกียรติกุล','MB-260628-0981')">ดูรายละเอียด</button></td></tr>
+<tr data-package="รายปี" data-status="ใช้งาน"><td><input type="checkbox"/></td><td><div class="member-cell"><div class="avatar">ศพ</div><div><strong>ศุภชัย พิทักษ์</strong><div class="member-id">MB-260710-1014</div></div></div></td><td>1-1008-*****-88-3</td><td>รายปี</td><td>9 ก.ค. 2570</td><td>18 ก.ค. 2569</td><td><span class="status active">ใช้งาน</span></td><td><button class="btn" onclick="openMember('ศุภชัย พิทักษ์','MB-260710-1014')">ดูรายละเอียด</button></td></tr>
+</tbody>
+</table>
+</div>
+<div class="card-body pager"><span>แสดงรายการ 1–8 จาก 12,486 รายการ</span><div class="page-buttons"><button>‹</button><button class="current">1</button><button>2</button><button>3</button><button>›</button></div></div>
+</div>
+</section>
+<section class="screen" id="m03">
+<div class="screen-hero">
+<div>
+<h2>M-03 ลงทะเบียนสมาชิก</h2>
+<p>บันทึกข้อมูลสมาชิกใหม่ ตรวจสอบความครบถ้วน และส่งต่อไปยังการเลือกแพ็กเกจ</p>
+<div class="meta-strip"><span class="meta-pill">User: Front Desk</span><span class="meta-pill">TOR 1.1</span><span class="meta-pill">Output: Member Profile</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="goScreen('m02')">ยกเลิก</button><button class="btn primary" onclick="saveMember()">บันทึกและเลือกแพ็กเกจ</button></div>
+</div>
+<div class="wizard">
+<div class="wizard-step current"><strong>1. ข้อมูลสมาชิก</strong>ข้อมูลส่วนบุคคลและการติดต่อ</div>
+<div class="wizard-step"><strong>2. แพ็กเกจ</strong>เลือกสิทธิ์และระยะเวลา</div>
+<div class="wizard-step"><strong>3. ชำระเงิน</strong>สร้างรายการค่าบริการ</div>
+<div class="wizard-step"><strong>4. ออกบัตร</strong>QR Code / Barcode / RFID</div>
+</div>
+<div class="grid-2" style="grid-template-columns:1fr 2fr">
+<div class="card">
+<div class="card-head"><div><h3>รูปถ่ายสมาชิก</h3><p>ใช้สำหรับบัตรและการยืนยันตัวตน</p></div></div>
+<div class="card-body">
+<div class="photo-box"><div><div style="font-size:36px;margin-bottom:7px">📷</div>ถ่ายภาพจากกล้อง<br/>หรือเลือกไฟล์ภาพ</div></div>
+<button class="btn" onclick="alert('เปิดกล้องสำหรับถ่ายภาพสมาชิก')" style="width:100%;margin-top:12px">เปิดกล้อง</button>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>ข้อมูลส่วนบุคคล</h3><p>ช่องที่มีเครื่องหมาย * จำเป็นต้องกรอก</p></div></div>
+<div class="card-body">
+<div class="form-grid three">
+<div class="field"><label>คำนำหน้า *</label><select id="regPrefix"><option>นาย</option><option>นาง</option><option>นางสาว</option><option>อื่น ๆ</option></select></div>
+<div class="field"><label>ชื่อ *</label><input id="regFirstName" placeholder="ชื่อ"/></div>
+<div class="field"><label>นามสกุล *</label><input id="regLastName" placeholder="นามสกุล"/></div>
+<div class="field"><label>เลขประจำตัวประชาชน *</label><input id="regCitizenId" maxlength="13" placeholder="13 หลัก"/></div>
+<div class="field"><label>วันเดือนปีเกิด *</label><input id="regBirthDate" type="date"/></div>
+<div class="field"><label>เพศ</label><select><option>ชาย</option><option>หญิง</option><option>ไม่ระบุ</option></select></div>
+<div class="field"><label>โทรศัพท์มือถือ *</label><input id="regPhone" placeholder="08x-xxx-xxxx"/></div>
+<div class="field"><label>อีเมล</label><input placeholder="member@email.com" type="email"/></div>
+<div class="field"><label>อาชีพ</label><input placeholder="อาชีพ"/></div>
+<div class="field full"><label>ที่อยู่ปัจจุบัน *</label><textarea id="regAddress" placeholder="บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต จังหวัด รหัสไปรษณีย์"></textarea></div>
+</div>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>ข้อมูลสุขภาพเบื้องต้นและผู้ติดต่อฉุกเฉิน</h3><p>ใช้ประกอบการให้บริการอย่างเหมาะสมและปลอดภัย</p></div></div>
+<div class="card-body">
+<div class="form-grid three">
+<div class="field"><label>โรคประจำตัว</label><input placeholder="ระบุ หรือ ไม่มี"/></div>
+<div class="field"><label>ประวัติแพ้ยา/อาหาร</label><input placeholder="ระบุ หรือ ไม่มี"/></div>
+<div class="field"><label>ข้อจำกัดในการออกกำลังกาย</label><input placeholder="ระบุ หรือ ไม่มี"/></div>
+<div class="field"><label>ชื่อผู้ติดต่อฉุกเฉิน *</label><input placeholder="ชื่อ-นามสกุล"/></div>
+<div class="field"><label>ความสัมพันธ์ *</label><input placeholder="เช่น บิดา มารดา คู่สมรส"/></div>
+<div class="field"><label>โทรศัพท์ฉุกเฉิน *</label><input placeholder="08x-xxx-xxxx"/></div>
+<div class="field full"><label><input id="consent" type="checkbox"/> ยินยอมให้จัดเก็บและใช้ข้อมูลส่วนบุคคลตามวัตถุประสงค์ของการให้บริการ</label></div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m04">
+<div class="screen-hero">
+<div>
+<h2>M-04 รายละเอียดสมาชิก (360°)</h2>
+<p>ข้อมูลสมาชิกแบบครบวงจร เชื่อมโยงแพ็กเกจ การใช้บริการ Workout Payment และ Survey</p>
+<div class="meta-strip"><span class="meta-pill">User: Admin / Trainer</span><span class="meta-pill">TOR 1.1, 1.3, 1.4, 1.5</span><span class="meta-pill">Output: Member 360° Profile</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="openEditModal()">แก้ไขข้อมูล</button><button class="btn primary" onclick="goScreen('m05')">ต่ออายุ / เปลี่ยนแพ็กเกจ</button></div>
+</div>
+<div class="profile-layout">
+<div class="card profile-card">
+<div class="card-body">
+<div class="profile-photo" id="profileInitials">กพ</div>
+<div class="profile-name" id="profileName">กิตติพงษ์ พรหมมา</div>
+<div class="member-id" id="profileId">MB-260721-1042</div>
+<div style="margin-top:10px"><span class="status active">สมาชิกใช้งาน</span></div>
+<div class="info-list">
+<div class="info-row"><span>แพ็กเกจ</span><strong>รายปี</strong></div>
+<div class="info-row"><span>วันหมดอายุ</span><strong>20 ก.ค. 2570</strong></div>
+<div class="info-row"><span>Check-in ล่าสุด</span><strong>วันนี้ 16:10</strong></div>
+<div class="info-row"><span>สิทธิ์คงเหลือ</span><strong>ไม่จำกัด</strong></div>
+</div>
+<button class="btn primary" onclick="goScreen('m08')" style="width:100%;margin-top:15px">Check-in สมาชิก</button>
+</div>
+</div>
+<div class="card">
+<div class="tabs">
+<button class="tab-btn active" data-tab="overview" onclick="switchTab(this)">ภาพรวม</button>
+<button class="tab-btn" data-tab="personal" onclick="switchTab(this)">ข้อมูลส่วนตัว</button>
+<button class="tab-btn" data-tab="package" onclick="switchTab(this)">แพ็กเกจ</button>
+<button class="tab-btn" data-tab="attendance" onclick="switchTab(this)">การเข้าใช้</button>
+<button class="tab-btn" data-tab="workout" onclick="switchTab(this)">Workout</button>
+<button class="tab-btn" data-tab="payment" onclick="switchTab(this)">Payment</button>
+<button class="tab-btn" data-tab="survey" onclick="switchTab(this)">Survey</button>
+</div>
+<div class="tab-panel active" id="tab-overview">
+<div class="alert-info alert-box">สมาชิกมีสถานะปกติ และไม่มีข้อจำกัดการเข้าใช้บริการในปัจจุบัน</div>
+<div class="summary-grid">
+<div class="summary-box"><strong>142</strong><span>จำนวนครั้งเข้าใช้ทั้งหมด</span></div>
+<div class="summary-box"><strong>18</strong><span>คลาสที่เข้าร่วม</span></div>
+<div class="summary-box"><strong>32</strong><span>Workout Logs</span></div>
+<div class="summary-box"><strong>4.8/5</strong><span>คะแนนความพึงพอใจ</span></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card" style="box-shadow:none"><div class="card-head"><h3>กิจกรรมล่าสุด</h3></div><div class="card-body timeline">
+<div class="timeline-item"><div class="dot"></div><div><strong>Check-in ศูนย์วิทยาศาสตร์การกีฬา</strong><p>วันนี้ 16:10</p></div></div>
+<div class="timeline-item"><div class="dot"></div><div><strong>บันทึก Workout: Full Body</strong><p>20 ก.ค. 2569 เวลา 18:20</p></div></div>
+<div class="timeline-item"><div class="dot"></div><div><strong>เข้าร่วมคลาส Functional Training</strong><p>18 ก.ค. 2569 เวลา 17:00</p></div></div>
+</div></div>
+<div class="card" style="box-shadow:none"><div class="card-head"><h3>การแจ้งเตือน</h3></div><div class="card-body">
+<div class="notice"><strong>นัดทดสอบสมรรถภาพครั้งถัดไป</strong><p>15 ส.ค. 2569 เวลา 10:00 น.</p></div>
+<div class="notice"><strong>แพ็กเกจรายปี</strong><p>เหลืออายุการใช้งาน 364 วัน</p></div>
+</div></div>
+</div>
+</div>
+<div class="tab-panel" id="tab-personal">
+<div class="form-grid three">
+<div class="field"><label>ชื่อ-นามสกุล</label><input readonly="" value="กิตติพงษ์ พรหมมา"/></div>
+<div class="field"><label>เลขประจำตัวประชาชน</label><input readonly="" value="1-1001-*****-42-1"/></div>
+<div class="field"><label>วันเกิด</label><input readonly="" value="14 กุมภาพันธ์ 2535"/></div>
+<div class="field"><label>โทรศัพท์</label><input readonly="" value="089-555-1042"/></div>
+<div class="field"><label>อีเมล</label><input readonly="" value="kittipong@example.com"/></div>
+<div class="field"><label>อาชีพ</label><input readonly="" value="พนักงานบริษัท"/></div>
+<div class="field full"><label>ที่อยู่</label><textarea readonly="">เขตพญาไท กรุงเทพมหานคร 10400</textarea></div>
+</div>
+</div>
+<div class="tab-panel" id="tab-package"><div class="alert-info alert-box">แพ็กเกจปัจจุบัน: รายปี · เริ่ม 21 ก.ค. 2569 · สิ้นสุด 20 ก.ค. 2570</div><table><thead><tr><th>แพ็กเกจ</th><th>ช่วงเวลา</th><th>ราคา</th><th>สถานะ</th></tr></thead><tbody><tr><td>สมาชิกบุคคลทั่วไป รายปี</td><td>21 ก.ค. 2569–20 ก.ค. 2570</td><td>6,000 บาท</td><td><span class="status active">ใช้งาน</span></td></tr></tbody></table></div>
+<div class="tab-panel" id="tab-attendance"><table><thead><tr><th>วันที่</th><th>เวลาเข้า</th><th>เวลาออก</th><th>ช่องทาง</th><th>สถานที่</th></tr></thead><tbody><tr><td>21 ก.ค. 2569</td><td>16:10</td><td>-</td><td>QR Code</td><td>ประตูหลัก</td></tr><tr><td>20 ก.ค. 2569</td><td>17:42</td><td>19:15</td><td>RFID</td><td>ประตูหลัก</td></tr><tr><td>18 ก.ค. 2569</td><td>16:35</td><td>18:40</td><td>QR Code</td><td>ประตูหลัก</td></tr></tbody></table></div>
+<div class="tab-panel" id="tab-workout"><div class="summary-grid"><div class="summary-box"><strong>32</strong><span>Workout Logs</span></div><div class="summary-box"><strong>24.1</strong><span>BMI ล่าสุด</span></div><div class="summary-box"><strong>76.2 kg</strong><span>น้ำหนักล่าสุด</span></div><div class="summary-box"><strong>68%</strong><span>ทำตามแผน</span></div></div></div>
+<div class="tab-panel" id="tab-payment"><table><thead><tr><th>เลขที่</th><th>รายการ</th><th>วันที่</th><th>จำนวนเงิน</th><th>สถานะ</th></tr></thead><tbody><tr><td>INV-260721-084</td><td>แพ็กเกจรายปี</td><td>21 ก.ค. 2569</td><td>6,000 บาท</td><td><span class="status active">ชำระแล้ว</span></td></tr></tbody></table></div>
+<div class="tab-panel" id="tab-survey"><div class="notice"><strong>แบบประเมินความพึงพอใจการใช้บริการ</strong><p>ตอบล่าสุด 20 ก.ค. 2569 · คะแนน 4.8/5</p></div></div>
+</div>
+</div>
+</section>
+<section class="screen" id="m05">
+<div class="screen-hero">
+<div>
+<h2>M-05 เลือกแพ็กเกจ / ต่ออายุ</h2>
+<p>เลือกแพ็กเกจใหม่ ต่ออายุ หรือเปลี่ยนประเภทสมาชิก พร้อมคำนวณค่าบริการและสิทธิ์โดยอัตโนมัติ</p>
+<div class="meta-strip"><span class="meta-pill">User: Front Desk</span><span class="meta-pill">TOR 1.4</span><span class="meta-pill">Output: Package Selection</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="goScreen('m04')">ย้อนกลับ</button><button class="btn primary" onclick="confirmPackage()">ยืนยันและสร้างรายการชำระเงิน</button></div>
+</div>
+<div class="wizard">
+<div class="wizard-step done"><strong>1. ข้อมูลสมาชิก</strong>ยืนยันข้อมูลแล้ว</div>
+<div class="wizard-step current"><strong>2. แพ็กเกจ</strong>เลือกสิทธิ์และระยะเวลา</div>
+<div class="wizard-step"><strong>3. ชำระเงิน</strong>สร้างรายการค่าบริการ</div>
+<div class="wizard-step"><strong>4. ออกบัตร</strong>QR Code / Barcode / RFID</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>ข้อมูลสมาชิก</h3><p>สมาชิกที่กำลังดำเนินการ</p></div></div>
+<div class="card-body">
+<div class="member-cell"><div class="avatar">กพ</div><div><strong>กิตติพงษ์ พรหมมา</strong><div class="member-id">MB-260721-1042 · สมาชิกบุคคลทั่วไป</div></div></div>
+</div>
+</div>
+<div class="package-grid" style="margin-top:18px">
+<div class="package-card" data-name="รายเดือน" data-price="800" onclick="selectPackage(this)">
+<h4>แพ็กเกจรายเดือน</h4><div class="package-price">฿800</div><div class="member-id">อายุแพ็กเกจ 30 วัน</div>
+<ul><li>เข้าใช้ศูนย์ได้ทุกวัน</li><li>จองคลาสพื้นฐาน</li><li>บันทึก Workout และ Progress</li></ul>
+</div>
+<div class="package-card" data-name="ราย 6 เดือน" data-price="3300" onclick="selectPackage(this)">
+<span class="recommend">คุ้มค่า</span><h4>แพ็กเกจ 6 เดือน</h4><div class="package-price">฿3,300</div><div class="member-id">อายุแพ็กเกจ 180 วัน</div>
+<ul><li>สิทธิ์ทั้งหมดของรายเดือน</li><li>ทดสอบสมรรถภาพ 1 ครั้ง</li><li>ส่วนลดคลาสพิเศษ 10%</li></ul>
+</div>
+<div class="package-card selected" data-name="รายปี" data-price="6000" onclick="selectPackage(this)">
+<span class="recommend">แนะนำ</span><h4>แพ็กเกจรายปี</h4><div class="package-price">฿6,000</div><div class="member-id">อายุแพ็กเกจ 365 วัน</div>
+<ul><li>สิทธิ์ทั้งหมดของแพ็กเกจ 6 เดือน</li><li>ทดสอบสมรรถภาพ 2 ครั้ง</li><li>ปรึกษา Trainer และส่วนลด 15%</li></ul>
+</div>
+</div>
+<div class="grid-2" style="margin-top:18px">
+<div class="card">
+<div class="card-head"><div><h3>กำหนดรายละเอียดแพ็กเกจ</h3><p>วันที่เริ่มใช้ ส่วนลด และหมายเหตุ</p></div></div>
+<div class="card-body">
+<div class="form-grid">
+<div class="field"><label>วันที่เริ่มใช้งาน</label><input id="packageStart" type="date" value="2026-07-21"/></div>
+<div class="field"><label>ประเภทการดำเนินการ</label><select id="packageAction"><option>สมัครแพ็กเกจใหม่</option><option>ต่ออายุแพ็กเกจ</option><option>เปลี่ยนแพ็กเกจ</option></select></div>
+<div class="field"><label>ส่วนลด</label><select id="packageDiscount" onchange="updatePackageSummary()"><option value="0">ไม่มีส่วนลด</option><option value="5">ส่วนลด 5%</option><option value="10">ส่วนลด 10%</option></select></div>
+<div class="field"><label>รหัสโปรโมชั่น</label><input placeholder="PROMO CODE"/></div>
+<div class="field full"><label>หมายเหตุ</label><textarea placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>สรุปรายการ</h3><p>ตรวจสอบก่อนสร้าง Invoice</p></div></div>
+<div class="card-body order-summary">
+<div class="summary-line"><span>แพ็กเกจ</span><strong id="selectedPackageName">รายปี</strong></div>
+<div class="summary-line"><span>ค่าบริการ</span><strong id="selectedPackagePrice">6,000 บาท</strong></div>
+<div class="summary-line"><span>ส่วนลด</span><strong id="selectedPackageDiscount">0 บาท</strong></div>
+<div class="summary-line"><span>ภาษีมูลค่าเพิ่ม</span><strong>รวมในค่าบริการ</strong></div>
+<div class="summary-line total"><span>ยอดชำระสุทธิ</span><strong id="selectedPackageTotal" style="color:var(--primary)">6,000 บาท</strong></div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m06">
+<div class="screen-hero">
+<div>
+<h2>M-06 สร้างรายการชำระเงิน</h2>
+<p>สร้าง Invoice จากแพ็กเกจหรือค่าบริการอื่น ส่งต่อไปยังระบบ Payment และติดตามสถานะ</p>
+<div class="meta-strip"><span class="meta-pill">User: Front Desk / Finance</span><span class="meta-pill">TOR 1.6</span><span class="meta-pill">Output: Invoice</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="goScreen('m05')">แก้ไขแพ็กเกจ</button><button class="btn primary" onclick="completePayment()">บันทึกการชำระเงิน</button></div>
+</div>
+<div class="wizard">
+<div class="wizard-step done"><strong>1. ข้อมูลสมาชิก</strong>ยืนยันข้อมูลแล้ว</div>
+<div class="wizard-step done"><strong>2. แพ็กเกจ</strong>เลือกแพ็กเกจแล้ว</div>
+<div class="wizard-step current"><strong>3. ชำระเงิน</strong>สร้างรายการค่าบริการ</div>
+<div class="wizard-step"><strong>4. ออกบัตร</strong>รอผลการชำระ</div>
+</div>
+<div class="invoice-layout">
+<div class="invoice-paper">
+<div class="invoice-head">
+<div><strong style="font-size:20px">ใบแจ้งชำระค่าบริการ</strong><div class="invoice-no">ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</div></div>
+<div style="text-align:right"><strong id="invoiceNo">INV-260721-085</strong><div class="invoice-no">วันที่ 21 ก.ค. 2569</div></div>
+</div>
+<div class="form-grid">
+<div><div class="member-id">เรียกเก็บจาก</div><strong>กิตติพงษ์ พรหมมา</strong><div class="member-id">MB-260721-1042</div></div>
+<div><div class="member-id">สถานะ</div><span class="status expire" id="invoiceStatus">รอชำระเงิน</span></div>
+</div>
+<table class="invoice-table">
+<thead><tr><th>รายการ</th><th style="text-align:center">จำนวน</th><th style="text-align:right">ราคา</th><th style="text-align:right">รวม</th></tr></thead>
+<tbody id="invoiceItems">
+<tr><td>แพ็กเกจสมาชิก รายปี</td><td style="text-align:center">1</td><td style="text-align:right">6,000.00</td><td style="text-align:right">6,000.00</td></tr>
+</tbody>
+</table>
+<div class="order-summary" style="max-width:310px;margin-left:auto;margin-top:15px">
+<div class="summary-line"><span>รวมเป็นเงิน</span><strong>6,000.00 บาท</strong></div>
+<div class="summary-line"><span>ส่วนลด</span><strong>0.00 บาท</strong></div>
+<div class="summary-line total"><span>ยอดชำระ</span><strong style="color:var(--primary)">6,000.00 บาท</strong></div>
+</div>
+</div>
+<div>
+<div class="card">
+<div class="card-head"><div><h3>ช่องทางการชำระเงิน</h3><p>เลือกช่องทางรับชำระ</p></div></div>
+<div class="card-body">
+<div class="payment-methods">
+<div class="pay-method selected" onclick="selectPayment(this,'เงินสด')"><strong>เงินสด</strong><div class="member-id">Cash</div></div>
+<div class="pay-method" onclick="selectPayment(this,'QR Payment')"><strong>QR</strong><div class="member-id">PromptPay</div></div>
+<div class="pay-method" onclick="selectPayment(this,'บัตรเครดิต')"><strong>บัตร</strong><div class="member-id">Credit/Debit</div></div>
+</div>
+<div class="field" style="margin-top:14px"><label>จำนวนเงินที่รับ</label><input id="receivedAmount" oninput="calculateChange()" type="number" value="6000"/></div>
+<div class="summary-line"><span>เงินทอน</span><strong id="changeAmount">0.00 บาท</strong></div>
+<div class="field"><label>เลขอ้างอิง (กรณีชำระออนไลน์)</label><input id="paymentReference" placeholder="Transaction Reference"/></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>การส่งเอกสาร</h3><p>ช่องทางแจ้งสมาชิก</p></div></div>
+<div class="card-body">
+<label class="toggle"><input checked="" type="checkbox"/> ส่ง Invoice ทางอีเมล</label><br/><br/>
+<label class="toggle"><input checked="" type="checkbox"/> ส่ง Notification ในระบบ</label><br/><br/>
+<label class="toggle"><input type="checkbox"/> พิมพ์เอกสารทันที</label>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m07">
+<div class="screen-hero">
+<div>
+<h2>M-07 ออกบัตรสมาชิก</h2>
+<p>สร้างบัตรสมาชิกใหม่หรือออกบัตรทดแทน พร้อม QR Code, Barcode หรือ RFID</p>
+<div class="meta-strip"><span class="meta-pill">User: Front Desk</span><span class="meta-pill">TOR 1.7</span><span class="meta-pill">Output: Member Card</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="goScreen('m06')">ย้อนกลับ</button><button class="btn" onclick="window.print()">พิมพ์บัตร</button><button class="btn primary" onclick="issueMemberCard()">ยืนยันออกบัตร</button></div>
+</div>
+<div class="wizard">
+<div class="wizard-step done"><strong>1. ข้อมูลสมาชิก</strong>ยืนยันข้อมูลแล้ว</div>
+<div class="wizard-step done"><strong>2. แพ็กเกจ</strong>เปิดใช้งานแล้ว</div>
+<div class="wizard-step done"><strong>3. ชำระเงิน</strong>ชำระสำเร็จ</div>
+<div class="wizard-step current"><strong>4. ออกบัตร</strong>กำหนดรูปแบบบัตร</div>
+</div>
+<div class="grid-2">
+<div>
+<div class="member-card-preview" id="memberCardPreview">
+<div class="card-brand"><div><strong style="font-size:17px">DPE MEMBER CARD</strong><div style="font-size:10px;color:#dff1ff">ศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</div></div><strong>ACTIVE</strong></div>
+<div class="card-member">
+<div class="card-photo">กพ</div>
+<div><div style="font-size:11px;color:#dff1ff">ชื่อสมาชิก</div><strong style="font-size:20px">กิตติพงษ์ พรหมมา</strong><div style="margin-top:6px">MB-260721-1042</div><div style="font-size:10px;color:#dff1ff">แพ็กเกจรายปี</div></div>
+<div aria-label="QR Code" class="card-qr">
+<i></i><i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i>
+<i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i><i></i>
+<i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i>
+<i></i><i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i>
+<i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i><i></i>
+<i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i><i></i><i></i><i style="background:#fff"></i>
+<i></i><i></i><i style="background:#fff"></i><i></i><i></i><i></i><i></i>
+</div>
+</div>
+<div class="card-footer-info"><span>Issued: 21/07/2026</span><span>Expire: 20/07/2027</span><span>RFID: 04A8-21D9</span></div>
+</div>
+<div class="alert-info alert-box" style="margin-top:16px">ตัวอย่างบัตรสมาชิกด้านหน้า ระบบจะสร้าง QR Code และเชื่อมหมายเลข RFID กับบัญชีสมาชิก</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>ตั้งค่าการออกบัตร</h3><p>เลือกประเภทบัตรและรูปแบบการยืนยันตัวตน</p></div></div>
+<div class="card-body">
+<div class="form-grid">
+<div class="field"><label>ประเภทบัตร</label><select id="cardType"><option>บัตร PVC</option><option>บัตรดิจิทัล</option><option>บัตร PVC + ดิจิทัล</option></select></div>
+<div class="field"><label>เหตุผลการออกบัตร</label><select><option>ออกบัตรครั้งแรก</option><option>บัตรสูญหาย</option><option>บัตรชำรุด</option><option>เปลี่ยนข้อมูล</option></select></div>
+<div class="field"><label>หมายเลข RFID</label><input id="rfidNo" value="04A8-21D9"/></div>
+<div class="field"><label>วันหมดอายุบัตร</label><input type="date" value="2027-07-20"/></div>
+<div class="field full"><label>รูปแบบยืนยันตัวตน</label>
+<div class="payment-methods">
+<div class="pay-method selected" onclick="selectCredential(this)">QR Code</div>
+<div class="pay-method" onclick="selectCredential(this)">Barcode</div>
+<div class="pay-method" onclick="selectCredential(this)">RFID</div>
+</div>
+</div>
+<div class="field full"><label><input checked="" type="checkbox"/> เปิดใช้งานบัตรทันทีหลังออกบัตรสำเร็จ</label></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m08">
+<div class="screen-hero">
+<div>
+<h2>M-08 Check-in / Check-out</h2>
+<p>ตรวจสอบสิทธิ์สมาชิกผ่าน QR Code, Barcode, RFID หรือค้นหาด้วยข้อมูลสมาชิก</p>
+<div class="meta-strip"><span class="meta-pill">User: Staff</span><span class="meta-pill">TOR 1.2, 1.3</span><span class="meta-pill">Output: Visit Record</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="resetKiosk()">ล้างหน้าจอ</button><button class="btn primary" onclick="manualCheckin()">ค้นหาสมาชิก</button></div>
+</div>
+<div class="kiosk">
+<div class="scan-panel">
+<div>
+<div class="scan-frame"><div class="scan-line"></div><div class="scan-corners"></div></div>
+<h3 style="margin:18px 0 4px">สแกน QR Code / Barcode</h3>
+<p style="font-size:12px;color:#c8e6fb;margin:0">หรือแตะบัตร RFID ที่เครื่องอ่าน</p>
+<div class="actions-row" style="justify-content:center;margin-top:18px"><button class="btn primary" onclick="simulateScan(true)">จำลองสแกนสำเร็จ</button><button class="btn" onclick="simulateScan(false)">จำลองสิทธิ์ไม่ผ่าน</button></div>
+</div>
+</div>
+<div>
+<div class="card">
+<div class="card-head"><div><h3>ผลการตรวจสอบสิทธิ์</h3><p id="kioskTime">รอการสแกน</p></div></div>
+<div class="card-body" id="accessResult">
+<div style="text-align:center;padding:42px 10px;color:var(--muted)"><div style="font-size:44px">⌁</div><strong>ยังไม่มีข้อมูลสมาชิก</strong><p style="font-size:11px">กรุณาสแกนบัตรหรือค้นหาสมาชิก</p></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>บันทึกการเข้าใช้วันนี้</h3><p>รายการล่าสุด</p></div><span class="badge">642 Check-ins</span></div>
+<div class="card-body" style="padding:0">
+<table>
+<thead><tr><th>เวลา</th><th>สมาชิก</th><th>ช่องทาง</th><th>สถานะ</th></tr></thead>
+<tbody id="visitLog">
+<tr><td>16:10</td><td>กิตติพงษ์ พรหมมา</td><td>QR Code</td><td><span class="status active">Check-in</span></td></tr>
+<tr><td>16:08</td><td>สุภาวดี วัฒนะ</td><td>RFID</td><td><span class="status active">Check-in</span></td></tr>
+<tr><td>16:05</td><td>ธนชาติ ชัยวัฒน์</td><td>Barcode</td><td><span class="status active">Check-in</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m09">
+<div class="screen-hero">
+<div>
+<h2>M-09 ประวัติการเข้าใช้บริการ</h2>
+<p>ตรวจสอบ Check-in / Check-out ระยะเวลาใช้บริการ ช่องทางเข้าใช้ และสถิติย้อนหลังของสมาชิก</p>
+<div class="meta-strip"><span class="meta-pill">User: Admin / Front Desk</span><span class="meta-pill">TOR 1.3</span><span class="meta-pill">Output: Visit History</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="exportVisitHistory()">ส่งออก Excel</button><button class="btn primary" onclick="goScreen('m08')">เปิดหน้า Check-in</button></div>
+</div>
+<div class="history-kpis">
+<div class="history-kpi"><strong>142</strong><span>เข้าใช้บริการทั้งหมด</span></div>
+<div class="history-kpi"><strong>18</strong><span>เข้าใช้เดือนนี้</span></div>
+<div class="history-kpi"><strong>1 ชม. 42 นาที</strong><span>ระยะเวลาเฉลี่ยต่อครั้ง</span></div>
+<div class="history-kpi"><strong>17:20</strong><span>ช่วงเวลาเข้าใช้บ่อยที่สุด</span></div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>ปฏิทินการเข้าใช้ 7 วันล่าสุด</h3><p>สีน้ำเงินหมายถึงมีการเข้าใช้บริการ</p></div></div>
+<div class="card-body calendar-strip">
+<div class="calendar-day active"><span>จ.</span><strong>15</strong><small>1 ครั้ง</small></div>
+<div class="calendar-day"><span>อ.</span><strong>16</strong><small>-</small></div>
+<div class="calendar-day active"><span>พ.</span><strong>17</strong><small>1 ครั้ง</small></div>
+<div class="calendar-day active"><span>พฤ.</span><strong>18</strong><small>1 ครั้ง</small></div>
+<div class="calendar-day"><span>ศ.</span><strong>19</strong><small>-</small></div>
+<div class="calendar-day active"><span>ส.</span><strong>20</strong><small>1 ครั้ง</small></div>
+<div class="calendar-day active"><span>อา.</span><strong>21</strong><small>1 ครั้ง</small></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>ค้นหาประวัติการเข้าใช้</h3><p>กรองตามสมาชิก วันที่ สถานที่ และช่องทางยืนยันตัวตน</p></div></div>
+<div class="card-body">
+<div class="filter-row">
+<div class="field" style="flex:2"><label>สมาชิก</label><input id="historySearch" oninput="filterHistory()" value="กิตติพงษ์ พรหมมา"/></div>
+<div class="field"><label>ตั้งแต่วันที่</label><input type="date" value="2026-07-01"/></div>
+<div class="field"><label>ถึงวันที่</label><input type="date" value="2026-07-21"/></div>
+<div class="field"><label>ช่องทาง</label><select id="historyChannel" onchange="filterHistory()"><option value="">ทั้งหมด</option><option>QR Code</option><option>RFID</option><option>Barcode</option><option>Manual</option></select></div>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>รายการเข้าใช้บริการ</h3><p id="historyCount">แสดง 6 รายการ</p></div></div>
+<div class="card-body" style="padding:0;overflow:auto">
+<table id="historyTable" style="min-width:900px">
+<thead><tr><th>วันที่</th><th>สมาชิก</th><th>เวลาเข้า</th><th>เวลาออก</th><th>ระยะเวลา</th><th>ช่องทาง</th><th>สถานที่</th><th>สถานะ</th></tr></thead>
+<tbody>
+<tr data-channel="QR Code"><td>21 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>16:10</td><td>-</td><td>กำลังใช้งาน</td><td>QR Code</td><td>ประตูหลัก</td><td><span class="status active">Check-in</span></td></tr>
+<tr data-channel="RFID"><td>20 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>17:42</td><td>19:15</td><td>1 ชม. 33 นาที</td><td>RFID</td><td>ประตูหลัก</td><td><span class="status" style="background:#eef4f8;color:#4e6c82">Check-out</span></td></tr>
+<tr data-channel="QR Code"><td>18 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>16:35</td><td>18:40</td><td>2 ชม. 5 นาที</td><td>QR Code</td><td>ประตูหลัก</td><td><span class="status" style="background:#eef4f8;color:#4e6c82">Check-out</span></td></tr>
+<tr data-channel="Barcode"><td>17 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>17:10</td><td>18:22</td><td>1 ชม. 12 นาที</td><td>Barcode</td><td>อาคารฟิตเนส</td><td><span class="status" style="background:#eef4f8;color:#4e6c82">Check-out</span></td></tr>
+<tr data-channel="RFID"><td>15 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>16:58</td><td>18:45</td><td>1 ชม. 47 นาที</td><td>RFID</td><td>ประตูหลัก</td><td><span class="status" style="background:#eef4f8;color:#4e6c82">Check-out</span></td></tr>
+<tr data-channel="Manual"><td>13 ก.ค. 2569</td><td>กิตติพงษ์ พรหมมา</td><td>09:15</td><td>10:42</td><td>1 ชม. 27 นาที</td><td>Manual</td><td>เคาน์เตอร์บริการ</td><td><span class="status" style="background:#eef4f8;color:#4e6c82">Check-out</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section class="screen" id="m10">
+<div class="screen-hero">
+<div>
+<h2>M-10 แจ้งเตือนสมาชิก</h2>
+<p>สร้างและส่งข้อความแจ้งเตือนผ่านระบบ อีเมล SMS หรือ Push Notification พร้อมติดตามผลการส่ง</p>
+<div class="meta-strip"><span class="meta-pill">User: Admin / Staff</span><span class="meta-pill">TOR 1.8</span><span class="meta-pill">Output: Notification Log</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="previewNotification()">ดูตัวอย่าง</button><button class="btn primary" onclick="sendNotification()">ส่งแจ้งเตือน</button></div>
+</div>
+<div class="grid-2">
+<div>
+<div class="card">
+<div class="card-head"><div><h3>ผู้รับข้อความ</h3><p>เลือกสมาชิกหรือกลุ่มเป้าหมาย</p></div></div>
+<div class="card-body">
+<div class="form-grid">
+<div class="field"><label>ประเภทผู้รับ</label><select id="recipientType" onchange="updateRecipientInfo()"><option>สมาชิกที่เลือก</option><option>สมาชิกใกล้หมดอายุ</option><option>สมาชิกหมดอายุ</option><option>สมาชิกทั้งหมด</option></select></div>
+<div class="field"><label>ค้นหาสมาชิก</label><input value="กิตติพงษ์ พรหมมา"/></div>
+</div>
+<div class="recipient-box" style="margin-top:12px"><div><strong id="recipientLabel">กิตติพงษ์ พรหมมา</strong><div class="member-id" id="recipientDetail">MB-260721-1042 · 1 ผู้รับ</div></div><button class="icon-btn">✕</button></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>ช่องทางการส่ง</h3><p>เลือกได้มากกว่าหนึ่งช่องทาง</p></div></div>
+<div class="card-body channel-grid">
+<div class="channel-card selected" data-channel="ระบบ" onclick="toggleChannel(this)"><strong>🔔 ในระบบ</strong><div class="member-id">Notification Center</div></div>
+<div class="channel-card selected" data-channel="อีเมล" onclick="toggleChannel(this)"><strong>✉️ อีเมล</strong><div class="member-id">member@email.com</div></div>
+<div class="channel-card" data-channel="SMS" onclick="toggleChannel(this)"><strong>💬 SMS</strong><div class="member-id">089-xxx-1042</div></div>
+<div class="channel-card" data-channel="Push" onclick="toggleChannel(this)"><strong>📱 Push</strong><div class="member-id">Mobile Application</div></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>เขียนข้อความ</h3><p>รองรับตัวแปรชื่อสมาชิกและวันหมดอายุ</p></div></div>
+<div class="card-body">
+<div class="field"><label>หัวข้อ</label><input id="notificationTitle" value="แจ้งเตือนแพ็กเกจสมาชิกใกล้หมดอายุ"/></div>
+<div class="field" style="margin-top:12px"><label>ข้อความ</label><textarea id="notificationMessage" style="min-height:150px">เรียน คุณกิตติพงษ์ พรหมมา แพ็กเกจสมาชิกของท่านใกล้หมดอายุ กรุณาติดต่อเจ้าหน้าที่หรือต่ออายุผ่านระบบเพื่อให้สามารถใช้บริการได้อย่างต่อเนื่อง</textarea></div>
+<div class="form-grid" style="margin-top:12px">
+<div class="field"><label>กำหนดเวลาส่ง</label><select><option>ส่งทันที</option><option>กำหนดวันและเวลา</option></select></div>
+<div class="field"><label>ความสำคัญ</label><select><option>ปกติ</option><option>สำคัญ</option><option>เร่งด่วน</option></select></div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="card">
+<div class="card-head"><div><h3>ข้อความสำเร็จรูป</h3><p>เลือก Template เพื่อใช้งานอย่างรวดเร็ว</p></div></div>
+<div class="card-body template-list">
+<div class="template-item" onclick="useTemplate('expire')"><strong>แจ้งเตือนใกล้หมดอายุ</strong><span>แจ้งก่อนแพ็กเกจหมดอายุ 30, 15 หรือ 7 วัน</span></div>
+<div class="template-item" onclick="useTemplate('payment')"><strong>แจ้งยืนยันการชำระเงิน</strong><span>ส่งเมื่อระบบตรวจสอบการชำระสำเร็จ</span></div>
+<div class="template-item" onclick="useTemplate('class')"><strong>แจ้งเตือนคลาสออกกำลังกาย</strong><span>แจ้งก่อนเริ่มคลาสตามระยะเวลาที่กำหนด</span></div>
+<div class="template-item" onclick="useTemplate('survey')"><strong>เชิญตอบแบบประเมิน</strong><span>ส่งหลังใช้บริการหรือเข้าร่วมกิจกรรม</span></div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>สถิติการส่ง 30 วัน</h3><p>ผลการจัดส่งข้อความทุกช่องทาง</p></div></div>
+<div class="card-body">
+<div class="chart-bars">
+<div class="chart-col"><i style="height:72%"></i><span>ระบบ</span></div>
+<div class="chart-col"><i style="height:88%"></i><span>อีเมล</span></div>
+<div class="chart-col"><i style="height:55%"></i><span>SMS</span></div>
+<div class="chart-col"><i style="height:64%"></i><span>Push</span></div>
+</div>
+<div class="summary-grid" style="grid-template-columns:repeat(3,1fr);margin-top:12px">
+<div class="summary-box"><strong>4,286</strong><span>ส่งทั้งหมด</span></div>
+<div class="summary-box"><strong>97.8%</strong><span>ส่งสำเร็จ</span></div>
+<div class="summary-box"><strong>82.4%</strong><span>เปิดอ่าน</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m11">
+<div class="screen-hero">
+<div>
+<h2>M-11 จัดการแบบประเมิน</h2>
+<p>สร้างแบบประเมินความพึงพอใจหรือแบบสอบถาม กำหนดคำถาม เงื่อนไข และช่วงเวลาเผยแพร่</p>
+<div class="meta-strip"><span class="meta-pill">User: Admin</span><span class="meta-pill">TOR 1.9</span><span class="meta-pill">Output: Survey Form</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="previewSurveyBuilder()">ดูตัวอย่าง</button><button class="btn primary" onclick="publishSurvey()">บันทึกและเผยแพร่</button></div>
+</div>
+<div class="survey-layout">
+<div>
+<div class="card">
+<div class="card-head"><div><h3>Question Bank</h3><p>คลิกเพื่อเพิ่มคำถาม</p></div></div>
+<div class="card-body question-bank">
+<div class="question-tool" onclick="addSurveyQuestion('rating')"><strong>⭐ Rating Scale</strong><br/>คะแนน 1–5 หรือ 1–10</div>
+<div class="question-tool" onclick="addSurveyQuestion('choice')"><strong>◉ Multiple Choice</strong><br/>เลือกคำตอบเดียว</div>
+<div class="question-tool" onclick="addSurveyQuestion('checkbox')"><strong>☑ Checkbox</strong><br/>เลือกได้หลายคำตอบ</div>
+<div class="question-tool" onclick="addSurveyQuestion('text')"><strong>▤ Short Text</strong><br/>คำตอบข้อความสั้น</div>
+<div class="question-tool" onclick="addSurveyQuestion('longtext')"><strong>▤ Long Text</strong><br/>ความคิดเห็นเพิ่มเติม</div>
+</div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>ตั้งค่าการเผยแพร่</h3></div></div>
+<div class="card-body">
+<div class="field"><label>กลุ่มเป้าหมาย</label><select><option>สมาชิกหลัง Check-out</option><option>สมาชิกทุกคน</option><option>ผู้เข้าร่วมคลาส</option><option>สมาชิกที่เลือก</option></select></div>
+<div class="field" style="margin-top:10px"><label>วันเริ่มเผยแพร่</label><input type="date" value="2026-07-21"/></div>
+<div class="field" style="margin-top:10px"><label>วันสิ้นสุด</label><input type="date" value="2026-08-31"/></div>
+<label class="toggle" style="margin-top:12px"><input checked="" type="checkbox"/> บังคับตอบก่อนออกจากระบบ</label>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>แบบประเมินความพึงพอใจการใช้บริการ</h3><p>Survey ID: SV-260721-012</p></div><button class="btn" onclick="addSurveyQuestion('rating')">+ เพิ่มคำถาม</button></div>
+<div class="card-body">
+<div class="form-grid">
+<div class="field"><label>ชื่อแบบประเมิน</label><input value="แบบประเมินความพึงพอใจการใช้บริการ"/></div>
+<div class="field"><label>ประเภท</label><select><option>ความพึงพอใจ</option><option>สุขภาพและการออกกำลังกาย</option><option>ความคิดเห็นทั่วไป</option></select></div>
+<div class="field full"><label>คำชี้แจง</label><textarea>กรุณาประเมินความพึงพอใจต่อการใช้บริการ เพื่อใช้ในการปรับปรุงคุณภาพการให้บริการ</textarea></div>
+</div>
+<div id="surveyQuestions" style="margin-top:18px">
+<div class="question-card">
+<div class="question-head"><div style="display:flex;gap:10px"><div class="question-no">1</div><div><strong>ความพึงพอใจต่อความสะอาดของสถานที่</strong><div class="member-id">Rating Scale · Required</div></div></div><button class="icon-btn" onclick="removeQuestion(this)">✕</button></div>
+<div class="rating-row" style="margin-top:14px"><span class="rating-option">1</span><span class="rating-option">2</span><span class="rating-option">3</span><span class="rating-option">4</span><span class="rating-option">5</span></div>
+</div>
+<div class="question-card">
+<div class="question-head"><div style="display:flex;gap:10px"><div class="question-no">2</div><div><strong>ความพึงพอใจต่อการให้บริการของเจ้าหน้าที่</strong><div class="member-id">Rating Scale · Required</div></div></div><button class="icon-btn" onclick="removeQuestion(this)">✕</button></div>
+<div class="rating-row" style="margin-top:14px"><span class="rating-option">1</span><span class="rating-option">2</span><span class="rating-option">3</span><span class="rating-option">4</span><span class="rating-option">5</span></div>
+</div>
+<div class="question-card">
+<div class="question-head"><div style="display:flex;gap:10px"><div class="question-no">3</div><div><strong>ข้อเสนอแนะเพิ่มเติม</strong><div class="member-id">Long Text · Optional</div></div></div><button class="icon-btn" onclick="removeQuestion(this)">✕</button></div>
+<textarea placeholder="คำตอบของสมาชิก" style="width:100%;margin-top:14px;border:1px solid var(--border);border-radius:11px;padding:10px"></textarea>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="m12">
+<div class="screen-hero">
+<div>
+<h2>M-12 สมาชิกตอบแบบประเมิน</h2>
+<p>หน้าจอสำหรับสมาชิกตอบแบบประเมินผ่านเว็บไซต์ Mobile Application หรือจุดบริการ Kiosk</p>
+<div class="meta-strip"><span class="meta-pill">User: Member</span><span class="meta-pill">TOR 1.9</span><span class="meta-pill">Output: Survey Response</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="resetSurveyResponse()">เริ่มใหม่</button></div>
+</div>
+<div class="survey-preview" id="surveyResponseForm">
+<div class="survey-cover">
+<h2>แบบประเมินความพึงพอใจการใช้บริการ</h2>
+<p>คำตอบของท่านจะถูกนำไปใช้เพื่อปรับปรุงคุณภาพการให้บริการ และใช้เวลาประมาณ 2 นาที</p>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>คำถามที่ <span id="surveyStepNo">1</span> จาก 4</h3><p>กรุณาเลือกคำตอบที่ตรงกับความคิดเห็นของท่าน</p></div><strong id="surveyPercent">25%</strong></div>
+<div class="card-body">
+<div class="progress-wrap"><div class="progress-value" id="surveyProgress"></div></div>
+<div class="response-step" id="responseStep1">
+<h3 style="margin-top:22px">ท่านพึงพอใจต่อความสะอาดของสถานที่ในระดับใด</h3>
+<div class="rating-row" style="margin-top:16px">
+<div class="rating-option" onclick="selectRating(this)">1</div><div class="rating-option" onclick="selectRating(this)">2</div><div class="rating-option" onclick="selectRating(this)">3</div><div class="rating-option" onclick="selectRating(this)">4</div><div class="rating-option" onclick="selectRating(this)">5</div>
+</div>
+<div class="member-id" style="margin-top:10px">1 = น้อยที่สุด · 5 = มากที่สุด</div>
+</div>
+<div class="response-step" id="responseStep2" style="display:none">
+<h3 style="margin-top:22px">ท่านพึงพอใจต่อการให้บริการของเจ้าหน้าที่ในระดับใด</h3>
+<div class="rating-row" style="margin-top:16px">
+<div class="rating-option" onclick="selectRating(this)">1</div><div class="rating-option" onclick="selectRating(this)">2</div><div class="rating-option" onclick="selectRating(this)">3</div><div class="rating-option" onclick="selectRating(this)">4</div><div class="rating-option" onclick="selectRating(this)">5</div>
+</div>
+</div>
+<div class="response-step" id="responseStep3" style="display:none">
+<h3 style="margin-top:22px">บริการใดที่ท่านใช้ในวันนี้</h3>
+<div class="response-option" onclick="toggleResponseOption(this)">ฟิตเนสและเครื่องออกกำลังกาย</div>
+<div class="response-option" onclick="toggleResponseOption(this)">คลาสออกกำลังกาย</div>
+<div class="response-option" onclick="toggleResponseOption(this)">ทดสอบสมรรถภาพ</div>
+<div class="response-option" onclick="toggleResponseOption(this)">รับคำแนะนำจาก Trainer</div>
+</div>
+<div class="response-step" id="responseStep4" style="display:none">
+<h3 style="margin-top:22px">ข้อเสนอแนะเพิ่มเติม</h3>
+<textarea id="surveyComment" placeholder="กรุณาระบุความคิดเห็นหรือข้อเสนอแนะ" style="width:100%;min-height:140px;border:1px solid var(--border);border-radius:12px;padding:12px"></textarea>
+</div>
+<div class="actions-row" style="justify-content:space-between;margin-top:24px">
+<button class="btn" disabled="" id="surveyPrevBtn" onclick="surveyPrevious()">ย้อนกลับ</button>
+<button class="btn primary" id="surveyNextBtn" onclick="surveyNext()">ถัดไป</button>
+</div>
+</div>
+</div>
+</div>
+<div class="card survey-preview" id="surveySuccess" style="display:none">
+<div class="success-screen">
+<div class="success-icon">✓</div>
+<h2>ขอบคุณสำหรับความคิดเห็น</h2>
+<p style="color:var(--muted)">ระบบบันทึกคำตอบของท่านเรียบร้อยแล้ว ข้อมูลจะถูกนำไปใช้เพื่อพัฒนาคุณภาพการให้บริการ</p>
+<button class="btn primary" onclick="goScreen('m01')">กลับหน้าหลัก</button>
+</div>
+</div>
+</section>
+<div class="footer">Member Management · Sprint 4 · M-01 ถึง M-12 พร้อมใช้งานครบระบบ</div>
+</div>
+</main>
+</div>
+<script>
+const titles={
+ m01:'Dashboard สมาชิก',m02:'ค้นหาและรายการสมาชิก',m03:'ลงทะเบียนสมาชิก',m04:'รายละเอียดสมาชิก (360°)',
+ m05:'เลือกแพ็กเกจ / ต่ออายุ',m06:'สร้างรายการชำระเงิน',m07:'ออกบัตรสมาชิก',m08:'Check-in / Check-out',
+ m09:'ประวัติการเข้าใช้บริการ',m10:'แจ้งเตือนสมาชิก',m11:'จัดการแบบประเมิน',m12:'สมาชิกตอบแบบประเมิน'
+};
+function renderComing(id){
+ const el=document.getElementById(id);
+ if(!el.innerHTML.trim()){
+   const sprint = ['m02','m03','m04'].includes(id)?'Sprint 2':['m05','m06','m07','m08'].includes(id)?'Sprint 3':'Sprint 4';
+   el.innerHTML=`<div class="coming"><div style="font-size:50px">◫</div><h2>${id.toUpperCase()} ${titles[id]}</h2><p>โครงสร้างเมนูและการเชื่อมโยงพร้อมแล้ว หน้าจอนี้จะพัฒนาใน ${sprint}</p><button class="btn primary" onclick="goScreen('m01')">กลับ Dashboard</button></div>`;
+ }
+}
+function goScreen(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));
+ document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+ if(id!=='m01') renderComing(id);
+ document.getElementById(id).classList.add('active-screen');
+ const nav=document.querySelector(`.nav-item[data-screen="${id}"]`); if(nav) nav.classList.add('active');
+ document.getElementById('crumbCode').textContent=id.toUpperCase();
+ document.getElementById('pageTitle').textContent=titles[id];
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav-item').forEach(item=>item.addEventListener('click',()=>goScreen(item.dataset.screen)));
+
+let selectedMember={name:'กิตติพงษ์ พรหมมา',id:'MB-260721-1042'};
+function filterMembers(){
+  const q=(document.getElementById('memberSearch')?.value||'').toLowerCase();
+  const status=document.getElementById('statusFilter')?.value||'';
+  const pkg=document.getElementById('packageFilter')?.value||'';
+  let count=0;
+  document.querySelectorAll('#memberTable tbody tr').forEach(row=>{
+    const matchText=!q||row.innerText.toLowerCase().includes(q);
+    const matchStatus=!status||row.dataset.status===status;
+    const matchPkg=!pkg||row.dataset.package===pkg;
+    const show=matchText&&matchStatus&&matchPkg;
+    row.style.display=show?'':'none';
+    if(show)count++;
+  });
+  const label=document.getElementById('memberCountText'); if(label)label.textContent=`แสดง ${count} รายการ`;
+}
+function clearMemberFilters(){
+  document.getElementById('memberSearch').value='';
+  document.getElementById('statusFilter').value='';
+  document.getElementById('packageFilter').value='';
+  filterMembers();
+}
+function exportMembers(){alert('เตรียมส่งออกรายการสมาชิกตามตัวกรองเป็นไฟล์ Excel');}
+function initialsFromName(name){
+  const parts=name.trim().split(/\s+/);
+  return (parts[0]?.charAt(0)||'')+(parts[1]?.charAt(0)||'');
+}
+function openMember(name,id){
+  selectedMember={name,id};
+  document.getElementById('profileName').textContent=name;
+  document.getElementById('profileId').textContent=id;
+  document.getElementById('profileInitials').textContent=initialsFromName(name);
+  goScreen('m04');
+}
+function saveMember(){
+  const required=['regFirstName','regLastName','regCitizenId','regBirthDate','regPhone','regAddress'];
+  const missing=required.some(id=>!document.getElementById(id).value.trim());
+  if(missing){alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');return;}
+  if(!document.getElementById('consent').checked){alert('กรุณายืนยันความยินยอมในการใช้ข้อมูลส่วนบุคคล');return;}
+  alert('บันทึกข้อมูลสมาชิกเรียบร้อย และส่งต่อไปยัง M-05 เลือกแพ็กเกจ');
+  goScreen('m05');
+}
+function switchTab(btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+}
+function openEditModal(){document.getElementById('editModal').classList.add('show');}
+function closeEditModal(){document.getElementById('editModal').classList.remove('show');}
+function saveEditMember(){
+  const name=document.getElementById('editFirstName').value.trim()+' '+document.getElementById('editLastName').value.trim();
+  document.getElementById('profileName').textContent=name;
+  document.getElementById('profileInitials').textContent=initialsFromName(name);
+  closeEditModal();
+  alert('บันทึกการแก้ไขข้อมูลสมาชิกเรียบร้อย');
+}
+
+
+let packagePrice=6000;
+let packageName='รายปี';
+let paymentMethod='เงินสด';
+
+function selectPackage(card){
+  document.querySelectorAll('.package-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  packageName=card.dataset.name;
+  packagePrice=Number(card.dataset.price);
+  updatePackageSummary();
+}
+function updatePackageSummary(){
+  const discount=Number(document.getElementById('packageDiscount')?.value||0);
+  const discountAmount=packagePrice*discount/100;
+  const total=packagePrice-discountAmount;
+  document.getElementById('selectedPackageName').textContent=packageName;
+  document.getElementById('selectedPackagePrice').textContent=packagePrice.toLocaleString('th-TH')+' บาท';
+  document.getElementById('selectedPackageDiscount').textContent=discountAmount.toLocaleString('th-TH')+' บาท';
+  document.getElementById('selectedPackageTotal').textContent=total.toLocaleString('th-TH')+' บาท';
+}
+function confirmPackage(){
+  alert('ยืนยันแพ็กเกจ '+packageName+' เรียบร้อย และสร้าง Invoice แล้ว');
+  goScreen('m06');
+}
+function selectPayment(el,method){
+  document.querySelectorAll('#m06 .pay-method').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  paymentMethod=method;
+}
+function calculateChange(){
+  const received=Number(document.getElementById('receivedAmount').value||0);
+  const change=Math.max(0,received-6000);
+  document.getElementById('changeAmount').textContent=change.toLocaleString('th-TH',{minimumFractionDigits:2})+' บาท';
+}
+function completePayment(){
+  const received=Number(document.getElementById('receivedAmount').value||0);
+  if(received<6000 && paymentMethod==='เงินสด'){alert('จำนวนเงินที่รับไม่เพียงพอ');return;}
+  const status=document.getElementById('invoiceStatus');
+  status.textContent='ชำระแล้ว';
+  status.className='status active';
+  alert('บันทึกการชำระผ่าน '+paymentMethod+' สำเร็จ และพร้อมออกบัตรสมาชิก');
+  goScreen('m07');
+}
+function selectCredential(el){
+  document.querySelectorAll('#m07 .pay-method').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function issueMemberCard(){
+  const rfid=document.getElementById('rfidNo').value.trim();
+  if(!rfid){alert('กรุณาระบุหมายเลข RFID');return;}
+  alert('ออกบัตรสมาชิกและเปิดใช้งานบัตรเรียบร้อย');
+  goScreen('m08');
+}
+function simulateScan(success){
+  const result=document.getElementById('accessResult');
+  const now=new Date();
+  const time=now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('kioskTime').textContent='ตรวจสอบเวลา '+time;
+  if(success){
+    result.innerHTML=`<div class="access-result access-success"><div style="font-size:46px">✓</div><h3 style="margin:6px 0">อนุญาตให้เข้าใช้บริการ</h3><div class="member-cell" style="justify-content:center;margin:15px 0"><div class="avatar">กพ</div><div style="text-align:left"><strong>กิตติพงษ์ พรหมมา</strong><div class="member-id">MB-260721-1042 · แพ็กเกจรายปี</div></div></div><strong>Check-in ${time}</strong><p style="font-size:11px">สิทธิ์สมาชิกใช้งานถึง 20 ก.ค. 2570</p></div>`;
+    const row=document.createElement('tr');
+    row.innerHTML=`<td>${time}</td><td>กิตติพงษ์ พรหมมา</td><td>QR Code</td><td><span class="status active">Check-in</span></td>`;
+    document.getElementById('visitLog').prepend(row);
+  }else{
+    result.innerHTML=`<div class="access-result access-denied"><div style="font-size:46px">!</div><h3 style="margin:6px 0">ไม่อนุญาตให้เข้าใช้บริการ</h3><strong>สมาชิกหมดอายุ</strong><p style="font-size:11px">กรุณาติดต่อเจ้าหน้าที่เพื่อต่ออายุแพ็กเกจ</p><button class="btn primary" onclick="goScreen('m05')">ต่ออายุสมาชิก</button></div>`;
+  }
+}
+function resetKiosk(){
+  document.getElementById('kioskTime').textContent='รอการสแกน';
+  document.getElementById('accessResult').innerHTML='<div style="text-align:center;padding:42px 10px;color:var(--muted)"><div style="font-size:44px">⌁</div><strong>ยังไม่มีข้อมูลสมาชิก</strong><p style="font-size:11px">กรุณาสแกนบัตรหรือค้นหาสมาชิก</p></div>';
+}
+function manualCheckin(){
+  const keyword=prompt('กรอกรหัสสมาชิก ชื่อ หรือเบอร์โทรศัพท์');
+  if(keyword) simulateScan(true);
+}
+
+
+function filterHistory(){
+  const q=(document.getElementById('historySearch')?.value||'').toLowerCase();
+  const channel=document.getElementById('historyChannel')?.value||'';
+  let count=0;
+  document.querySelectorAll('#historyTable tbody tr').forEach(row=>{
+    const show=(!q||row.innerText.toLowerCase().includes(q))&&(!channel||row.dataset.channel===channel);
+    row.style.display=show?'':'none';
+    if(show)count++;
+  });
+  document.getElementById('historyCount').textContent=`แสดง ${count} รายการ`;
+}
+function exportVisitHistory(){alert('เตรียมส่งออกประวัติการเข้าใช้บริการเป็นไฟล์ Excel');}
+
+function updateRecipientInfo(){
+  const type=document.getElementById('recipientType').value;
+  const label=document.getElementById('recipientLabel');
+  const detail=document.getElementById('recipientDetail');
+  if(type==='สมาชิกที่เลือก'){label.textContent='กิตติพงษ์ พรหมมา';detail.textContent='MB-260721-1042 · 1 ผู้รับ';}
+  if(type==='สมาชิกใกล้หมดอายุ'){label.textContent='กลุ่มสมาชิกใกล้หมดอายุ';detail.textContent='184 ผู้รับ';}
+  if(type==='สมาชิกหมดอายุ'){label.textContent='กลุ่มสมาชิกหมดอายุ';detail.textContent='327 ผู้รับ';}
+  if(type==='สมาชิกทั้งหมด'){label.textContent='สมาชิกทั้งหมด';detail.textContent='12,486 ผู้รับ';}
+}
+function toggleChannel(el){el.classList.toggle('selected');}
+function useTemplate(type){
+  const title=document.getElementById('notificationTitle');
+  const msg=document.getElementById('notificationMessage');
+  const templates={
+    expire:['แจ้งเตือนแพ็กเกจสมาชิกใกล้หมดอายุ','แพ็กเกจสมาชิกของท่านใกล้หมดอายุ กรุณาต่ออายุเพื่อใช้บริการได้อย่างต่อเนื่อง'],
+    payment:['ยืนยันการชำระเงินสำเร็จ','ระบบได้รับการชำระเงินของท่านเรียบร้อยแล้ว สามารถตรวจสอบใบเสร็จได้จากเมนูประวัติการชำระเงิน'],
+    class:['แจ้งเตือนคลาสออกกำลังกาย','คลาสที่ท่านจองจะเริ่มในอีก 1 ชั่วโมง กรุณามาถึงก่อนเวลาอย่างน้อย 10 นาที'],
+    survey:['ขอเชิญตอบแบบประเมิน','ขอความร่วมมือตอบแบบประเมินความพึงพอใจ เพื่อใช้ในการปรับปรุงคุณภาพการให้บริการ']
+  };
+  title.value=templates[type][0];msg.value=templates[type][1];
+}
+function previewNotification(){alert(document.getElementById('notificationTitle').value+'\n\n'+document.getElementById('notificationMessage').value);}
+function sendNotification(){
+  const channels=[...document.querySelectorAll('#m10 .channel-card.selected')].map(x=>x.dataset.channel);
+  if(!channels.length){alert('กรุณาเลือกช่องทางการส่งอย่างน้อย 1 ช่องทาง');return;}
+  alert('ส่งแจ้งเตือนสำเร็จผ่านช่องทาง: '+channels.join(', '));
+}
+
+let questionCounter=3;
+function addSurveyQuestion(type){
+  questionCounter++;
+  const labels={rating:'Rating Scale',choice:'Multiple Choice',checkbox:'Checkbox',text:'Short Text',longtext:'Long Text'};
+  const card=document.createElement('div');
+  card.className='question-card';
+  let input='';
+  if(type==='rating') input='<div class="rating-row" style="margin-top:14px"><span class="rating-option">1</span><span class="rating-option">2</span><span class="rating-option">3</span><span class="rating-option">4</span><span class="rating-option">5</span></div>';
+  else if(type==='text'||type==='longtext') input='<textarea style="width:100%;margin-top:14px;border:1px solid var(--border);border-radius:11px;padding:10px" placeholder="ตัวอย่างคำตอบ"></textarea>';
+  else input='<div style="margin-top:12px"><div class="response-option">ตัวเลือกที่ 1</div><div class="response-option">ตัวเลือกที่ 2</div></div>';
+  card.innerHTML=`<div class="question-head"><div style="display:flex;gap:10px"><div class="question-no">${questionCounter}</div><div><input value="คำถามใหม่" style="border:0;border-bottom:1px solid var(--border);font-weight:600"><div class="member-id">${labels[type]} · Optional</div></div></div><button class="icon-btn" onclick="removeQuestion(this)">✕</button></div>${input}`;
+  document.getElementById('surveyQuestions').appendChild(card);
+}
+function removeQuestion(btn){btn.closest('.question-card').remove();renumberQuestions();}
+function renumberQuestions(){document.querySelectorAll('#surveyQuestions .question-no').forEach((el,i)=>el.textContent=i+1);questionCounter=document.querySelectorAll('#surveyQuestions .question-card').length;}
+function previewSurveyBuilder(){goScreen('m12');}
+function publishSurvey(){alert('บันทึกและเผยแพร่แบบประเมินเรียบร้อย');}
+
+let surveyStep=1;
+function updateSurveyStep(){
+  document.querySelectorAll('.response-step').forEach((el,i)=>el.style.display=(i+1===surveyStep)?'block':'none');
+  document.getElementById('surveyStepNo').textContent=surveyStep;
+  document.getElementById('surveyPercent').textContent=(surveyStep*25)+'%';
+  document.getElementById('surveyProgress').style.width=(surveyStep*25)+'%';
+  document.getElementById('surveyPrevBtn').disabled=surveyStep===1;
+  document.getElementById('surveyNextBtn').textContent=surveyStep===4?'ส่งคำตอบ':'ถัดไป';
+}
+function selectRating(el){el.parentElement.querySelectorAll('.rating-option').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');}
+function toggleResponseOption(el){el.classList.toggle('selected');}
+function surveyNext(){
+  if(surveyStep<4){surveyStep++;updateSurveyStep();}
+  else{
+    document.getElementById('surveyResponseForm').style.display='none';
+    document.getElementById('surveySuccess').style.display='block';
+  }
+}
+function surveyPrevious(){if(surveyStep>1){surveyStep--;updateSurveyStep();}}
+function resetSurveyResponse(){
+  surveyStep=1;
+  document.getElementById('surveyResponseForm').style.display='block';
+  document.getElementById('surveySuccess').style.display='none';
+  document.querySelectorAll('#m12 .selected').forEach(x=>x.classList.remove('selected'));
+  const comment=document.getElementById('surveyComment');if(comment)comment.value='';
+  updateSurveyStep();
+}
+
+</script>
+<div class="modal-backdrop" id="editModal">
+<div class="modal">
+<div class="modal-head"><strong>แก้ไขข้อมูลสมาชิก</strong><button class="icon-btn" onclick="closeEditModal()">✕</button></div>
+<div class="modal-body">
+<div class="form-grid">
+<div class="field"><label>ชื่อ</label><input id="editFirstName" value="กิตติพงษ์"/></div>
+<div class="field"><label>นามสกุล</label><input id="editLastName" value="พรหมมา"/></div>
+<div class="field"><label>โทรศัพท์</label><input value="089-555-1042"/></div>
+<div class="field"><label>อีเมล</label><input value="kittipong@example.com"/></div>
+<div class="field full"><label>ที่อยู่</label><textarea>เขตพญาไท กรุงเทพมหานคร 10400</textarea></div>
+</div>
+</div>
+<div class="modal-foot"><button class="btn" onclick="closeEditModal()">ยกเลิก</button><button class="btn primary" onclick="saveEditMember()">บันทึกการแก้ไข</button></div>
+</div>
+</div>
+<a class="portal-home-button" href="portal1_new.html" title="กลับหน้ารวมระบบ"><span class="portal-home-icon">⌂</span><span class="portal-home-label">Home</span></a>
+
+<script>
+(function(){
+  function openScreenFromHash(){
+    const id=(location.hash||'').slice(1).trim().toLowerCase();
+    if(!id || !document.getElementById(id)) return;
+    const fn=window.goScreen;
+    if(typeof fn==='function'){
+      fn(id);
+      setTimeout(()=>window.scrollTo({top:0,behavior:'auto'}),0);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',openScreenFromHash);
+  window.addEventListener('hashchange',openScreenFromHash);
+})();
+</script>
+
+</body>
+</html>

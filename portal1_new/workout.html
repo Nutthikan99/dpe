@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workout Management – Sprint 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1976D2;--primary-dark:#0F4F8A;--secondary:#42A5F5;
+  --bg:#F5FAFF;--card:#fff;--border:#D7EAF8;--text:#17324A;--muted:#73879A;
+  --success:#1F8B5B;--warning:#D9872B;--danger:#D64545;--shadow:0 12px 30px rgba(25,118,210,.10);
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:"Kanit",sans-serif;background:linear-gradient(180deg,#edf7ff,#f8fbff 220px,#f5faff);color:var(--text)}
+button,input,select,textarea{font:inherit}a{text-decoration:none;color:inherit}
+.app{display:grid;grid-template-columns:278px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#0D4B83,#0F5D9F);color:#fff;padding:22px 16px;overflow:auto;box-shadow:8px 0 30px rgba(13,75,131,.16)}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 18px}
+.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#fff,#c9e7ff);display:grid;place-items:center;color:#0E4E88;font-size:22px}
+.brand h1{font-size:17px;line-height:1.35;margin:0}.brand small{display:block;color:#cfeaff;font-size:11px;margin-top:3px}
+.side-title{font-size:11px;color:#bfe1fb;letter-spacing:.08em;text-transform:uppercase;margin:16px 10px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;margin:4px 0;color:#eef8ff;cursor:pointer;transition:.2s}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.15)}
+.nav-code{min-width:38px;height:29px;border-radius:9px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:12px;font-weight:600}
+.nav-item span:last-child{font-size:13px}
+.back-home{margin-top:18px;border:1px solid rgba(255,255,255,.2);padding:12px;border-radius:12px;font-size:12px;display:block;text-align:center;background:rgba(255,255,255,.07)}
+.main{min-width:0}
+.topbar{position:sticky;top:0;z-index:20;height:78px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px}
+.crumb{font-size:12px;color:var(--muted)}.title{font-size:21px;font-weight:600;margin-top:3px}
+.top-actions{display:flex;gap:10px}.icon-btn,.btn{border:1px solid var(--border);background:#fff;border-radius:11px;padding:9px 12px;cursor:pointer;color:var(--text)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.success{background:var(--success);border-color:var(--success);color:#fff}
+.content{padding:26px;max-width:1700px;margin:auto}
+.screen{display:none}.screen.active-screen{display:block}
+.hero{background:linear-gradient(135deg,#0E5595,#1976D2 60%,#56B0F7);color:#fff;border-radius:24px;padding:26px 28px;display:grid;grid-template-columns:1.7fr 1fr;gap:20px;box-shadow:var(--shadow)}
+.hero h2{font-size:28px;margin:0 0 8px}.hero p{margin:0;color:#dff1ff;font-size:14px;line-height:1.7}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.flow-step{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);padding:8px 10px;border-radius:10px;font-size:11px}.flow-arrow{opacity:.8}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:17px;padding:17px;box-shadow:0 7px 20px rgba(25,118,210,.06)}
+.kpi-top{display:flex;justify-content:space-between;gap:10px}.kpi-icon{width:42px;height:42px;border-radius:13px;background:#eaf5fd;display:grid;place-items:center;font-size:20px}
+.kpi strong{font-size:27px;display:block;line-height:1}.kpi span{color:var(--muted);font-size:11px}.trend{font-size:10px;color:var(--success);margin-top:11px}
+.grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 24px rgba(25,118,210,.06)}
+.card-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.card-head h3{font-size:15px;margin:0}.card-head p{font-size:10px;color:var(--muted);margin:3px 0 0}.card-body{padding:18px}
+.program-list{display:grid;gap:11px}
+.program-row{border:1px solid var(--border);border-radius:14px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;transition:.2s}
+.program-row:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(25,118,210,.08)}
+.program-person{display:flex;align-items:center;gap:11px}
+.avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#9dd5fb,#1976D2);display:grid;place-items:center;color:#fff;font-weight:600}
+.status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:9px;font-weight:500}
+.status.active{background:#e7f7ee;color:var(--success)}.status.draft{background:#fff3df;color:var(--warning)}.status.done{background:#edf2f6;color:#63798b}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.quick-btn{border:1px solid var(--border);border-radius:14px;padding:15px;background:#fbfdff;cursor:pointer;text-align:left}
+.quick-btn strong{display:block;font-size:12px;margin-bottom:3px}.quick-btn span{font-size:10px;color:var(--muted)}
+.summary-line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf4f9;font-size:11px}
+.summary-line:last-child{border:0}
+.progress{height:8px;background:#eaf2f8;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,#1976D2,#58B3F8);border-radius:999px}
+.screen-hero{background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px 22px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;box-shadow:var(--shadow)}
+.screen-hero h2{margin:0 0 5px;font-size:23px}.screen-hero p{margin:0;color:var(--muted);font-size:12px;line-height:1.65}
+.meta-strip{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.meta-pill{font-size:9px;background:#edf7ff;border:1px solid var(--border);padding:6px 9px;border-radius:999px;color:#476c87}
+.actions-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:150px}.field label{font-size:10px;color:#4f6980}
+.field input,.field select,.field textarea{border:1px solid var(--border);border-radius:11px;padding:10px 11px;background:#fff;color:var(--text);outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#74b9e8;box-shadow:0 0 0 3px rgba(66,165,245,.12)}
+.program-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.program-card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:16px;box-shadow:0 7px 20px rgba(25,118,210,.06)}
+.program-card h4{font-size:16px;margin:11px 0 4px}.program-card p{font-size:10px;color:var(--muted);line-height:1.6;margin:0}
+.program-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:13px 0}
+.program-meta div{border:1px solid #edf4f9;background:#fbfdff;border-radius:10px;padding:9px}
+.program-meta strong{display:block;font-size:12px}.program-meta span{font-size:9px;color:var(--muted)}
+.tag{display:inline-flex;background:#eaf5fd;color:var(--primary);border-radius:999px;padding:5px 8px;font-size:9px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,35,52,.56);z-index:80;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.show{display:flex}.modal{width:min(660px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:19px;box-shadow:0 30px 70px rgba(0,0,0,.25)}
+.modal-head,.modal-foot{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-head{border-bottom:1px solid var(--border)}.modal-foot{border-top:1px solid var(--border);justify-content:flex-end}.modal-body{padding:18px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.full{grid-column:1/-1}
+.coming{min-height:480px;border:2px dashed var(--border);border-radius:22px;background:rgba(255,255,255,.65);display:grid;place-items:center;text-align:center;padding:30px}
+.coming h2{font-size:24px;margin:0 0 8px}.coming p{color:var(--muted);font-size:12px;margin:0}
+.footer{text-align:center;color:var(--muted);font-size:10px;padding:26px 0 8px}
+
+.session-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.session-banner{background:linear-gradient(135deg,#0e5595,#1976d2 62%,#5bb8f9);color:#fff;border-radius:20px;padding:20px;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.session-banner h3{margin:0 0 6px;font-size:20px}.session-banner p{margin:0;font-size:11px;color:#dcefff}
+.timer-ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#fff 0 72%,rgba(255,255,255,.2) 72% 100%);position:relative}
+.timer-ring::after{content:"";position:absolute;inset:10px;border-radius:50%;background:#1976D2}
+.timer-value{position:relative;z-index:2;text-align:center}.timer-value strong{display:block;font-size:30px}.timer-value span{font-size:10px;color:#dfefff}
+.exercise-session-list{display:grid;gap:10px}.exercise-session-item{display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:13px;background:#fff;cursor:pointer}
+.exercise-session-item.active{background:#edf7ff;border-color:#7fc0eb}.exercise-session-item.done{background:#eef8f2;border-color:#a9d9bd}
+.exercise-index{width:40px;height:40px;border-radius:11px;background:#eaf5fd;color:var(--primary);display:grid;place-items:center;font-weight:600}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric-box{border:1px solid var(--border);border-radius:12px;padding:11px;background:#fbfdff}
+.metric-box strong{display:block;font-size:15px}.metric-box span{font-size:9px;color:var(--muted)}
+.log-layout{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px}
+.log-table{width:100%;border-collapse:collapse}.log-table th,.log-table td{padding:11px;border-bottom:1px solid var(--border);text-align:left;font-size:10px}.log-table th{background:#f4f9fd;color:#547187}
+.rating{display:flex;gap:8px}.rating button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 11px;cursor:pointer}.rating button.selected{background:#fff3df;border-color:#e7b66b}
+.note-box{border:1px solid var(--border);background:#fbfdff;border-radius:13px;padding:13px}
+@media(max-width:1000px){.session-layout,.log-layout{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr}.session-banner{flex-direction:column;align-items:flex-start}}
+
+
+/* Sprint 4 */
+.ai-layout{display:grid;grid-template-columns:.92fr 1.08fr;gap:18px}
+.member-profile{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center}
+.member-photo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#8fd0fa,#1976D2);display:grid;place-items:center;color:#fff;font-size:25px;font-weight:600}
+.risk-list{display:grid;gap:9px}.risk-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#fbfdff}
+.risk-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px}.risk-dot.ok{background:var(--success)}.risk-dot.warn{background:var(--warning)}
+.ai-score{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#1976D2 0 88%,#e6f1f8 88% 100%);margin:auto;position:relative}
+.ai-score::after{content:"";position:absolute;inset:11px;border-radius:50%;background:#fff}
+.ai-score div{position:relative;z-index:2;text-align:center}.ai-score strong{font-size:31px;display:block}.ai-score span{font-size:9px;color:var(--muted)}
+.recommendation-list{display:grid;gap:11px}.recommendation-item{border:1px solid var(--border);border-radius:14px;padding:13px;background:#fff;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center}
+.recommendation-icon{width:42px;height:42px;border-radius:12px;background:#eaf5fd;display:grid;place-items:center;font-size:18px}
+.ai-reason{border-left:3px solid var(--primary);padding:10px 12px;background:#f4faff;border-radius:0 11px 11px 0;font-size:10px;color:#547187;line-height:1.65}
+.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.goal-card{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff}.goal-card strong{font-size:22px;display:block}.goal-card span{font-size:9px;color:var(--muted)}
+.chart-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.chart-box{height:300px;position:relative}.chart-box canvas{width:100%;height:100%}
+.measurement-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.measurement-box{border:1px solid var(--border);border-radius:13px;padding:12px;background:#fbfdff}.measurement-box strong{font-size:17px;display:block}.measurement-box span{font-size:9px;color:var(--muted)}.measurement-box small{font-size:9px;color:var(--success)}
+.timeline{display:grid;gap:10px}.timeline-item{display:grid;grid-template-columns:34px 1fr;gap:10px}.timeline-dot{width:26px;height:26px;border-radius:50%;background:#eaf5fd;color:var(--primary);display:grid;place-items:center;font-size:10px;font-weight:600}.timeline-content{padding:3px 0 13px;border-bottom:1px solid var(--border)}.timeline-content strong{font-size:11px}.timeline-content p{margin:4px 0 0;font-size:9px;color:var(--muted)}
+.goal-progress{display:grid;gap:13px}.goal-progress-row{display:grid;grid-template-columns:150px 1fr 60px;gap:12px;align-items:center;font-size:10px}
+@media(max-width:1050px){.ai-layout,.chart-grid{grid-template-columns:1fr}.goal-grid{grid-template-columns:1fr}.measurement-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.measurement-grid{grid-template-columns:1fr}.goal-progress-row{grid-template-columns:1fr}.recommendation-item{grid-template-columns:42px 1fr}.recommendation-item .btn{grid-column:1/-1}}
+
+
+/* Sprint5 */
+.toast-container{position:fixed;right:20px;bottom:20px;display:grid;gap:10px;z-index:999}
+.toast{background:#fff;border:1px solid #D7EAF8;border-left:4px solid #1976D2;border-radius:12px;padding:12px 14px;box-shadow:0 12px 28px rgba(0,0,0,.15)}
+body.dark{background:#0f1b26;color:#e8f2fb}
+body.dark .card,body.dark .screen-hero,body.dark .topbar,body.dark .program-card,body.dark .kpi{background:#162736;color:#e8f2fb}
+body.dark input,body.dark select,body.dark textarea,.wizard-step{color:#17324A}
+.wizard{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;z-index:999}
+.wizard.show{display:flex}
+.wizard-box{background:#fff;border-radius:18px;width:min(720px,96%);padding:22px}
+.wizard-nav{display:flex;gap:8px;margin-bottom:18px}
+.wizard-step{flex:1;background:#edf7ff;padding:10px;border-radius:10px;text-align:center;font-size:11px}
+.wizard-step.active{background:#1976D2;color:#fff}
+
+@media(max-width:1180px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}.program-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.topbar{position:relative}.hero{grid-template-columns:1fr}.flow{justify-content:flex-start}.screen-hero{flex-direction:column}.program-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.content{padding:16px}.kpi-grid{grid-template-columns:1fr}.topbar{padding:0 16px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+
+<style>
+.portal-home-button{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-radius:14px;background:#1976D2;color:#fff!important;
+  text-decoration:none;font-family:"Kanit",sans-serif;font-size:12px;font-weight:600;
+  box-shadow:0 12px 28px rgba(25,118,210,.30);
+  border:1px solid rgba(255,255,255,.35);transition:.2s
+}
+.portal-home-button:hover{transform:translateY(-2px);background:#0F5CA3}
+.portal-home-icon{font-size:18px;line-height:1}
+@media(max-width:700px){
+  .portal-home-button{right:12px;bottom:12px;padding:10px 12px}
+  .portal-home-label{display:none}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">🏋</div>
+    <div><h1>Workout Management</h1><small>ระบบโปรแกรมการออกกำลังกาย</small></div>
+  </div>
+
+  <div class="side-title">Workout Module</div>
+  <div class="nav-item active" data-screen="w01"><div class="nav-code">W-01</div><span>Dashboard</span></div>
+  <div class="nav-item" data-screen="w02"><div class="nav-code">W-02</div><span>โปรแกรมออกกำลังกาย</span></div>
+  <div class="nav-item" data-screen="w03"><div class="nav-code">W-03</div><span>ตารางออกกำลังกาย</span></div>
+  <div class="nav-item" data-screen="w04"><div class="nav-code">W-04</div><span>คลังท่าออกกำลังกาย</span></div>
+  <div class="nav-item" data-screen="w05"><div class="nav-code">W-05</div><span>เริ่มออกกำลังกาย</span></div>
+  <div class="nav-item" data-screen="w06"><div class="nav-code">W-06</div><span>บันทึกผล</span></div>
+  <div class="nav-item" data-screen="w07"><div class="nav-code">W-07</div><span>AI Recommendation</span></div>
+  <div class="nav-item" data-screen="w08"><div class="nav-code">W-08</div><span>Progress Dashboard</span></div>
+
+  <a class="back-home" href="portal1_new.html">← กลับหน้าระบบหลัก</a>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div><div class="crumb">Sports Science Service Center / Workout</div><div class="title" id="pageTitle">Dashboard</div></div>
+  <div class="top-actions"><button class="icon-btn" onclick="alert('ไม่มีการแจ้งเตือนใหม่')">🔔</button><button class="btn primary" onclick="openProgramModal()">+ สร้างโปรแกรม</button></div>
+</header>
+
+<div class="content">
+<section id="w01" class="screen active-screen">
+  <div class="hero">
+    <div>
+      <h2>ระบบโปรแกรมการออกกำลังกาย</h2>
+      <p>ออกแบบโปรแกรมเฉพาะบุคคล จัดตารางท่าออกกำลังกาย ติดตามผล และเชื่อมโยงข้อมูลสมาชิก เพื่อสนับสนุนการให้บริการด้านวิทยาศาสตร์การกีฬาอย่างเป็นระบบ</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">ประเมินสมาชิก</div><div class="flow-arrow">→</div>
+      <div class="flow-step">สร้างโปรแกรม</div><div class="flow-arrow">→</div>
+      <div class="flow-step">ปฏิบัติ</div><div class="flow-arrow">→</div>
+      <div class="flow-step">ติดตามผล</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><strong>186</strong><span>โปรแกรมที่ใช้งาน</span></div><div class="kpi-icon">📋</div></div><div class="trend">↑ 12 โปรแกรมจากเดือนก่อน</div></div>
+    <div class="kpi"><div class="kpi-top"><div><strong>74</strong><span>สมาชิกออกกำลังกายวันนี้</span></div><div class="kpi-icon">🏃</div></div><div class="trend">คิดเป็น 82% ของเป้าหมาย</div></div>
+    <div class="kpi"><div class="kpi-top"><div><strong>91%</strong><span>อัตราทำตามโปรแกรม</span></div><div class="kpi-icon">✓</div></div><div class="trend">↑ 3.2% จากสัปดาห์ก่อน</div></div>
+    <div class="kpi"><div class="kpi-top"><div><strong>4.8</strong><span>ความพึงพอใจเฉลี่ย</span></div><div class="kpi-icon">★</div></div><div class="trend">จากสมาชิก 428 คน</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><div><h3>โปรแกรมที่ต้องติดตามวันนี้</h3><p>รายการสมาชิกและสถานะการดำเนินการล่าสุด</p></div><button class="btn" onclick="goScreen('w02')">ดูทั้งหมด</button></div>
+      <div class="card-body program-list">
+        <div class="program-row" onclick="viewProgram('Weight Management Starter')"><div class="program-person"><div class="avatar">กพ</div><div><strong>กิตติพงษ์ พรหมมา</strong><div style="font-size:10px;color:var(--muted)">Weight Management Starter · สัปดาห์ที่ 3/8</div></div></div><span class="status active">กำลังใช้งาน</span></div>
+        <div class="program-row" onclick="viewProgram('Senior Balance & Mobility')"><div class="program-person"><div class="avatar">นพ</div><div><strong>นภัส พงศ์ไพบูลย์</strong><div style="font-size:10px;color:var(--muted)">Senior Balance & Mobility · สัปดาห์ที่ 6/12</div></div></div><span class="status active">กำลังใช้งาน</span></div>
+        <div class="program-row" onclick="viewProgram('Return to Sport')"><div class="program-person"><div class="avatar">ศพ</div><div><strong>ศุภชัย พิทักษ์</strong><div style="font-size:10px;color:var(--muted)">Return to Sport · รอผู้เชี่ยวชาญอนุมัติ</div></div></div><span class="status draft">รอตรวจสอบ</span></div>
+        <div class="program-row" onclick="viewProgram('Office Worker Active')"><div class="program-person"><div class="avatar">ปก</div><div><strong>ปวีณา เกียรติกุล</strong><div style="font-size:10px;color:var(--muted)">Office Worker Active · ครบกำหนดประเมินผล</div></div></div><span class="status done">ประเมินซ้ำ</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h3>ภาพรวมเป้าหมายรายสัปดาห์</h3><p>ข้อมูลกิจกรรมของสมาชิกทั้งหมด</p></div></div>
+        <div class="card-body">
+          <div class="summary-line"><span>โปรแกรมที่ทำครบตามแผน</span><strong>168 / 186</strong></div>
+          <div class="progress"><i style="width:90%"></i></div>
+          <div class="summary-line"><span>สมาชิกที่บันทึกผลแล้ว</span><strong>142 / 186</strong></div>
+          <div class="progress"><i style="width:76%"></i></div>
+          <div class="summary-line"><span>รายการรอผู้เชี่ยวชาญตรวจสอบ</span><strong>11 รายการ</strong></div>
+          <div class="summary-line"><span>รายการครบกำหนดประเมินซ้ำ</span><strong>8 รายการ</strong></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><div><h3>เมนูด่วน</h3><p>เข้าถึงงานที่ใช้บ่อย</p></div></div>
+        <div class="card-body quick-grid">
+          <button class="quick-btn" onclick="openProgramModal()"><strong>+ สร้างโปรแกรม</strong><span>กำหนดเป้าหมายและระยะเวลา</span></button>
+          <button class="quick-btn" onclick="goScreen('w02')"><strong>ค้นหาโปรแกรม</strong><span>ค้นหาจากสมาชิกหรือสถานะ</span></button>
+          <button class="quick-btn" onclick="goScreen('w03')"><strong>จัดตาราง</strong><span>กำหนดวันและเวลาออกกำลังกาย</span></button>
+          <button class="quick-btn" onclick="goScreen('w06')"><strong>บันทึกผล</strong><span>บันทึกค่าการฝึกและหมายเหตุ</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="w02" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>W-02 โปรแกรมออกกำลังกาย</h2>
+      <p>ค้นหา สร้าง และบริหารโปรแกรมออกกำลังกายเฉพาะบุคคลตามเป้าหมาย สุขภาพ และผลการประเมินสมาชิก</p>
+      <div class="meta-strip"><span class="meta-pill">User: Sports Scientist / Trainer</span><span class="meta-pill">Sprint 1</span><span class="meta-pill">Output: Workout Program</span></div>
+    </div>
+    <div class="actions-row"><button class="btn" onclick="exportPrograms()">ส่งออกข้อมูล</button><button class="btn primary" onclick="openProgramModal()">+ สร้างโปรแกรม</button></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-head"><div><h3>ค้นหาและกรองโปรแกรม</h3><p>ค้นหาด้วยชื่อสมาชิก ชื่อโปรแกรม เป้าหมาย หรือสถานะ</p></div></div>
+    <div class="card-body">
+      <div class="filter-row">
+        <div class="field" style="flex:2"><label>คำค้นหา</label><input id="programSearch" placeholder="ชื่อสมาชิกหรือชื่อโปรแกรม" oninput="filterPrograms()"></div>
+        <div class="field"><label>เป้าหมาย</label><select id="goalFilter" onchange="filterPrograms()"><option value="">ทั้งหมด</option><option>ลดน้ำหนัก</option><option>เพิ่มความแข็งแรง</option><option>ฟื้นฟูสมรรถภาพ</option><option>สุขภาพทั่วไป</option></select></div>
+        <div class="field"><label>ระดับ</label><select id="levelFilter" onchange="filterPrograms()"><option value="">ทั้งหมด</option><option>เริ่มต้น</option><option>ปานกลาง</option><option>ขั้นสูง</option></select></div>
+        <div class="field"><label>สถานะ</label><select id="statusFilter" onchange="filterPrograms()"><option value="">ทั้งหมด</option><option>กำลังใช้งาน</option><option>รอตรวจสอบ</option><option>สิ้นสุดแล้ว</option></select></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="program-grid" id="programGrid">
+    <div class="program-card" data-goal="ลดน้ำหนัก" data-level="เริ่มต้น" data-status="กำลังใช้งาน">
+      <div class="actions-row" style="justify-content:space-between"><span class="status active">กำลังใช้งาน</span><span class="tag">ลดน้ำหนัก</span></div>
+      <h4>Weight Management Starter</h4><p>สมาชิก: กิตติพงษ์ พรหมมา · ผู้ดูแล: นักวิทยาศาสตร์การกีฬา</p>
+      <div class="program-meta"><div><strong>8 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>4 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>เริ่มต้น</strong><span>ระดับ</span></div><div><strong>65%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:65%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="editProgram('Weight Management Starter')">แก้ไข</button><button class="btn primary" onclick="viewProgram('Weight Management Starter')">รายละเอียด</button></div>
+    </div>
+
+    <div class="program-card" data-goal="เพิ่มความแข็งแรง" data-level="ปานกลาง" data-status="กำลังใช้งาน">
+      <div class="actions-row" style="justify-content:space-between"><span class="status active">กำลังใช้งาน</span><span class="tag">เพิ่มความแข็งแรง</span></div>
+      <h4>Strength Foundation</h4><p>สมาชิก: สุภาวดี วัฒนะ · ผู้ดูแล: โค้ชกิตติพงษ์</p>
+      <div class="program-meta"><div><strong>10 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>3 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>ปานกลาง</strong><span>ระดับ</span></div><div><strong>42%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:42%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="editProgram('Strength Foundation')">แก้ไข</button><button class="btn primary" onclick="viewProgram('Strength Foundation')">รายละเอียด</button></div>
+    </div>
+
+    <div class="program-card" data-goal="ฟื้นฟูสมรรถภาพ" data-level="เริ่มต้น" data-status="รอตรวจสอบ">
+      <div class="actions-row" style="justify-content:space-between"><span class="status draft">รอตรวจสอบ</span><span class="tag">ฟื้นฟูสมรรถภาพ</span></div>
+      <h4>Return to Sport</h4><p>สมาชิก: ศุภชัย พิทักษ์ · รอการอนุมัติจากผู้เชี่ยวชาญ</p>
+      <div class="program-meta"><div><strong>12 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>5 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>เริ่มต้น</strong><span>ระดับ</span></div><div><strong>0%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:0%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="editProgram('Return to Sport')">แก้ไข</button><button class="btn success" onclick="approveProgram('Return to Sport')">อนุมัติ</button></div>
+    </div>
+
+    <div class="program-card" data-goal="สุขภาพทั่วไป" data-level="เริ่มต้น" data-status="กำลังใช้งาน">
+      <div class="actions-row" style="justify-content:space-between"><span class="status active">กำลังใช้งาน</span><span class="tag">สุขภาพทั่วไป</span></div>
+      <h4>Senior Balance & Mobility</h4><p>สมาชิก: นภัส พงศ์ไพบูลย์ · เน้นการทรงตัวและการเคลื่อนไหว</p>
+      <div class="program-meta"><div><strong>12 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>3 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>เริ่มต้น</strong><span>ระดับ</span></div><div><strong>50%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:50%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="editProgram('Senior Balance & Mobility')">แก้ไข</button><button class="btn primary" onclick="viewProgram('Senior Balance & Mobility')">รายละเอียด</button></div>
+    </div>
+
+    <div class="program-card" data-goal="สุขภาพทั่วไป" data-level="ปานกลาง" data-status="สิ้นสุดแล้ว">
+      <div class="actions-row" style="justify-content:space-between"><span class="status done">สิ้นสุดแล้ว</span><span class="tag">สุขภาพทั่วไป</span></div>
+      <h4>Office Worker Active</h4><p>สมาชิก: ปวีณา เกียรติกุล · โปรแกรมปรับพฤติกรรมเนือยนิ่ง</p>
+      <div class="program-meta"><div><strong>6 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>4 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>ปานกลาง</strong><span>ระดับ</span></div><div><strong>100%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:100%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="duplicateProgram('Office Worker Active')">ทำสำเนา</button><button class="btn primary" onclick="viewProgram('Office Worker Active')">ผลลัพธ์</button></div>
+    </div>
+
+    <div class="program-card" data-goal="เพิ่มความแข็งแรง" data-level="ขั้นสูง" data-status="กำลังใช้งาน">
+      <div class="actions-row" style="justify-content:space-between"><span class="status active">กำลังใช้งาน</span><span class="tag">Performance</span></div>
+      <h4>Athlete Performance Plus</h4><p>สมาชิก: ธนชาติ ชัยวัฒน์ · เพิ่มกำลัง ความเร็ว และความคล่องตัว</p>
+      <div class="program-meta"><div><strong>16 สัปดาห์</strong><span>ระยะเวลา</span></div><div><strong>6 วัน/สัปดาห์</strong><span>ความถี่</span></div><div><strong>ขั้นสูง</strong><span>ระดับ</span></div><div><strong>31%</strong><span>ความคืบหน้า</span></div></div>
+      <div class="progress"><i style="width:31%"></i></div>
+      <div class="actions-row" style="margin-top:13px"><button class="btn" onclick="editProgram('Athlete Performance Plus')">แก้ไข</button><button class="btn primary" onclick="viewProgram('Athlete Performance Plus')">รายละเอียด</button></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="w03" class="screen">
+<div class="screen-hero">
+<div><h2>W-03 ตารางออกกำลังกาย</h2><p>จัดตารางรายวัน รายสัปดาห์ กำหนดท่าออกกำลังกาย และผู้รับผิดชอบ</p></div>
+<div class="actions-row"><button class="btn">Export</button><button class="btn primary" onclick="addSchedule()">+ เพิ่มตาราง</button></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>Workout Schedule</h3><p>ตัวอย่างตารางประจำสัปดาห์</p></div></div>
+<div class="card-body">
+<table style="width:100%;border-collapse:collapse">
+<thead><tr><th>วัน</th><th>เวลา</th><th>กิจกรรม</th><th>ผู้ดูแล</th><th>สถานะ</th></tr></thead>
+<tbody>
+<tr><td>จันทร์</td><td>08:00-09:00</td><td>Cardio Training</td><td>โค้ชกิตติพงษ์</td><td>พร้อมใช้งาน</td></tr>
+<tr><td>อังคาร</td><td>10:00-11:00</td><td>Strength</td><td>ครูอรทัย</td><td>พร้อมใช้งาน</td></tr>
+<tr><td>พุธ</td><td>15:00-16:00</td><td>HIIT</td><td>โค้ชธนชาติ</td><td>พร้อมใช้งาน</td></tr>
+<tr><td>พฤหัสฯ</td><td>18:00-19:00</td><td>Stretching</td><td>ครูสุภาวดี</td><td>พร้อมใช้งาน</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="w04" class="screen">
+<div class="screen-hero">
+<div><h2>W-04 คลังท่าออกกำลังกาย</h2><p>บริหารฐานข้อมูลท่าออกกำลังกาย พร้อมหมวดหมู่ กล้ามเนื้อเป้าหมาย และอุปกรณ์</p></div>
+<div class="actions-row"><button class="btn">Import</button><button class="btn primary" onclick="addExercise()">+ เพิ่มท่า</button></div>
+</div>
+
+<div class="program-grid">
+<div class="program-card">
+<span class="tag">Chest</span>
+<h4>Push Up</h4>
+<p>กล้ามเนื้อหน้าอก ไหล่ แขน</p>
+<div class="program-meta">
+<div><strong>Bodyweight</strong><span>อุปกรณ์</span></div>
+<div><strong>Beginner</strong><span>ระดับ</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="viewExercise('Push Up')">รายละเอียด</button></div>
+</div>
+
+<div class="program-card">
+<span class="tag">Leg</span>
+<h4>Squat</h4>
+<p>กล้ามเนื้อขาและสะโพก</p>
+<div class="program-meta">
+<div><strong>Bodyweight</strong><span>อุปกรณ์</span></div>
+<div><strong>Beginner</strong><span>ระดับ</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="viewExercise('Squat')">รายละเอียด</button></div>
+</div>
+
+<div class="program-card">
+<span class="tag">Back</span>
+<h4>Lat Pulldown</h4>
+<p>กล้ามเนื้อหลัง</p>
+<div class="program-meta">
+<div><strong>Machine</strong><span>อุปกรณ์</span></div>
+<div><strong>Intermediate</strong><span>ระดับ</span></div>
+</div>
+<div class="actions-row"><button class="btn" onclick="viewExercise('Lat Pulldown')">รายละเอียด</button></div>
+</div>
+</div>
+</section>
+
+
+<section id="w05" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>W-05 เริ่มออกกำลังกาย</h2>
+      <p>เริ่ม Workout Session ตามโปรแกรม แสดงลำดับท่า เวลา จำนวนครั้ง น้ำหนัก และสถานะของแต่ละกิจกรรม</p>
+      <div class="meta-strip"><span class="meta-pill">User: Member / Trainer</span><span class="meta-pill">Sprint 3</span><span class="meta-pill">Output: Workout Session</span></div>
+    </div>
+    <div class="actions-row"><button class="btn" onclick="resetWorkoutSession()">เริ่มใหม่</button><button class="btn primary" id="startSessionBtn" onclick="toggleWorkoutTimer()">เริ่มจับเวลา</button></div>
+  </div>
+
+  <div class="session-banner" style="margin-top:18px">
+    <div>
+      <span class="status active">กำลังใช้งาน</span>
+      <h3>Weight Management Starter — Day 3</h3>
+      <p>สมาชิก: กิตติพงษ์ พรหมมา · เป้าหมาย: ลดน้ำหนัก · ระยะเวลาประมาณ 45 นาที</p>
+      <div class="metric-grid" style="margin-top:16px">
+        <div class="metric-box"><strong>6 ท่า</strong><span>ทั้งหมด</span></div>
+        <div class="metric-box"><strong id="doneExerciseCount">1</strong><span>ทำเสร็จแล้ว</span></div>
+        <div class="metric-box"><strong>320 kcal</strong><span>เป้าหมาย</span></div>
+        <div class="metric-box"><strong>ปานกลาง</strong><span>ความหนัก</span></div>
+      </div>
+    </div>
+    <div class="timer-ring">
+      <div class="timer-value"><strong id="workoutTimer">00:00</strong><span>Workout Time</span></div>
+    </div>
+  </div>
+
+  <div class="session-layout" style="margin-top:18px">
+    <div class="card">
+      <div class="card-head"><div><h3>ลำดับท่าออกกำลังกาย</h3><p>เลือกท่าเพื่อดูรายละเอียดและบันทึกผล</p></div><span id="sessionProgressText" class="tag">1/6 Completed</span></div>
+      <div class="card-body exercise-session-list" id="exerciseSessionList">
+        <div class="exercise-session-item done" data-name="Warm-up Walk" data-detail="เดินอบอุ่นร่างกาย 5 นาที" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">1</div><div><strong>Warm-up Walk</strong><div style="font-size:10px;color:var(--muted)">5 นาที · Treadmill</div></div><span class="status active">เสร็จแล้ว</span>
+        </div>
+        <div class="exercise-session-item active" data-name="Bodyweight Squat" data-detail="3 เซต เซตละ 12 ครั้ง พัก 60 วินาที" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">2</div><div><strong>Bodyweight Squat</strong><div style="font-size:10px;color:var(--muted)">3 × 12 ครั้ง · พัก 60 วินาที</div></div><span class="status draft">กำลังทำ</span>
+        </div>
+        <div class="exercise-session-item" data-name="Push Up" data-detail="3 เซต เซตละ 10 ครั้ง ปรับตามระดับผู้ฝึก" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">3</div><div><strong>Push Up</strong><div style="font-size:10px;color:var(--muted)">3 × 10 ครั้ง · Bodyweight</div></div><span class="status done">รอดำเนินการ</span>
+        </div>
+        <div class="exercise-session-item" data-name="Dumbbell Row" data-detail="3 เซต เซตละ 12 ครั้ง น้ำหนัก 8 กิโลกรัม" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">4</div><div><strong>Dumbbell Row</strong><div style="font-size:10px;color:var(--muted)">3 × 12 ครั้ง · 8 kg</div></div><span class="status done">รอดำเนินการ</span>
+        </div>
+        <div class="exercise-session-item" data-name="Stationary Bike" data-detail="ปั่นจักรยาน 15 นาที ระดับความหนักปานกลาง" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">5</div><div><strong>Stationary Bike</strong><div style="font-size:10px;color:var(--muted)">15 นาที · Moderate</div></div><span class="status done">รอดำเนินการ</span>
+        </div>
+        <div class="exercise-session-item" data-name="Cool Down Stretch" data-detail="ยืดเหยียดกล้ามเนื้อ 5 นาที" onclick="selectSessionExercise(this)">
+          <div class="exercise-index">6</div><div><strong>Cool Down Stretch</strong><div style="font-size:10px;color:var(--muted)">5 นาที · Mobility</div></div><span class="status done">รอดำเนินการ</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h3 id="currentExerciseName">Bodyweight Squat</h3><p>รายละเอียดท่าปัจจุบัน</p></div><span class="tag">Exercise Detail</span></div>
+        <div class="card-body">
+          <div style="height:180px;border-radius:16px;background:linear-gradient(135deg,#dff1ff,#b6dcf8);display:grid;place-items:center;font-size:64px">🏋️</div>
+          <div class="note-box" id="currentExerciseDetail" style="margin-top:14px">3 เซต เซตละ 12 ครั้ง พัก 60 วินาที</div>
+          <div class="form-grid" style="margin-top:14px">
+            <div class="field"><label>เซตปัจจุบัน</label><input id="sessionSet" type="number" value="1" min="1"></div>
+            <div class="field"><label>จำนวนครั้ง</label><input id="sessionReps" type="number" value="12" min="0"></div>
+            <div class="field"><label>น้ำหนัก (kg)</label><input id="sessionWeight" type="number" value="0" min="0" step="0.5"></div>
+            <div class="field"><label>เวลา (วินาที)</label><input id="sessionDuration" type="number" value="60" min="0"></div>
+          </div>
+          <button class="btn primary" style="width:100%;margin-top:14px" onclick="completeCurrentExercise()">บันทึกและไปท่าถัดไป</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="w06" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>W-06 บันทึกผลการออกกำลังกาย</h2>
+      <p>บันทึกผลแต่ละท่า จำนวนเซต จำนวนครั้ง น้ำหนัก ระยะเวลา ความรู้สึก และข้อสังเกตหลังจบการฝึก</p>
+      <div class="meta-strip"><span class="meta-pill">User: Member / Trainer</span><span class="meta-pill">Sprint 3</span><span class="meta-pill">Output: Workout Log</span></div>
+    </div>
+    <div class="actions-row"><button class="btn" onclick="exportWorkoutLog()">ส่งออก Log</button><button class="btn primary" onclick="saveWorkoutLog()">บันทึกผลทั้งหมด</button></div>
+  </div>
+
+  <div class="log-layout" style="margin-top:18px">
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h3>ข้อมูล Session</h3><p>สรุปการออกกำลังกายวันนี้</p></div><span class="status active">Completed</span></div>
+        <div class="card-body">
+          <div class="summary-line"><span>สมาชิก</span><strong>กิตติพงษ์ พรหมมา</strong></div>
+          <div class="summary-line"><span>โปรแกรม</span><strong>Weight Management Starter</strong></div>
+          <div class="summary-line"><span>วันที่</span><strong>21 ก.ค. 2569</strong></div>
+          <div class="summary-line"><span>ระยะเวลารวม</span><strong>43 นาที</strong></div>
+          <div class="summary-line"><span>พลังงานโดยประมาณ</span><strong>304 kcal</strong></div>
+          <div class="summary-line"><span>ท่าที่ทำสำเร็จ</span><strong>6/6 ท่า</strong></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><div><h3>ประเมินความรู้สึกหลังฝึก</h3><p>เลือกค่าความหนักที่รู้สึกได้</p></div></div>
+        <div class="card-body">
+          <label style="font-size:10px;color:var(--muted)">RPE — ระดับความเหนื่อย</label>
+          <div class="rating" id="rpeRating" style="margin-top:10px">
+            <button onclick="selectRPE(this,3)">3 เบา</button>
+            <button onclick="selectRPE(this,5)">5 ปานกลาง</button>
+            <button class="selected" onclick="selectRPE(this,7)">7 หนัก</button>
+            <button onclick="selectRPE(this,9)">9 หนักมาก</button>
+          </div>
+          <div class="field" style="margin-top:14px"><label>อาการผิดปกติหรือข้อสังเกต</label><textarea id="workoutNote" style="min-height:110px" placeholder="เช่น ปวดเข่า เวียนศีรษะ หรือมีข้อจำกัดในการทำท่า">รู้สึกเหนื่อยระดับปานกลาง ไม่มีอาการเจ็บปวดผิดปกติ</textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>รายละเอียด Workout Log</h3><p>แก้ไขค่าจริงของแต่ละท่าก่อนบันทึก</p></div><button class="btn" onclick="addWorkoutLogRow()">+ เพิ่มรายการ</button></div>
+      <div class="card-body">
+        <div style="overflow:auto">
+          <table class="log-table" style="min-width:760px">
+            <thead><tr><th>ท่า</th><th>เซต</th><th>ครั้ง</th><th>น้ำหนัก</th><th>เวลา</th><th>สถานะ</th></tr></thead>
+            <tbody id="workoutLogBody">
+              <tr><td>Warm-up Walk</td><td>1</td><td>-</td><td>-</td><td>5 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+              <tr><td>Bodyweight Squat</td><td>3</td><td>12</td><td>0 kg</td><td>8 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+              <tr><td>Push Up</td><td>3</td><td>10</td><td>0 kg</td><td>6 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+              <tr><td>Dumbbell Row</td><td>3</td><td>12</td><td>8 kg</td><td>8 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+              <tr><td>Stationary Bike</td><td>1</td><td>-</td><td>-</td><td>15 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+              <tr><td>Cool Down Stretch</td><td>1</td><td>-</td><td>-</td><td>5 นาที</td><td><span class="status active">สำเร็จ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note-box" style="margin-top:16px">
+          <strong>สรุปจากระบบ</strong>
+          <p style="margin:5px 0 0;font-size:10px;color:var(--muted);line-height:1.65">สมาชิกทำกิจกรรมครบทุกท่า ใช้เวลาน้อยกว่าเป้าหมาย 2 นาที และรักษาระดับความหนักอยู่ในช่วงที่กำหนด</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="w07" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>W-07 AI Recommendation</h2>
+      <p>วิเคราะห์ข้อมูลสมาชิก เป้าหมาย ผลประเมิน สุขภาพ และประวัติการฝึก เพื่อเสนอโปรแกรมที่เหมาะสมให้ผู้เชี่ยวชาญพิจารณา</p>
+      <div class="meta-strip"><span class="meta-pill">AI-assisted Recommendation</span><span class="meta-pill">Human Approval Required</span><span class="meta-pill">Sprint 4</span></div>
+    </div>
+    <div class="actions-row"><button class="btn" onclick="refreshAIRecommendation()">วิเคราะห์ใหม่</button><button class="btn primary" onclick="createProgramFromAI()">สร้างโปรแกรมจากคำแนะนำ</button></div>
+  </div>
+
+  <div class="ai-layout" style="margin-top:18px">
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h3>ข้อมูลสมาชิกที่ใช้วิเคราะห์</h3><p>ข้อมูลตัวอย่างจากระบบสมาชิกและผลการประเมิน</p></div><button class="btn" onclick="changeAIMember()">เปลี่ยนสมาชิก</button></div>
+        <div class="card-body">
+          <div class="member-profile">
+            <div class="member-photo">กพ</div>
+            <div><strong style="font-size:17px">กิตติพงษ์ พรหมมา</strong><div style="font-size:10px;color:var(--muted)">MB-260721-1042 · อายุ 34 ปี · ชาย</div><div class="meta-strip"><span class="meta-pill">เป้าหมาย: ลดน้ำหนัก</span><span class="meta-pill">ระดับ: เริ่มต้น</span></div></div>
+          </div>
+          <div class="measurement-grid" style="margin-top:16px">
+            <div class="measurement-box"><strong>82.4 kg</strong><span>น้ำหนัก</span><small>เป้าหมาย 75 kg</small></div>
+            <div class="measurement-box"><strong>27.8</strong><span>BMI</span><small>สูงกว่าช่วงปกติ</small></div>
+            <div class="measurement-box"><strong>28.1%</strong><span>Body Fat</span><small>ควรลดลง</small></div>
+            <div class="measurement-box"><strong>38.2</strong><span>VO₂max</span><small>ระดับปานกลาง</small></div>
+          </div>
+          <div class="risk-list" style="margin-top:16px">
+            <div class="risk-item"><span><i class="risk-dot ok"></i>ไม่มีโรคหัวใจที่รายงาน</span><span class="status active">ผ่าน</span></div>
+            <div class="risk-item"><span><i class="risk-dot warn"></i>มีอาการตึงเข่าขวาหลังวิ่ง</span><span class="status draft">เฝ้าระวัง</span></div>
+            <div class="risk-item"><span><i class="risk-dot ok"></i>ความดันอยู่ในเกณฑ์ควบคุม</span><span class="status active">ผ่าน</span></div>
+            <div class="risk-item"><span><i class="risk-dot ok"></i>ทำแบบประเมิน PAR-Q แล้ว</span><span class="status active">ครบถ้วน</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><div><h3>เหตุผลประกอบคำแนะนำ</h3><p>ระบบแสดงปัจจัยเพื่อให้ผู้เชี่ยวชาญตรวจสอบได้</p></div></div>
+        <div class="card-body">
+          <div class="ai-reason">แนะนำกิจกรรมแรงกระแทกต่ำ เนื่องจากสมาชิกมีอาการตึงเข่าขวาหลังวิ่ง และยังอยู่ในระดับเริ่มต้น</div>
+          <div class="ai-reason" style="margin-top:10px">กำหนดความหนักช่วงเริ่มต้นประมาณ 55–65% ของอัตราการเต้นหัวใจสูงสุด และเพิ่มอย่างค่อยเป็นค่อยไป</div>
+          <div class="ai-reason" style="margin-top:10px">ผสมผสาน Cardio, Strength และ Mobility เพื่อสนับสนุนเป้าหมายลดน้ำหนักและรักษามวลกล้ามเนื้อ</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h3>ผลการวิเคราะห์ AI</h3><p>คะแนนความเหมาะสมของโปรแกรมที่เสนอ</p></div><span class="status active">วิเคราะห์แล้ว</span></div>
+        <div class="card-body">
+          <div class="ai-score"><div><strong id="aiScoreValue">88%</strong><span>Suitability Score</span></div></div>
+          <div style="text-align:center;margin-top:12px"><strong>Low Impact Weight Management</strong><div style="font-size:10px;color:var(--muted)">8 สัปดาห์ · 4 วันต่อสัปดาห์ · ระดับเริ่มต้น</div></div>
+          <div class="recommendation-list" style="margin-top:17px">
+            <div class="recommendation-item"><div class="recommendation-icon">🚴</div><div><strong>Low-impact Cardio</strong><div style="font-size:9px;color:var(--muted)">จักรยานหรือเดินเร็ว 25–35 นาที</div></div><button class="btn" onclick="acceptRecommendation(this)">เพิ่ม</button></div>
+            <div class="recommendation-item"><div class="recommendation-icon">🏋️</div><div><strong>Full Body Strength</strong><div style="font-size:9px;color:var(--muted)">6–8 ท่า สัปดาห์ละ 2 วัน</div></div><button class="btn" onclick="acceptRecommendation(this)">เพิ่ม</button></div>
+            <div class="recommendation-item"><div class="recommendation-icon">🧘</div><div><strong>Mobility & Stretching</strong><div style="font-size:9px;color:var(--muted)">เน้นสะโพก ต้นขา และข้อเท้า</div></div><button class="btn" onclick="acceptRecommendation(this)">เพิ่ม</button></div>
+            <div class="recommendation-item"><div class="recommendation-icon">❤️</div><div><strong>Heart-rate Monitoring</strong><div style="font-size:9px;color:var(--muted)">รักษาความหนักในช่วงที่กำหนด</div></div><button class="btn" onclick="acceptRecommendation(this)">เพิ่ม</button></div>
+          </div>
+          <div class="note-box" style="margin-top:16px"><strong>ข้อควรระวัง</strong><p style="margin:4px 0 0;font-size:10px;color:var(--muted)">คำแนะนำจาก AI ต้องผ่านการตรวจสอบและอนุมัติจากนักวิทยาศาสตร์การกีฬา หรือผู้เชี่ยวชาญก่อนใช้งานจริง</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="w08" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>W-08 Progress Dashboard</h2>
+      <p>ติดตามพัฒนาการของสมาชิกจากข้อมูลการฝึก การวัดร่างกาย สมรรถภาพ และความสำเร็จตามเป้าหมาย</p>
+      <div class="meta-strip"><span class="meta-pill">Progress Tracking</span><span class="meta-pill">Body Measurement</span><span class="meta-pill">Goal Monitoring</span></div>
+    </div>
+    <div class="actions-row"><button class="btn" onclick="exportProgress()">Export Report</button><button class="btn primary" onclick="addMeasurement()">+ บันทึกผลประเมิน</button></div>
+  </div>
+
+  <div class="goal-grid" style="margin-top:18px">
+    <div class="goal-card"><strong>7.4 kg</strong><span>น้ำหนักที่ต้องลดเพื่อถึงเป้าหมาย</span><div class="progress" style="margin-top:12px"><i style="width:38%"></i></div></div>
+    <div class="goal-card"><strong>91%</strong><span>อัตราทำตามโปรแกรม 30 วัน</span><div class="progress" style="margin-top:12px"><i style="width:91%"></i></div></div>
+    <div class="goal-card"><strong>18 ครั้ง</strong><span>Workout Session ที่ทำสำเร็จ</span><div class="progress" style="margin-top:12px"><i style="width:72%"></i></div></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:18px">
+    <div class="card">
+      <div class="card-head"><div><h3>แนวโน้มน้ำหนักและเปอร์เซ็นต์ไขมัน</h3><p>ข้อมูลย้อนหลัง 8 สัปดาห์</p></div><select id="progressMetric" onchange="drawProgressChart()"><option value="weight">น้ำหนัก</option><option value="fat">Body Fat</option></select></div>
+      <div class="card-body chart-box"><canvas id="progressChart"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>ความสม่ำเสมอในการฝึก</h3><p>จำนวน Session ต่อสัปดาห์</p></div></div>
+      <div class="card-body chart-box"><canvas id="sessionChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card">
+      <div class="card-head"><div><h3>ผลการวัดล่าสุด</h3><p>เปรียบเทียบกับการวัดครั้งก่อน</p></div><button class="btn" onclick="addMeasurement()">เพิ่มข้อมูล</button></div>
+      <div class="card-body">
+        <div class="measurement-grid">
+          <div class="measurement-box"><strong>82.4 kg</strong><span>น้ำหนัก</span><small>↓ 2.1 kg</small></div>
+          <div class="measurement-box"><strong>27.8</strong><span>BMI</span><small>↓ 0.7</small></div>
+          <div class="measurement-box"><strong>28.1%</strong><span>Body Fat</span><small>↓ 1.8%</small></div>
+          <div class="measurement-box"><strong>38.2</strong><span>VO₂max</span><small>↑ 2.4</small></div>
+        </div>
+        <div class="goal-progress" style="margin-top:18px">
+          <div class="goal-progress-row"><span>เป้าหมายน้ำหนัก</span><div class="progress"><i style="width:38%"></i></div><strong>38%</strong></div>
+          <div class="goal-progress-row"><span>Cardio Fitness</span><div class="progress"><i style="width:64%"></i></div><strong>64%</strong></div>
+          <div class="goal-progress-row"><span>Strength Goal</span><div class="progress"><i style="width:57%"></i></div><strong>57%</strong></div>
+          <div class="goal-progress-row"><span>Workout Adherence</span><div class="progress"><i style="width:91%"></i></div><strong>91%</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Timeline พัฒนาการ</h3><p>กิจกรรมและเหตุการณ์สำคัญ</p></div></div>
+      <div class="card-body timeline">
+        <div class="timeline-item"><div class="timeline-dot">8</div><div class="timeline-content"><strong>ประเมินผลสัปดาห์ที่ 8</strong><p>น้ำหนักลดลงต่อเนื่องและไม่มีอาการเจ็บเข่าเพิ่มขึ้น</p></div></div>
+        <div class="timeline-item"><div class="timeline-dot">6</div><div class="timeline-content"><strong>เพิ่มความหนัก Strength Training</strong><p>เพิ่มน้ำหนัก Dumbbell จาก 6 เป็น 8 กิโลกรัม</p></div></div>
+        <div class="timeline-item"><div class="timeline-dot">4</div><div class="timeline-content"><strong>ประเมินกลางโปรแกรม</strong><p>อัตราทำตามโปรแกรม 92% และ Body Fat ลดลง 1.1%</p></div></div>
+        <div class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-content"><strong>เริ่มโปรแกรม</strong><p>กำหนดเป้าหมายลดน้ำหนัก 7.4 กิโลกรัมภายใน 12 สัปดาห์</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="footer">Workout Management · Sprint 5 · Production Prototype</div>
+</div>
+</main>
+</div>
+
+<div class="modal-backdrop" id="programModal">
+  <div class="modal">
+    <div class="modal-head"><strong id="programModalTitle">สร้างโปรแกรมออกกำลังกาย</strong><button class="icon-btn" onclick="closeProgramModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>สมาชิก *</label><select id="programMember"><option>กิตติพงษ์ พรหมมา · MB-260721-1042</option><option>สุภาวดี วัฒนะ · MB-260721-1041</option><option>นภัส พงศ์ไพบูลย์ · MB-260721-1039</option></select></div>
+        <div class="field full"><label>ชื่อโปรแกรม *</label><input id="programName" placeholder="เช่น Weight Management Starter"></div>
+        <div class="field"><label>เป้าหมายหลัก *</label><select id="programGoal"><option>ลดน้ำหนัก</option><option>เพิ่มความแข็งแรง</option><option>ฟื้นฟูสมรรถภาพ</option><option>สุขภาพทั่วไป</option></select></div>
+        <div class="field"><label>ระดับ *</label><select id="programLevel"><option>เริ่มต้น</option><option>ปานกลาง</option><option>ขั้นสูง</option></select></div>
+        <div class="field"><label>ระยะเวลา *</label><select><option>6 สัปดาห์</option><option selected>8 สัปดาห์</option><option>12 สัปดาห์</option><option>16 สัปดาห์</option></select></div>
+        <div class="field"><label>ความถี่ *</label><select><option>3 วัน/สัปดาห์</option><option selected>4 วัน/สัปดาห์</option><option>5 วัน/สัปดาห์</option><option>6 วัน/สัปดาห์</option></select></div>
+        <div class="field full"><label>รายละเอียดและข้อควรระวัง</label><textarea style="min-height:100px" placeholder="ระบุข้อจำกัด สุขภาพ อุปกรณ์ และคำแนะนำจากผู้เชี่ยวชาญ"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeProgramModal()">ยกเลิก</button><button class="btn primary" onclick="saveProgram()">บันทึกโปรแกรม</button></div>
+  </div>
+</div>
+
+<script>
+const titles={
+  w01:'Dashboard',w02:'โปรแกรมออกกำลังกาย',w03:'ตารางออกกำลังกาย',w04:'คลังท่าออกกำลังกาย',
+  w05:'เริ่มออกกำลังกาย',w06:'บันทึกผล',w07:'AI Recommendation',w08:'Progress Dashboard'
+};
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active-screen'));
+  document.getElementById(id).classList.add('active-screen');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));
+  document.getElementById('pageTitle').textContent=titles[id]||'Workout';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav-item').forEach(x=>x.addEventListener('click',()=>goScreen(x.dataset.screen)));
+
+function openProgramModal(){
+  document.getElementById('programModalTitle').textContent='สร้างโปรแกรมออกกำลังกาย';
+  document.getElementById('programName').value='';
+  document.getElementById('programModal').classList.add('show');
+}
+function closeProgramModal(){document.getElementById('programModal').classList.remove('show');}
+function saveProgram(){
+  const name=document.getElementById('programName').value.trim();
+  if(!name){alert('กรุณากรอกชื่อโปรแกรม');return;}
+  alert('บันทึกโปรแกรม '+name+' เรียบร้อย');
+  closeProgramModal();
+}
+function editProgram(name){
+  document.getElementById('programModalTitle').textContent='แก้ไขโปรแกรม';
+  document.getElementById('programName').value=name;
+  document.getElementById('programModal').classList.add('show');
+}
+function viewProgram(name){alert('เปิดรายละเอียดโปรแกรม: '+name);}
+function approveProgram(name){alert('อนุมัติโปรแกรม '+name+' เรียบร้อย');}
+function duplicateProgram(name){alert('สร้างสำเนาโปรแกรม '+name+' เรียบร้อย');}
+function exportPrograms(){alert('เตรียมส่งออกข้อมูลโปรแกรมเป็นไฟล์ Excel');}
+function filterPrograms(){
+  const q=(document.getElementById('programSearch').value||'').toLowerCase();
+  const goal=document.getElementById('goalFilter').value;
+  const level=document.getElementById('levelFilter').value;
+  const status=document.getElementById('statusFilter').value;
+  document.querySelectorAll('#programGrid .program-card').forEach(card=>{
+    const show=(!q||card.innerText.toLowerCase().includes(q))&&(!goal||card.dataset.goal===goal)&&(!level||card.dataset.level===level)&&(!status||card.dataset.status===status);
+    card.style.display=show?'':'none';
+  });
+}
+
+function addSchedule(){alert('เปิดหน้าสร้างตารางออกกำลังกาย');}
+function addExercise(){alert('เปิดหน้าสร้างท่าออกกำลังกาย');}
+function viewExercise(n){alert('รายละเอียดท่า: '+n);}
+
+
+let workoutSeconds=0,workoutTimerHandle=null,workoutRunning=false,currentExerciseIndex=1;
+function formatWorkoutTime(s){
+  const m=String(Math.floor(s/60)).padStart(2,'0');
+  const sec=String(s%60).padStart(2,'0');
+  return m+':'+sec;
+}
+function toggleWorkoutTimer(){
+  workoutRunning=!workoutRunning;
+  const btn=document.getElementById('startSessionBtn');
+  btn.textContent=workoutRunning?'หยุดชั่วคราว':'เริ่มต่อ';
+  if(workoutRunning){
+    workoutTimerHandle=setInterval(()=>{
+      workoutSeconds++;
+      document.getElementById('workoutTimer').textContent=formatWorkoutTime(workoutSeconds);
+    },1000);
+  }else{
+    clearInterval(workoutTimerHandle);
+  }
+}
+function resetWorkoutSession(){
+  clearInterval(workoutTimerHandle);
+  workoutSeconds=0;workoutRunning=false;currentExerciseIndex=1;
+  document.getElementById('workoutTimer').textContent='00:00';
+  document.getElementById('startSessionBtn').textContent='เริ่มจับเวลา';
+  const items=[...document.querySelectorAll('#exerciseSessionList .exercise-session-item')];
+  items.forEach((item,i)=>{
+    item.classList.remove('done','active');
+    item.classList.add(i===0?'done':i===1?'active':'');
+    item.querySelector('.status').textContent=i===0?'เสร็จแล้ว':i===1?'กำลังทำ':'รอดำเนินการ';
+  });
+  updateSessionProgress();
+  selectSessionExercise(items[1]);
+}
+function selectSessionExercise(el){
+  document.querySelectorAll('#exerciseSessionList .exercise-session-item').forEach(x=>{
+    if(!x.classList.contains('done'))x.classList.remove('active');
+  });
+  if(!el.classList.contains('done'))el.classList.add('active');
+  currentExerciseIndex=[...document.querySelectorAll('#exerciseSessionList .exercise-session-item')].indexOf(el);
+  document.getElementById('currentExerciseName').textContent=el.dataset.name;
+  document.getElementById('currentExerciseDetail').textContent=el.dataset.detail;
+}
+function completeCurrentExercise(){
+  const items=[...document.querySelectorAll('#exerciseSessionList .exercise-session-item')];
+  const current=items[currentExerciseIndex];
+  if(!current)return;
+  current.classList.remove('active');
+  current.classList.add('done');
+  current.querySelector('.status').textContent='เสร็จแล้ว';
+  const next=items.find((x,i)=>i>currentExerciseIndex&&!x.classList.contains('done'));
+  if(next){
+    next.classList.add('active');
+    next.querySelector('.status').textContent='กำลังทำ';
+    selectSessionExercise(next);
+  }else{
+    clearInterval(workoutTimerHandle);
+    workoutRunning=false;
+    document.getElementById('startSessionBtn').textContent='Session เสร็จสิ้น';
+    alert('ทำกิจกรรมครบทุกท่าแล้ว สามารถไปบันทึกผลการฝึกได้');
+    goScreen('w06');
+  }
+  updateSessionProgress();
+}
+function updateSessionProgress(){
+  const items=[...document.querySelectorAll('#exerciseSessionList .exercise-session-item')];
+  const done=items.filter(x=>x.classList.contains('done')).length;
+  document.getElementById('doneExerciseCount').textContent=done;
+  document.getElementById('sessionProgressText').textContent=done+'/'+items.length+' Completed';
+}
+let selectedRPE=7;
+function selectRPE(btn,value){
+  selectedRPE=value;
+  document.querySelectorAll('#rpeRating button').forEach(x=>x.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function addWorkoutLogRow(){
+  const body=document.getElementById('workoutLogBody');
+  const row=document.createElement('tr');
+  row.innerHTML='<td contenteditable="true">ท่าใหม่</td><td contenteditable="true">1</td><td contenteditable="true">10</td><td contenteditable="true">0 kg</td><td contenteditable="true">5 นาที</td><td><span class="status draft">รอบันทึก</span></td>';
+  body.appendChild(row);
+}
+function saveWorkoutLog(){
+  const note=document.getElementById('workoutNote').value.trim();
+  alert('บันทึกผล Workout Log เรียบร้อย\nRPE: '+selectedRPE+'\nหมายเหตุ: '+(note||'-'));
+}
+function exportWorkoutLog(){alert('เตรียมส่งออก Workout Log เป็นไฟล์ PDF/Excel');}
+
+
+/* Sprint 4 */
+function refreshAIRecommendation(){
+  const score=document.getElementById('aiScoreValue');
+  score.textContent='...';
+  setTimeout(()=>{
+    score.textContent='91%';
+    alert('วิเคราะห์ข้อมูลใหม่เรียบร้อย คะแนนความเหมาะสม 91%');
+  },700);
+}
+function changeAIMember(){alert('เปิดหน้าค้นหาและเลือกสมาชิกสำหรับวิเคราะห์');}
+function acceptRecommendation(btn){
+  btn.textContent='เพิ่มแล้ว';
+  btn.classList.add('success');
+  btn.disabled=true;
+}
+function createProgramFromAI(){
+  document.getElementById('programModalTitle').textContent='สร้างโปรแกรมจาก AI Recommendation';
+  document.getElementById('programName').value='Low Impact Weight Management';
+  document.getElementById('programGoal').value='ลดน้ำหนัก';
+  document.getElementById('programLevel').value='เริ่มต้น';
+  document.getElementById('programModal').classList.add('show');
+}
+function exportProgress(){alert('เตรียมส่งออก Progress Report เป็นไฟล์ PDF/Excel');}
+function addMeasurement(){alert('เปิดแบบฟอร์มบันทึกน้ำหนัก BMI Body Fat และผลสมรรถภาพ');}
+
+function drawSimpleLineChart(canvasId,labels,values,suffix){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.clientWidth||600,h=canvas.clientHeight||280;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+  const pad={l:48,r:22,t:20,b:38},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const min=Math.min(...values),max=Math.max(...values),range=max-min||1;
+  ctx.font='10px Kanit';ctx.fillStyle='#73879A';
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*i/4;
+    ctx.strokeStyle='#D7EAF8';ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+    const v=max-range*i/4;
+    ctx.fillText(v.toFixed(1)+suffix,4,y+3);
+  }
+  ctx.strokeStyle='#1976D2';ctx.lineWidth=3;ctx.beginPath();
+  values.forEach((v,i)=>{
+    const x=pad.l+cw*i/(values.length-1),y=pad.t+ch-(v-min)/range*ch;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+  values.forEach((v,i)=>{
+    const x=pad.l+cw*i/(values.length-1),y=pad.t+ch-(v-min)/range*ch;
+    ctx.fillStyle='#1976D2';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#73879A';ctx.fillText(labels[i],x-10,h-12);
+  });
+}
+function drawBarChart(){
+  const canvas=document.getElementById('sessionChart');
+  if(!canvas)return;
+  const labels=['W1','W2','W3','W4','W5','W6','W7','W8'],values=[2,3,3,4,4,3,4,4];
+  const dpr=window.devicePixelRatio||1,w=canvas.clientWidth||450,h=canvas.clientHeight||280;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+  const pad={l:34,r:15,t:20,b:35},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b,bw=cw/values.length*.55;
+  ctx.font='10px Kanit';ctx.fillStyle='#73879A';
+  for(let i=0;i<=5;i++){
+    const y=pad.t+ch*i/5;ctx.strokeStyle='#D7EAF8';ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(5-i,10,y+3);
+  }
+  values.forEach((v,i)=>{
+    const x=pad.l+cw*(i+.5)/values.length-bw/2,y=pad.t+ch-v/5*ch;
+    ctx.fillStyle='#42A5F5';ctx.fillRect(x,y,bw,ch-(y-pad.t));
+    ctx.fillStyle='#73879A';ctx.fillText(labels[i],x+3,h-12);
+  });
+}
+function drawProgressChart(){
+  const metric=document.getElementById('progressMetric')?.value||'weight';
+  if(metric==='weight'){
+    drawSimpleLineChart('progressChart',['W1','W2','W3','W4','W5','W6','W7','W8'],[84.5,84.1,83.9,83.5,83.2,82.9,82.7,82.4],'');
+  }else{
+    drawSimpleLineChart('progressChart',['W1','W2','W3','W4','W5','W6','W7','W8'],[29.9,29.6,29.4,29.2,28.9,28.7,28.4,28.1],'%');
+  }
+}
+const sprint4GoScreen=goScreen;
+goScreen=function(id){
+  sprint4GoScreen(id);
+  if(id==='w08')setTimeout(()=>{drawProgressChart();drawBarChart();},60);
+};
+window.addEventListener('resize',()=>{
+  if(document.getElementById('w08')?.classList.contains('active-screen')){
+    drawProgressChart();drawBarChart();
+  }
+});
+
+
+function showToast(msg){
+ const c=document.getElementById('toastContainer');
+ const d=document.createElement('div');
+ d.className='toast';
+ d.innerHTML='<strong>'+msg+'</strong><div style="font-size:11px;color:#73879A">Workout Management</div>';
+ c.appendChild(d);
+ setTimeout(()=>d.remove(),3000);
+}
+function openWizard(){document.getElementById('wizard').classList.add('show');}
+function closeWizard(){document.getElementById('wizard').classList.remove('show');}
+function toggleTheme(){
+ document.body.classList.toggle('dark');
+ localStorage.setItem('workout-theme',document.body.classList.contains('dark')?'dark':'light');
+}
+window.addEventListener('DOMContentLoaded',()=>{
+ if(localStorage.getItem('workout-theme')==='dark')document.body.classList.add('dark');
+ const btn=document.createElement('button');
+ btn.className='btn';
+ btn.textContent='◐ Theme';
+ btn.onclick=toggleTheme;
+ document.querySelector('.top-actions').prepend(btn);
+ const w=document.createElement('button');
+ w.className='btn';
+ w.textContent='Wizard';
+ w.onclick=openWizard;
+ document.querySelector('.top-actions').prepend(w);
+});
+
+</script>
+
+<div class="wizard" id="wizard">
+<div class="wizard-box">
+<h2 style="margin-top:0">Workout Wizard</h2>
+<div class="wizard-nav">
+<div class="wizard-step active">1 ข้อมูล</div>
+<div class="wizard-step">2 เป้าหมาย</div>
+<div class="wizard-step">3 ตาราง</div>
+<div class="wizard-step">4 ยืนยัน</div>
+</div>
+<p>Prototype สำหรับการสร้างโปรแกรมแบบ Wizard (Sprint 5)</p>
+<div style="display:flex;justify-content:flex-end;gap:10px">
+<button class="btn" onclick="closeWizard()">ปิด</button>
+<button class="btn primary" onclick="showToast('สร้างโปรแกรมสำเร็จ')">บันทึก</button>
+</div>
+</div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+
+<a class="portal-home-button" href="portal1_new.html" title="กลับหน้ารวมระบบ"><span class="portal-home-icon">⌂</span><span class="portal-home-label">Home</span></a>
+
+<script>
+(function(){
+  function openScreenFromHash(){
+    const id=(location.hash||'').slice(1).trim().toLowerCase();
+    if(!id || !document.getElementById(id)) return;
+    const fn=window.goScreen;
+    if(typeof fn==='function'){
+      fn(id);
+      setTimeout(()=>window.scrollTo({top:0,behavior:'auto'}),0);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',openScreenFromHash);
+  window.addEventListener('hashchange',openScreenFromHash);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Navigation & Wireframe Roadmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#1976D2;
+      --secondary:#42A5F5;
+      --bg:#F5FAFF;
+      --border:#D7EAF8;
+      --card:#FFFFFF;
+      --text:#18324A;
+      --muted:#6E8295;
+      --soft:#EAF4FD;
+      --success:#1B8A5A;
+      --warning:#D9822B;
+      --shadow:0 10px 28px rgba(25,118,210,.09);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Kanit",Tahoma,sans-serif;
+      background:linear-gradient(180deg,#eef7ff 0,#f9fcff 180px,#f5faff 100%);
+      color:var(--text);
+    }
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .sidebar{
+      position:sticky;top:0;height:100vh;
+      background:#0F4F8A;color:#fff;padding:26px 18px;
+      box-shadow:8px 0 28px rgba(15,79,138,.12);z-index:20;
+      overflow:auto;
+    }
+    .brand{display:flex;gap:12px;align-items:center;padding:0 8px 20px}
+    .brand-mark{
+      width:46px;height:46px;border-radius:14px;
+      background:linear-gradient(135deg,#fff,#bfe3ff);
+      display:grid;place-items:center;color:#0F4F8A;font-weight:700;font-size:20px;
+    }
+    .brand h1{font-size:17px;line-height:1.35;margin:0}
+    .brand small{display:block;font-size:12px;color:#cfe8ff;font-weight:300;margin-top:3px}
+    .side-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#b7dcfb;margin:16px 10px 9px}
+    .side-link{
+      display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;
+      margin:4px 0;color:#edf8ff;font-size:14px;transition:.2s;
+    }
+    .side-link:hover,.side-link.active{background:rgba(255,255,255,.14)}
+    .side-code{
+      min-width:34px;height:28px;border-radius:9px;background:rgba(255,255,255,.14);
+      display:grid;place-items:center;font-weight:600;
+    }
+    .side-meta{font-size:11px;color:#cde6fa;margin-left:auto}
+    .main{min-width:0}
+    .topbar{
+      position:sticky;top:0;z-index:15;
+      height:76px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);display:flex;align-items:center;
+      justify-content:space-between;padding:0 28px;
+    }
+    .crumb{font-size:13px;color:var(--muted)}
+    .page-title{font-size:21px;font-weight:600;margin-top:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--border);background:#fff;color:var(--text);
+      padding:9px 13px;border-radius:11px;cursor:pointer;transition:.2s;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(25,118,210,.12)}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .content{padding:28px;max-width:1680px;margin:auto}
+    .hero{
+      background:linear-gradient(135deg,#0F5CA3,#1976D2 58%,#5AB1F7);
+      color:#fff;border-radius:24px;padding:28px 30px;box-shadow:var(--shadow);
+      display:grid;grid-template-columns:1.6fr 1fr;gap:28px;align-items:center;
+    }
+    .hero h2{font-size:31px;margin:0 0 8px}
+    .hero p{margin:0;color:#dff1ff;font-weight:300;max-width:760px;line-height:1.7}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:16px;border-radius:16px}
+    .stat strong{display:block;font-size:27px}
+    .stat span{font-size:13px;color:#e7f5ff}
+    .toolbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      margin:22px 0 16px;flex-wrap:wrap
+    }
+    .search{
+      flex:1;min-width:280px;display:flex;align-items:center;background:#fff;
+      border:1px solid var(--border);border-radius:14px;padding:0 14px;box-shadow:0 5px 18px rgba(25,118,210,.05)
+    }
+    .search input{border:0;outline:0;width:100%;padding:12px;background:transparent;color:var(--text)}
+    .section{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+      box-shadow:var(--shadow);margin:18px 0;overflow:hidden;
+    }
+    .section-head{
+      padding:20px 22px;border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;gap:16px;align-items:center;
+    }
+    .section-head h3{margin:0;font-size:20px}
+    .section-head p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+    .badge{
+      display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;
+      background:var(--soft);color:var(--primary);font-size:12px;font-weight:500;
+    }
+    .architecture{padding:26px}
+    .core{
+      max-width:360px;margin:0 auto 30px;text-align:center;padding:18px;
+      border-radius:16px;color:#fff;background:linear-gradient(135deg,#173B5B,#0F5CA3);
+      position:relative;box-shadow:0 12px 24px rgba(15,79,138,.2)
+    }
+    .core:after{
+      content:"";position:absolute;left:50%;bottom:-30px;width:2px;height:30px;background:#93c7ec
+    }
+    .modules{
+      position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px
+    }
+    .modules:before{
+      content:"";position:absolute;left:16.66%;right:16.66%;top:-16px;height:2px;background:#93c7ec
+    }
+    .module-card{
+      background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;
+      cursor:pointer;transition:.2s;position:relative
+    }
+    .module-card:before{
+      content:"";position:absolute;left:50%;top:-18px;width:2px;height:18px;background:#93c7ec
+    }
+    .module-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(25,118,210,.14);border-color:#8cc8f4}
+    .module-card .icon{width:42px;height:42px;border-radius:12px;background:var(--soft);display:grid;place-items:center;color:var(--primary);font-weight:700;margin-bottom:12px}
+    .module-card h4{margin:0 0 4px;font-size:16px}
+    .module-card p{margin:0;color:var(--muted);font-size:12px}
+    .module-card .count{position:absolute;right:14px;top:14px;background:#eef7ff;color:var(--primary);font-size:11px;border-radius:999px;padding:5px 8px}
+    .roadmap{scroll-margin-top:92px}
+    .accordion-head{
+      width:100%;border:0;background:#fff;padding:20px 22px;cursor:pointer;
+      display:flex;align-items:center;justify-content:space-between;text-align:left;
+    }
+    .acc-left{display:flex;gap:14px;align-items:center}
+    .system-code{
+      width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#1976D2,#5AB1F7);
+      color:#fff;display:grid;place-items:center;font-weight:700;font-size:18px
+    }
+    .acc-title h3{margin:0;font-size:19px}
+    .acc-title p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+    .chev{font-size:20px;color:var(--primary);transition:.2s}
+    .roadmap.closed .chev{transform:rotate(-90deg)}
+    .acc-body{padding:0 22px 22px}
+    .roadmap.closed .acc-body{display:none}
+    .workflow{
+      display:flex;gap:10px;align-items:center;overflow-x:auto;padding:16px 2px 18px;
+    }
+    .flow-step{
+      min-width:145px;background:#f8fcff;border:1px solid var(--border);
+      border-radius:12px;padding:11px 12px;text-align:center;font-size:12px
+    }
+    .arrow{color:#83b9de;font-weight:700}
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:980px;background:#fff}
+    th{
+      text-align:left;background:#EAF4FD;color:#16486F;font-size:12px;
+      padding:12px;border-bottom:1px solid var(--border);position:sticky;top:0
+    }
+    td{padding:12px;border-bottom:1px solid #edf4f9;font-size:12px;vertical-align:top}
+    tbody tr:hover{background:#fbfdff}
+    .code-pill{font-weight:700;color:var(--primary)}
+    .tor{white-space:nowrap}
+    .output{color:var(--success);font-weight:500}
+    .hidden-row{display:none}
+    .empty{
+      display:none;text-align:center;padding:26px;color:var(--muted);
+    }
+    .footer{text-align:center;color:var(--muted);font-size:12px;padding:26px}
+    @media(max-width:1100px){
+      .app{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .hero{grid-template-columns:1fr}
+      .modules{grid-template-columns:repeat(2,1fr)}
+      .modules:before,.module-card:before{display:none}
+    }
+    @media(max-width:680px){
+      .topbar{height:auto;padding:14px 16px;align-items:flex-start;gap:12px;flex-direction:column}
+      .content{padding:16px}
+      .hero{padding:22px}
+      .hero h2{font-size:24px}
+      .modules{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr 1fr}
+      .actions{width:100%}
+      .btn{flex:1}
+    }
+    @media print{
+      body{background:#fff}
+      .sidebar,.topbar,.toolbar{display:none!important}
+      .app{display:block}
+      .content{padding:0}
+      .section,.hero{box-shadow:none;break-inside:avoid}
+      .roadmap.closed .acc-body{display:block}
+      .architecture{padding:18px}
+      .modules{grid-template-columns:repeat(3,1fr)}
+    }
+  
+    /* Clickable prototype links */
+    .module-card{display:block}
+    .module-file{
+      display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+      padding:6px 9px;border-radius:9px;background:#EAF4FD;color:#1976D2;
+      font-size:11px;font-weight:600;border:1px solid #CFE7F8
+    }
+    .module-file:hover{background:#DDEFFD}
+    .module-open-row{
+      display:flex;justify-content:flex-end;padding:12px 16px 0
+    }
+    .module-open-link{
+      display:inline-flex;align-items:center;gap:7px;padding:8px 11px;
+      border:1px solid var(--border);border-radius:10px;background:#fff;
+      color:var(--primary);font-size:12px;font-weight:600
+    }
+    .module-open-link:hover{background:#EEF7FF}
+    .roadmap tbody tr{cursor:pointer;transition:.18s}
+    .roadmap tbody tr:hover{background:#EDF7FF;box-shadow:inset 4px 0 0 var(--primary)}
+    .roadmap tbody tr:focus{outline:3px solid rgba(25,118,210,.18);outline-offset:-3px}
+    .workflow .flow-step{cursor:pointer;transition:.18s}
+    .workflow .flow-step:hover{background:#E3F2FD;border-color:#90CAF9;color:#0F5CA3;transform:translateY(-1px)}
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">DPE</div>
+      <div>
+        <h1>Sports Science Service Center</h1>
+        <small>Interactive System Design</small>
+      </div>
+    </div>
+    <div class="side-title">สารบัญ</div>
+    <a class="side-link active" href="#system-navigation"><span class="side-code">SN</span>System Navigation</a>
+    <div class="side-title">Wireframe Roadmap</div>
+    <a class="side-link" href="#member"><span class="side-code">M</span>Member<span class="side-meta">12</span></a>
+    <a class="side-link" href="#class"><span class="side-code">C</span>Class<span class="side-meta">7</span></a>
+    <a class="side-link" href="#workout"><span class="side-code">W</span>Workout<span class="side-meta">9</span></a>
+    <a class="side-link" href="#payment"><span class="side-code">P</span>Payment<span class="side-meta">6</span></a>
+    <a class="side-link" href="#report"><span class="side-code">R</span>Reporting<span class="side-meta">7</span></a>
+    <a class="side-link" href="#admin"><span class="side-code">A</span>Administration<span class="side-meta">4</span></a>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">3.3 Interactive System Design / System Navigation & Wireframe Roadmap</div>
+        <div class="page-title">ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="toggleAll(false)">ย่อทั้งหมด</button>
+        <button class="btn" onclick="toggleAll(true)">ขยายทั้งหมด</button>
+        <button class="btn primary" onclick="window.print()">พิมพ์ / Save PDF</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="hero">
+        <div>
+          <h2>System Navigation & Wireframe Roadmap</h2>
+          <p>โครงสร้างการนำทางและแผนผังหน้าจอของระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย ครอบคลุม 6 ระบบหลัก พร้อมผู้ใช้งาน TOR ตำแหน่งใน Workflow ผลลัพธ์ และวัตถุประสงค์ของแต่ละหน้าจอ</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong>6</strong><span>ระบบหลัก</span></div>
+          <div class="stat"><strong>45</strong><span>หน้าจอทั้งหมด</span></div>
+          <div class="stat"><strong>6</strong><span>Workflow</span></div>
+          <div class="stat"><strong>100%</strong><span>TOR Mapping</span></div>
+        </div>
+      </section>
+
+      <div class="toolbar">
+        <div class="search">
+          <span>⌕</span>
+          <input id="searchBox" type="search" placeholder="ค้นหา เช่น M-04, รายละเอียดสมาชิก, TOR 1.4, Invoice" oninput="filterRows()">
+        </div>
+        <span class="badge" id="resultCount">45 Screens</span>
+      </div>
+
+      <section class="section" id="system-navigation">
+        <div class="section-head">
+          <div>
+            <h3>3.3.1 System Navigation</h3>
+            <p>ภาพรวมความเชื่อมโยงของระบบหลักทั้งหมด</p>
+          </div>
+          <span class="badge">6 Modules</span>
+        </div>
+        <div class="architecture">
+          <div class="core">
+            <strong>Executive Dashboard / Central Portal</strong>
+            <div style="font-size:12px;color:#d7efff;margin-top:4px">ศูนย์กลางการเข้าถึงข้อมูลและบริการ</div>
+          </div>
+          <div class="modules">
+            <a href="member.html#m01" class="module-card"><span class="count">12 Screens</span><div class="icon">M</div><h4>Member Management</h4><p>สมาชิก แพ็กเกจ บัตรสมาชิก การเข้าใช้ และแบบประเมิน</p><span class="module-file">⌂ member.html</span></a>
+            <a href="class.html#c01" class="module-card"><span class="count">7 Screens</span><div class="icon">C</div><h4>Class Management</h4><p>วิทยากร ตารางสอน คลาส การจอง และ Attendance</p><span class="module-file">⌂ class.html</span></a>
+            <a href="workout.html#w01" class="module-card"><span class="count">9 Screens</span><div class="icon">W</div><h4>Workout Tracking</h4><p>ผลทดสอบ แผนออกกำลังกาย Log Progress และการวิเคราะห์</p><span class="module-file">⌂ workout.html</span></a>
+            <a href="payment.html#p01" class="module-card"><span class="count">6 Screens</span><div class="icon">P</div><h4>Payment</h4><p>Invoice การชำระเงิน ตรวจสอบผล ใบเสร็จ และประวัติ</p><span class="module-file">⌂ payment.html</span></a>
+            <a href="report.html#r01" class="module-card"><span class="count">7 Screens</span><div class="icon">R</div><h4>Reporting & Analytics</h4><p>รายงานสมาชิก การใช้บริการ สุขภาพ ความพึงพอใจ และรายรับ</p><span class="module-file">⌂ report.html</span></a>
+            <a href="admin.html#a01" class="module-card"><span class="count">4 Screens</span><div class="icon">A</div><h4>Administration</h4><p>ผู้ใช้งาน บทบาท สิทธิ์ และการตั้งค่าระบบ</p><span class="module-file">⌂ admin.html</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMBER -->
+      <section class="section roadmap" id="member">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">M</div><div class="acc-title"><h3>1. ระบบจัดการสมาชิก</h3><p>Member Management System · 12 Screens · TOR 1.1–1.8</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="member.html#m01">⌂ เปิด member.html</a></div>
+          <div class="workflow">
+            <div class="flow-step">สมัครสมาชิก</div><div class="arrow">→</div><div class="flow-step">ตรวจสอบข้อมูล</div><div class="arrow">→</div><div class="flow-step">เลือกแพ็กเกจ</div><div class="arrow">→</div><div class="flow-step">สร้างรายการชำระ</div><div class="arrow">→</div><div class="flow-step">ออกบัตรสมาชิก</div><div class="arrow">→</div><div class="flow-step">Check-in / Check-out</div><div class="arrow">→</div><div class="flow-step">แจ้งเตือนและประเมิน</div>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">M-01</td><td>Dashboard สมาชิก</td><td>Admin</td><td class="tor">1.1–1.8</td><td>Start</td><td class="output">Dashboard</td><td>แสดงภาพรวมสมาชิก KPI และเมนูลัดสำหรับบริหารสมาชิก</td></tr>
+            <tr><td class="code-pill">M-02</td><td>ค้นหาและรายการสมาชิก</td><td>Admin</td><td class="tor">1.1</td><td>Step 1</td><td class="output">Member List</td><td>ค้นหา เพิ่ม แก้ไข และเลือกสมาชิกเพื่อเข้าสู่กระบวนการให้บริการ</td></tr>
+            <tr><td class="code-pill">M-03</td><td>ลงทะเบียนสมาชิก</td><td>Front Desk</td><td class="tor">1.1</td><td>Step 2</td><td class="output">Member Profile</td><td>ลงทะเบียนสมาชิกใหม่และบันทึกข้อมูลส่วนบุคคล</td></tr>
+            <tr><td class="code-pill">M-04</td><td>รายละเอียดสมาชิก (360°)</td><td>Admin / Trainer</td><td class="tor">1.1, 1.3, 1.4, 1.5</td><td>Step 3</td><td class="output">Member Profile</td><td>แสดงข้อมูลสมาชิก สิทธิ์ ประวัติ แพ็กเกจ การใช้บริการ และการแจ้งเตือน</td></tr>
+            <tr><td class="code-pill">M-05</td><td>เลือกแพ็กเกจ / ต่ออายุ</td><td>Front Desk</td><td class="tor">1.4</td><td>Step 4</td><td class="output">Package</td><td>เลือกแพ็กเกจ ต่ออายุ หรือเปลี่ยนประเภทสมาชิก</td></tr>
+            <tr><td class="code-pill">M-06</td><td>สร้างรายการชำระเงิน</td><td>Front Desk</td><td class="tor">1.6</td><td>Step 5</td><td class="output">Invoice</td><td>สร้างรายการค่าบริการและส่งต่อไปยังระบบชำระเงิน</td></tr>
+            <tr><td class="code-pill">M-07</td><td>ออกบัตรสมาชิก</td><td>Front Desk</td><td class="tor">1.7</td><td>Step 6</td><td class="output">Member Card</td><td>ออกบัตรสมาชิกพร้อม QR Code / Barcode / RFID</td></tr>
+            <tr><td class="code-pill">M-08</td><td>Check-in / Check-out</td><td>Staff</td><td class="tor">1.2, 1.3</td><td>Step 7</td><td class="output">Visit Record</td><td>ตรวจสอบสิทธิ์สมาชิกและบันทึกการเข้า–ออกศูนย์</td></tr>
+            <tr><td class="code-pill">M-09</td><td>ประวัติการเข้าใช้บริการ</td><td>Admin</td><td class="tor">1.3</td><td>Step 8</td><td class="output">Timeline</td><td>ตรวจสอบประวัติการเข้าใช้บริการย้อนหลัง</td></tr>
+            <tr><td class="code-pill">M-10</td><td>แจ้งเตือนสมาชิก</td><td>Admin</td><td class="tor">1.5</td><td>Step 9</td><td class="output">Notification</td><td>แจ้งเตือนสมาชิกเรื่องวันหมดอายุ โปรโมชั่น และวันหยุดทำการ</td></tr>
+            <tr><td class="code-pill">M-11</td><td>จัดการแบบประเมิน</td><td>Admin</td><td class="tor">1.8</td><td>Step 10</td><td class="output">Survey</td><td>สร้างและบริหารแบบประเมินความพึงพอใจ</td></tr>
+            <tr><td class="code-pill">M-12</td><td>สมาชิกตอบแบบประเมิน</td><td>Member</td><td class="tor">1.8, 4.3</td><td>End</td><td class="output">Survey Result</td><td>สมาชิกตอบแบบประเมินและบันทึกผลเข้าสู่ระบบรายงาน</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <!-- CLASS -->
+      <section class="section roadmap" id="class">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">C</div><div class="acc-title"><h3>2. ระบบจัดการตารางคลาส</h3><p>Class Management System · 7 Screens · TOR 2.1–2.5</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="class.html#c01">⌂ เปิด class.html</a></div>
+          <div class="workflow"><div class="flow-step">จัดการวิทยากร</div><div class="arrow">→</div><div class="flow-step">กำหนดตารางสอน</div><div class="arrow">→</div><div class="flow-step">สร้างคลาส</div><div class="arrow">→</div><div class="flow-step">เปิดรับจอง</div><div class="arrow">→</div><div class="flow-step">จองคลาส</div><div class="arrow">→</div><div class="flow-step">Attendance / Waitlist</div><div class="arrow">→</div><div class="flow-step">แจ้งเตือน</div></div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">C-01</td><td>Dashboard ตารางคลาส</td><td>Admin</td><td>2.1–2.5</td><td>Start</td><td class="output">Dashboard</td><td>แสดงภาพรวมคลาส ตารางสอน การจอง และสถานะที่นั่ง</td></tr>
+            <tr><td class="code-pill">C-02</td><td>จัดการข้อมูลวิทยากร</td><td>Admin</td><td>2.3</td><td>Step 1</td><td class="output">Instructor Profile</td><td>จัดเก็บและบริหารข้อมูลวิทยากร ผู้ฝึกสอน และความเชี่ยวชาญ</td></tr>
+            <tr><td class="code-pill">C-03</td><td>ตารางสอนวิทยากร</td><td>Admin</td><td>2.2</td><td>Step 2</td><td class="output">Instructor Schedule</td><td>กำหนดตารางสอนและตรวจสอบเวลาซ้ำซ้อน</td></tr>
+            <tr><td class="code-pill">C-04</td><td>สร้าง / แก้ไขคลาส</td><td>Admin</td><td>2.1</td><td>Step 3</td><td class="output">Class</td><td>กำหนดชื่อคลาส สถานที่ วิทยากร เวลา จำนวนที่นั่ง และเงื่อนไข</td></tr>
+            <tr><td class="code-pill">C-05</td><td>จองคลาสออนไลน์</td><td>Member</td><td>2.4</td><td>Step 4</td><td class="output">Booking</td><td>ให้สมาชิกค้นหา ดูรายละเอียด และจองคลาสออนไลน์</td></tr>
+            <tr><td class="code-pill">C-06</td><td>Attendance / Waitlist</td><td>Trainer</td><td>2.4</td><td>Step 5</td><td class="output">Attendance Record</td><td>เช็กชื่อผู้เข้าเรียน จัดลำดับคิวรอ และจัดการกรณียกเลิก</td></tr>
+            <tr><td class="code-pill">C-07</td><td>แจ้งเตือนคลาส</td><td>System / Admin</td><td>2.5</td><td>End</td><td class="output">Notification</td><td>แจ้งเตือนก่อนเริ่มคลาส การเปลี่ยนแปลง และที่นั่งว่าง</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <!-- WORKOUT -->
+      <section class="section roadmap" id="workout">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">W</div><div class="acc-title"><h3>3. ระบบบันทึกและติดตามการออกกำลังกาย</h3><p>Workout Tracking & Progress · 9 Screens · TOR 3.1–3.5</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="workout.html#w01">⌂ เปิด workout.html</a></div>
+          <div class="workflow"><div class="flow-step">Sync API DPE</div><div class="arrow">→</div><div class="flow-step">ผลทดสอบสมรรถภาพ</div><div class="arrow">→</div><div class="flow-step">Exercise Library</div><div class="arrow">→</div><div class="flow-step">สร้างแผน</div><div class="arrow">→</div><div class="flow-step">บันทึก Workout</div><div class="arrow">→</div><div class="flow-step">ติดตาม Progress</div><div class="arrow">→</div><div class="flow-step">Trainer Analysis</div></div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">W-01</td><td>Dashboard Workout</td><td>Trainer</td><td>3.1–3.5</td><td>Start</td><td class="output">Dashboard</td><td>แสดงภาพรวมผลทดสอบ แผน การบันทึก และความก้าวหน้าของสมาชิก</td></tr>
+            <tr><td class="code-pill">W-02</td><td>ผลทดสอบสมรรถภาพ</td><td>Trainer</td><td>3.1</td><td>Step 1</td><td class="output">Fitness Result</td><td>รับและแสดงผลการทดสอบสมรรถภาพจากระบบ/API ที่เกี่ยวข้อง</td></tr>
+            <tr><td class="code-pill">W-03</td><td>ฐานข้อมูลท่าออกกำลังกาย</td><td>Trainer</td><td>3.5</td><td>Step 2</td><td class="output">Exercise Library</td><td>จัดการท่าออกกำลังกาย คำอธิบาย กล้ามเนื้อเป้าหมาย และสื่อประกอบ</td></tr>
+            <tr><td class="code-pill">W-04</td><td>สร้างแผนออกกำลังกาย</td><td>Trainer</td><td>3.3</td><td>Step 3</td><td class="output">Workout Plan</td><td>สร้างแผนเฉพาะบุคคลตามผลทดสอบ เป้าหมาย และข้อจำกัด</td></tr>
+            <tr><td class="code-pill">W-05</td><td>ตารางแผนออกกำลังกาย</td><td>Member</td><td>3.3</td><td>Step 4</td><td class="output">Workout Calendar</td><td>แสดงตารางออกกำลังกายรายวัน รายสัปดาห์ และรายละเอียดแต่ละกิจกรรม</td></tr>
+            <tr><td class="code-pill">W-06</td><td>บันทึกการออกกำลังกาย</td><td>Member</td><td>3.2</td><td>Step 5</td><td class="output">Workout Log</td><td>บันทึกกิจกรรม ระยะเวลา จำนวนครั้ง น้ำหนัก และค่าที่เกี่ยวข้อง</td></tr>
+            <tr><td class="code-pill">W-07</td><td>Progress / BMI</td><td>Member</td><td>3.4</td><td>Step 6</td><td class="output">Progress</td><td>ติดตามแนวโน้มสุขภาพ BMI และผลลัพธ์ตามเป้าหมาย</td></tr>
+            <tr><td class="code-pill">W-08</td><td>วิเคราะห์โดย Trainer</td><td>Trainer</td><td>3.3, 3.4</td><td>Step 7</td><td class="output">Recommendation</td><td>วิเคราะห์ผล ปรับแผน และให้คำแนะนำแก่สมาชิก</td></tr>
+            <tr><td class="code-pill">W-09</td><td>ประวัติ Workout</td><td>Member</td><td>3.2, 3.4</td><td>End</td><td class="output">Timeline</td><td>เรียกดูประวัติการออกกำลังกายและผลการติดตามย้อนหลัง</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+<!-- PAYMENT -->
+      <section class="section roadmap" id="payment">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">P</div><div class="acc-title"><h3>4. ระบบชำระค่าบริการ</h3><p>Payment System · 6 Screens · TOR 6.1–6.3</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="payment.html#p01">⌂ เปิด payment.html</a></div>
+          <div class="workflow"><div class="flow-step">สร้าง Invoice</div><div class="arrow">→</div><div class="flow-step">Bill Payment / Cross Bank</div><div class="arrow">→</div><div class="flow-step">ตรวจสอบผล</div><div class="arrow">→</div><div class="flow-step">ออกใบเสร็จ</div><div class="arrow">→</div><div class="flow-step">ประวัติการชำระ</div></div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">P-01</td><td>Dashboard Payment</td><td>Finance</td><td>6.1–6.3</td><td>Start</td><td class="output">Dashboard</td><td>แสดงภาพรวมรายการชำระ สถานะ รายรับ และธุรกรรมที่ต้องตรวจสอบ</td></tr>
+            <tr><td class="code-pill">P-02</td><td>Invoice</td><td>Finance / Front Desk</td><td>6.2</td><td>Step 1</td><td class="output">Invoice</td><td>สร้างใบแจ้งชำระและรายละเอียดค่าบริการ</td></tr>
+            <tr><td class="code-pill">P-03</td><td>Bill Payment / Cross Bank</td><td>Member</td><td>6.1</td><td>Step 2</td><td class="output">Payment Transaction</td><td>รองรับการชำระเงินผ่านช่องทางอิเล็กทรอนิกส์และธนาคาร</td></tr>
+            <tr><td class="code-pill">P-04</td><td>Payment Verification</td><td>Finance</td><td>6.1</td><td>Step 3</td><td class="output">Verified Payment</td><td>ตรวจสอบผลการชำระ กระทบยอด และจัดการธุรกรรมผิดปกติ</td></tr>
+            <tr><td class="code-pill">P-05</td><td>Receipt</td><td>Finance</td><td>6.3</td><td>Step 4</td><td class="output">Receipt</td><td>ออกใบเสร็จรับเงินและส่งให้สมาชิก</td></tr>
+            <tr><td class="code-pill">P-06</td><td>Payment History</td><td>Finance / Member</td><td>6.1–6.3</td><td>End</td><td class="output">Payment History</td><td>เรียกดูประวัติการชำระ สถานะ เอกสาร และรายละเอียดธุรกรรมย้อนหลัง</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+<!-- REPORT -->
+      <section class="section roadmap" id="report">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">R</div><div class="acc-title"><h3>5. ระบบรายงานและวิเคราะห์</h3><p>Reporting & Analytics · 7 Screens · TOR 4.1–4.7</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="report.html#r01">⌂ เปิด report.html</a></div>
+          <div class="workflow"><div class="flow-step">Executive Dashboard</div><div class="arrow">→</div><div class="flow-step">รายงานสมาชิก</div><div class="arrow">→</div><div class="flow-step">รายงานการใช้บริการ</div><div class="arrow">→</div><div class="flow-step">ความพึงพอใจ</div><div class="arrow">→</div><div class="flow-step">BMI</div><div class="arrow">→</div><div class="flow-step">รายรับรายวัน</div><div class="arrow">→</div><div class="flow-step">รายรับปีงบประมาณ</div></div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">R-01</td><td>Executive Dashboard</td><td>Executive</td><td>4.1–4.7</td><td>Start</td><td class="output">Dashboard</td><td>แสดง KPI สำคัญและภาพรวมการดำเนินงานของศูนย์</td></tr>
+            <tr><td class="code-pill">R-02</td><td>รายงานสมาชิก</td><td>Executive / Admin</td><td>4.1, 4.4</td><td>Step 1</td><td class="output">Member Report</td><td>วิเคราะห์จำนวน ประเภท อายุ สถานะ และแนวโน้มสมาชิก</td></tr>
+            <tr><td class="code-pill">R-03</td><td>รายงานการเข้าใช้บริการ</td><td>Executive / Admin</td><td>4.2</td><td>Step 2</td><td class="output">Usage Report</td><td>วิเคราะห์ความถี่ ช่วงเวลา พื้นที่ และรูปแบบการเข้าใช้บริการ</td></tr>
+            <tr><td class="code-pill">R-04</td><td>รายงานความพึงพอใจ</td><td>Executive / Admin</td><td>4.3</td><td>Step 3</td><td class="output">Satisfaction Report</td><td>สรุปผลแบบประเมิน คะแนนเฉลี่ย และข้อเสนอแนะ</td></tr>
+            <tr><td class="code-pill">R-05</td><td>รายงาน BMI</td><td>Executive / Trainer</td><td>4.5</td><td>Step 4</td><td class="output">BMI Report</td><td>วิเคราะห์ข้อมูล BMI และแนวโน้มสุขภาพของสมาชิก</td></tr>
+            <tr><td class="code-pill">R-06</td><td>รายงานรายรับรายวัน</td><td>Finance / Executive</td><td>4.6</td><td>Step 5</td><td class="output">Daily Revenue</td><td>สรุปรายรับรายวันตามประเภทบริการและช่องทางชำระเงิน</td></tr>
+            <tr><td class="code-pill">R-07</td><td>รายงานรายรับปีงบประมาณ</td><td>Finance / Executive</td><td>4.7</td><td>End</td><td class="output">Fiscal Revenue</td><td>สรุปรายรับสะสม เปรียบเทียบเป้าหมาย และวิเคราะห์ตามปีงบประมาณ</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+<!-- ADMIN -->
+      <section class="section roadmap" id="admin">
+        <button class="accordion-head" onclick="toggleSection(this)">
+          <div class="acc-left"><div class="system-code">A</div><div class="acc-title"><h3>6. ระบบตั้งค่าและจัดการผู้ใช้งาน</h3><p>Administration & User Management · 4 Screens · TOR 5.1–5.2</p></div></div><div class="chev">⌄</div>
+        </button>
+        <div class="acc-body">
+          <div class="module-open-row"><a class="module-open-link" href="admin.html#a01">⌂ เปิด admin.html</a></div>
+          <div class="workflow"><div class="flow-step">สร้างผู้ใช้งาน</div><div class="arrow">→</div><div class="flow-step">กำหนด Role</div><div class="arrow">→</div><div class="flow-step">กำหนด Permission</div><div class="arrow">→</div><div class="flow-step">System Setting</div></div>
+          <div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ Wireframe</th><th>ผู้ใช้งาน</th><th>TOR</th><th>Workflow</th><th>Output</th><th>วัตถุประสงค์</th></tr></thead><tbody>
+            <tr><td class="code-pill">A-01</td><td>Dashboard Admin</td><td>Admin</td><td>5.1–5.2</td><td>Start</td><td class="output">Dashboard</td><td>แสดงภาพรวมบัญชีผู้ใช้ สิทธิ์ สถานะระบบ และการตั้งค่าสำคัญ</td></tr>
+            <tr><td class="code-pill">A-02</td><td>User Management</td><td>Admin</td><td>5.1</td><td>Step 1</td><td class="output">User Account</td><td>สร้าง แก้ไข ระงับ และจัดการบัญชีผู้ใช้งานระบบ</td></tr>
+            <tr><td class="code-pill">A-03</td><td>Role & Permission</td><td>Admin</td><td>5.1</td><td>Step 2</td><td class="output">Access Policy</td><td>กำหนดบทบาทและสิทธิ์การเข้าถึงข้อมูลหรือเมนูตามหน้าที่</td></tr>
+            <tr><td class="code-pill">A-04</td><td>System Setting</td><td>Admin</td><td>5.2</td><td>End</td><td class="output">Configuration</td><td>ตั้งค่าข้อมูลศูนย์ พารามิเตอร์ การแจ้งเตือน และค่าพื้นฐานของระบบ</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <div class="empty" id="emptyState">ไม่พบหน้าจอที่ตรงกับคำค้นหา</div>
+      <div class="footer">
+        Interactive System Design · System Navigation & Wireframe Roadmap · 6 Modules / 45 Screens<br>
+        <span style="font-size:11px">ลำดับระบบ: Member → Class → Workout → Payment → Reporting → Administration · เลข TOR ในตารางคงตามเอกสาร TOR ต้นฉบับ</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+function toggleSection(btn){
+  btn.closest('.roadmap').classList.toggle('closed');
+}
+function toggleAll(open){
+  document.querySelectorAll('.roadmap').forEach(s=>s.classList.toggle('closed',!open));
+}
+function filterRows(){
+  const q=document.getElementById('searchBox').value.trim().toLowerCase();
+  let visible=0;
+  document.querySelectorAll('.roadmap').forEach(section=>{
+    let sectionVisible=0;
+    section.querySelectorAll('tbody tr').forEach(row=>{
+      const match=!q || row.innerText.toLowerCase().includes(q);
+      row.classList.toggle('hidden-row',!match);
+      if(match){visible++;sectionVisible++;}
+    });
+    section.style.display=sectionVisible||!q?'block':'none';
+    if(q && sectionVisible){section.classList.remove('closed')}
+  });
+  document.getElementById('resultCount').textContent=visible+' Screens';
+  document.getElementById('emptyState').style.display=visible===0?'block':'none';
+}
+const links=[...document.querySelectorAll('.side-link')];
+const sections=[...document.querySelectorAll('#system-navigation,.roadmap')];
+window.addEventListener('scroll',()=>{
+  let current='system-navigation';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-130) current=s.id;});
+  links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+current));
+});
+
+const moduleFileMap={
+  member:'member.html',class:'class.html',workout:'workout.html',
+  payment:'payment.html',report:'report.html',admin:'admin.html'
+};
+
+function cleanScreenCode(code){
+  return String(code||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+function openModuleScreen(sectionId,screenId){
+  const file=moduleFileMap[sectionId];
+  if(file&&screenId) location.href=file+'#'+screenId;
+}
+function activatePortalLinks(){
+  document.querySelectorAll('.roadmap').forEach(section=>{
+    const sectionId=section.id;
+
+    section.querySelectorAll('tbody tr').forEach(row=>{
+      const code=row.querySelector('.code-pill')?.textContent||'';
+      const screenId=cleanScreenCode(code);
+      row.tabIndex=0;
+      row.title='เปิดหน้าจอ '+code;
+      row.addEventListener('click',()=>openModuleScreen(sectionId,screenId));
+      row.addEventListener('keydown',e=>{
+        if(e.key==='Enter'||e.key===' '){
+          e.preventDefault();
+          openModuleScreen(sectionId,screenId);
+        }
+      });
+    });
+
+    const maps={
+      member:['m03','m04','m05','m06','m07','m08','m10'],
+      class:['c02','c03','c04','c04','c05','c06','c07'],
+      workout:['w02','w02','w03','w04','w06','w07','w08'],
+      payment:['p02','p03','p04','p05','p06'],
+      report:['r01','r02','r03','r04','r05','r06','r07'],
+      admin:['a02','a03','a04','a05']
+    };
+    section.querySelectorAll('.workflow .flow-step').forEach((step,index)=>{
+      const screenId=maps[sectionId]?.[index];
+      if(!screenId)return;
+      step.tabIndex=0;
+      step.title='เปิดหน้าจอ '+screenId.toUpperCase();
+      step.addEventListener('click',()=>openModuleScreen(sectionId,screenId));
+      step.addEventListener('keydown',e=>{
+        if(e.key==='Enter'||e.key===' '){
+          e.preventDefault();
+          openModuleScreen(sectionId,screenId);
+        }
+      });
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded',activatePortalLinks);
+
+</script>
+</body>
+</html>

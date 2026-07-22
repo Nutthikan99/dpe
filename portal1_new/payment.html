@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Management – Sprint 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1976D2;
+  --secondary:#42A5F5;
+  --bg:#F5FAFF;
+  --card:#FFFFFF;
+  --border:#D7EAF8;
+  --text:#17324A;
+  --muted:#72889A;
+  --success:#2E9B63;
+  --warning:#E49A2B;
+  --danger:#D9534F;
+  --shadow:0 12px 34px rgba(25,118,210,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Kanit",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font-family:inherit}
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{
+  background:linear-gradient(180deg,#0A4F8A 0%,#0F68B8 55%,#1976D2 100%);
+  color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto
+}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 20px}
+.brand-logo{width:45px;height:45px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:22px}
+.brand h1{font-size:15px;line-height:1.35;margin:0}
+.brand p{font-size:9px;color:#CFEAFF;margin:3px 0 0}
+.nav-title{font-size:9px;color:#B9DDF8;margin:15px 10px 8px;text-transform:uppercase;letter-spacing:.08em}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;
+  color:#E7F5FF;text-decoration:none;font-size:11px;margin-bottom:5px;cursor:pointer;
+  transition:.2s
+}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.18);transform:translateX(2px)}
+.nav-icon{width:27px;height:27px;border-radius:9px;background:rgba(255,255,255,.13);display:grid;place-items:center}
+.sidebar-footer{margin-top:20px;padding:13px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.08)}
+.sidebar-footer strong{font-size:10px}.sidebar-footer p{font-size:9px;color:#D7EDFC;line-height:1.55;margin:5px 0 0}
+.main{min-width:0}
+.topbar{
+  height:76px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:20
+}
+.breadcrumb strong{font-size:14px}.breadcrumb span{display:block;font-size:9px;color:var(--muted);margin-top:2px}
+.top-actions{display:flex;gap:10px;align-items:center}
+.user-chip{display:flex;gap:9px;align-items:center;padding:6px 10px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.avatar{width:31px;height:31px;border-radius:10px;background:linear-gradient(135deg,#8CCCF6,#1976D2);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600}
+.user-chip strong{font-size:10px;display:block}.user-chip span{font-size:8px;color:var(--muted)}
+.content{padding:25px 28px 40px}
+.screen{display:none}.screen.active-screen{display:block}
+.screen-hero{
+  background:linear-gradient(135deg,#FFFFFF 0%,#EEF8FF 100%);
+  border:1px solid var(--border);border-radius:22px;padding:22px 24px;
+  display:flex;justify-content:space-between;gap:18px;align-items:center;box-shadow:var(--shadow)
+}
+.screen-hero h2{font-size:22px;margin:0 0 6px}.screen-hero p{font-size:10px;color:var(--muted);margin:0;max-width:720px;line-height:1.65}
+.actions-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 13px;border-radius:10px;font-size:10px;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(25,118,210,.10)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.success{background:var(--success);color:#fff;border-color:var(--success)}
+.btn.danger{background:#FFF0EF;color:var(--danger);border-color:#F4C7C4}
+.meta-strip{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.meta-pill,.tag{font-size:8px;padding:5px 8px;border-radius:999px;background:#EAF5FD;color:#1768A7;border:1px solid #CCE7F8}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.kpi-top{display:flex;justify-content:space-between;align-items:center}
+.kpi-icon{width:38px;height:38px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center;font-size:18px}
+.kpi small{font-size:8px;color:var(--muted)}.kpi strong{font-size:23px;display:block;margin-top:10px}.kpi p{margin:2px 0 0;font-size:8px;color:var(--success)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card-head h3{margin:0;font-size:14px}.card-head p{margin:3px 0 0;font-size:8px;color:var(--muted)}
+.card-body{padding:17px 18px}
+.status{font-size:8px;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.status.paid{background:#E9F7EF;color:var(--success)}
+.status.pending{background:#FFF5E5;color:#B87611}
+.status.overdue{background:#FFF0EF;color:var(--danger)}
+.status.draft{background:#EEF3F7;color:#64788A}
+.summary-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--border);font-size:10px}
+.summary-line:last-child{border-bottom:0}
+.progress{height:7px;background:#EAF2F8;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:99px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:11px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:9px;vertical-align:middle}
+th{background:#F5FAFE;color:#547187;font-weight:500}
+td strong{font-size:10px}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.search-box{position:relative;min-width:260px;flex:1;max-width:400px}
+.search-box input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:11px;background:#fff;font-size:10px}
+.search-box span{position:absolute;left:12px;top:9px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+select,input,textarea{border:1px solid var(--border);border-radius:10px;padding:9px 10px;background:#fff;color:var(--text);font-size:10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#78BDEC;box-shadow:0 0 0 3px rgba(66,165,245,.12)}
+.chart{height:260px;display:flex;align-items:flex-end;gap:14px;padding:20px 8px 0;border-bottom:1px solid var(--border);position:relative}
+.bar{flex:1;background:linear-gradient(180deg,#62B4EC,#1976D2);border-radius:9px 9px 0 0;min-width:22px;position:relative}
+.bar span{position:absolute;bottom:-23px;width:100%;text-align:center;font-size:8px;color:var(--muted)}
+.bar b{position:absolute;top:-20px;width:100%;text-align:center;font-size:8px;color:var(--text)}
+.recent-list{display:grid;gap:10px}
+.recent-item{display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.recent-icon{width:40px;height:40px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center}
+.recent-item strong{font-size:10px}.recent-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+.modal{display:none;position:fixed;inset:0;background:rgba(8,39,65,.50);z-index:99;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{width:min(860px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.25)}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{margin:0;font-size:16px}.modal-body{padding:20px}.modal-foot{padding:15px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:9px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.field{display:grid;gap:6px}.field label{font-size:9px;color:#557087}.field.full{grid-column:1/-1}
+.invoice-items{border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.invoice-item-row{display:grid;grid-template-columns:1.5fr 90px 120px 120px 42px;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center}
+.invoice-item-row:last-child{border-bottom:0}
+.invoice-summary{margin-left:auto;width:min(360px,100%);margin-top:16px}
+.coming{min-height:580px;display:grid;place-items:center;border:1px dashed #A9D3EF;border-radius:20px;background:#F8FCFF;text-align:center}
+.coming h2{margin:0 0 6px}.coming p{font-size:10px;color:var(--muted)}
+.toast-container{position:fixed;right:20px;bottom:20px;z-index:120;display:grid;gap:8px}
+.toast{background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;padding:11px 14px;box-shadow:0 12px 28px rgba(0,0,0,.16);font-size:10px}
+
+/* Sprint 2 */
+.payment-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+.invoice-search-panel{display:grid;grid-template-columns:1fr auto;gap:10px}
+.payment-methods{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.payment-method{border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;background:#fff;cursor:pointer;transition:.2s}
+.payment-method:hover,.payment-method.active{border-color:var(--primary);background:#EFF8FF;transform:translateY(-2px)}
+.payment-method .method-icon{width:44px;height:44px;border-radius:13px;background:#EAF5FD;display:grid;place-items:center;margin:0 auto 8px;font-size:18px}
+.payment-method strong{font-size:10px;display:block}.payment-method span{font-size:8px;color:var(--muted)}
+.payment-summary{background:linear-gradient(135deg,#0E5B9E,#1976D2 62%,#59B8F4);color:#fff;border-radius:18px;padding:18px}
+.payment-summary .summary-line{border-color:rgba(255,255,255,.18)}
+.payment-summary .summary-line span{color:#DCEFFF}
+.amount-box{font-size:31px;font-weight:600;text-align:right;margin:10px 0}
+.qr-box{width:190px;height:190px;margin:14px auto;border-radius:16px;background:
+linear-gradient(90deg,#17324A 12px,transparent 12px) 0 0/28px 28px,
+linear-gradient(#17324A 12px,transparent 12px) 0 0/28px 28px,
+linear-gradient(90deg,transparent 16px,#17324A 16px 24px,transparent 24px) 0 0/28px 28px,
+linear-gradient(transparent 16px,#17324A 16px 24px,transparent 24px) 0 0/28px 28px,
+#fff;border:12px solid #fff;box-shadow:0 8px 26px rgba(0,0,0,.12)}
+.cash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cash-btn{border:1px solid var(--border);border-radius:10px;padding:10px;background:#fff;cursor:pointer;font-size:10px}
+.cash-btn:hover{background:#EEF8FF;border-color:#8BC7EF}
+.history-timeline{display:grid;gap:10px}
+.history-item{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:start;padding:13px;border:1px solid var(--border);border-radius:14px;background:#fff}
+.history-dot{width:42px;height:42px;border-radius:13px;background:#EAF5FD;display:grid;place-items:center;font-size:16px}
+.history-item strong{font-size:10px}.history-item p{font-size:8px;color:var(--muted);margin:3px 0 0;line-height:1.5}
+.history-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.receipt-preview{border:1px solid var(--border);border-radius:16px;background:#fff;padding:18px}
+.receipt-head{text-align:center;border-bottom:1px dashed var(--border);padding-bottom:14px}
+.receipt-head h3{margin:0;font-size:15px}.receipt-head p{margin:4px 0 0;font-size:8px;color:var(--muted)}
+.receipt-total{font-size:23px;color:var(--primary);text-align:right;margin-top:12px}
+.filter-chips{display:flex;gap:7px;flex-wrap:wrap}
+.filter-chip{border:1px solid var(--border);background:#fff;border-radius:999px;padding:7px 11px;font-size:9px;cursor:pointer}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+@media(max-width:1050px){.payment-layout{grid-template-columns:1fr}.payment-methods{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.payment-methods{grid-template-columns:1fr}.invoice-search-panel{grid-template-columns:1fr}.cash-grid{grid-template-columns:repeat(2,1fr)}}
+
+
+/* Sprint3 */
+.refund-box,.receipt-box{border:1px solid var(--border);border-radius:16px;padding:16px;background:#FBFDFF}
+.qr-status{padding:10px;border-radius:12px;background:#EAF5FD;font-size:10px;margin-top:10px}
+
+
+/* Sprint 4 */
+.report-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.report-kpi{background:#fff;border:1px solid var(--border);border-radius:17px;padding:16px;box-shadow:var(--shadow)}
+.report-kpi .label{font-size:8px;color:var(--muted)}
+.report-kpi strong{font-size:22px;display:block;margin:7px 0 3px}
+.report-kpi small{font-size:8px;color:var(--success)}
+.analytics-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.report-chart-box{height:310px;position:relative}
+.report-chart-box canvas{width:100%;height:100%}
+.donut-wrap{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center}
+.donut{width:170px;height:170px;border-radius:50%;background:conic-gradient(#1976D2 0 45%,#42A5F5 45% 70%,#E49A2B 70% 88%,#7E72D8 88% 100%);position:relative;margin:auto}
+.donut:after{content:"";position:absolute;inset:30px;background:#fff;border-radius:50%}
+.donut-center{position:absolute;inset:0;display:grid;place-items:center;z-index:2;text-align:center}
+.donut-center strong{font-size:22px;display:block}.donut-center span{font-size:8px;color:var(--muted)}
+.legend-list{display:grid;gap:10px}.legend-item{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:9px}
+.legend-item i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:7px}
+.rank-list{display:grid;gap:10px}.rank-item{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.rank-no{width:28px;height:28px;border-radius:9px;background:#EAF5FD;color:var(--primary);display:grid;place-items:center;font-size:10px;font-weight:600}
+.rank-item strong{font-size:10px}.rank-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+.report-table table{min-width:760px}
+.forecast-box{background:linear-gradient(135deg,#0E5B9E,#1976D2 62%,#62B6EF);color:#fff;border-radius:18px;padding:18px}
+.forecast-box .summary-line{border-color:rgba(255,255,255,.18)}.forecast-box .summary-line span{color:#DCEFFF}
+.period-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.period-tab{border:1px solid var(--border);background:#fff;border-radius:999px;padding:7px 11px;font-size:9px;cursor:pointer}
+.period-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+@media(max-width:1080px){.report-kpi-grid{grid-template-columns:repeat(2,1fr)}.analytics-grid{grid-template-columns:1fr}.donut-wrap{grid-template-columns:1fr}}
+@media(max-width:600px){.report-kpi-grid{grid-template-columns:1fr}}
+
+
+/* Sprint 5 */
+body.dark{
+  --bg:#0E1B26;
+  --card:#162736;
+  --border:#29475D;
+  --text:#EAF4FB;
+  --muted:#9EB5C5;
+  --shadow:0 12px 34px rgba(0,0,0,.28);
+  background:var(--bg);color:var(--text)
+}
+body.dark .topbar,
+body.dark .card,
+body.dark .kpi,
+body.dark .report-kpi,
+body.dark .receipt-preview,
+body.dark .payment-method,
+body.dark .history-item,
+body.dark .rank-item,
+body.dark .refund-box,
+body.dark .receipt-box,
+body.dark .modal-box,
+body.dark .user-chip,
+body.dark .recent-item,
+body.dark .screen-hero{background:var(--card);color:var(--text)}
+body.dark input,
+body.dark select,
+body.dark textarea,
+body.dark .btn,
+body.dark .filter-chip,
+body.dark .period-tab,
+body.dark .cash-btn{background:#112230;color:var(--text);border-color:var(--border)}
+body.dark th{background:#112230;color:#BFD2DF}
+body.dark .donut:after{background:var(--card)}
+body.dark .coming{background:#112230}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.setting-list{display:grid;gap:12px}
+.setting-row{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:14px;border:1px solid var(--border);border-radius:14px;background:#FBFDFF}
+.setting-row strong{font-size:10px}.setting-row p{font-size:8px;color:var(--muted);margin:3px 0 0;line-height:1.5}
+.switch{position:relative;width:46px;height:26px}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#C9D8E3;border-radius:99px;cursor:pointer;transition:.2s}
+.switch span:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 7px rgba(0,0,0,.2)}
+.switch input:checked + span{background:var(--primary)}
+.switch input:checked + span:before{transform:translateX(20px)}
+.code-preview{background:#0E1B26;color:#D7EAF8;border-radius:14px;padding:15px;font-family:Consolas,monospace;font-size:9px;line-height:1.7;overflow:auto}
+.wizard{display:none;position:fixed;inset:0;background:rgba(5,28,47,.60);z-index:130;align-items:center;justify-content:center;padding:20px}
+.wizard.show{display:flex}
+.wizard-box{width:min(820px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:21px;box-shadow:0 28px 80px rgba(0,0,0,.30)}
+.wizard-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.wizard-step{padding:10px;border-radius:11px;text-align:center;background:#EEF6FC;color:#6C8192;font-size:9px}
+.wizard-step.active{background:var(--primary);color:#fff}
+.wizard-page{display:none}.wizard-page.active{display:block}
+.production-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:#E9F7EF;color:var(--success);font-size:8px}
+.save-indicator{font-size:8px;color:var(--muted)}
+.audit-list{display:grid;gap:9px}
+.audit-item{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px}
+.audit-icon{width:38px;height:38px;border-radius:11px;background:#EAF5FD;display:grid;place-items:center}
+.audit-item strong{font-size:9px}.audit-item p{font-size:8px;color:var(--muted);margin:2px 0 0}
+@media(max-width:950px){.settings-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.wizard-steps{grid-template-columns:1fr 1fr}.setting-row{grid-template-columns:1fr}}
+
+@media(max-width:1150px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.topbar{top:0}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.screen-hero{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.content{padding:18px 14px}.topbar{padding:0 14px}.kpi-grid{grid-template-columns:1fr}.user-chip{display:none}}
+</style>
+
+<style>
+.portal-home-button{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-radius:14px;background:#1976D2;color:#fff!important;
+  text-decoration:none;font-family:"Kanit",sans-serif;font-size:12px;font-weight:600;
+  box-shadow:0 12px 28px rgba(25,118,210,.30);
+  border:1px solid rgba(255,255,255,.35);transition:.2s
+}
+.portal-home-button:hover{transform:translateY(-2px);background:#0F5CA3}
+.portal-home-icon{font-size:18px;line-height:1}
+@media(max-width:700px){
+  .portal-home-button{right:12px;bottom:12px;padding:10px 12px}
+  .portal-home-label{display:none}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">฿</div>
+      <div><h1>ระบบการเงินและ<br>การชำระเงิน</h1><p>Sports Science Center</p></div>
+    </div>
+
+    <div class="nav-title">Payment Management</div>
+    <a class="nav-item active" onclick="goScreen('p01',this)"><span class="nav-icon">⌂</span><span>P-01 Dashboard</span></a>
+    <a class="nav-item" onclick="goScreen('p02',this)"><span class="nav-icon">▤</span><span>P-02 ใบแจ้งชำระเงิน</span></a>
+    <a class="nav-item" onclick="goScreen('p03',this)"><span class="nav-icon">฿</span><span>P-03 รับชำระเงิน</span></a>
+    <a class="nav-item" onclick="goScreen('p04',this)"><span class="nav-icon">◷</span><span>P-04 ประวัติการชำระ</span></a>
+    <a class="nav-item" onclick="goScreen('p05',this)"><span class="nav-icon">◫</span><span>P-05 รายงานการเงิน</span></a>
+    <a class="nav-item" onclick="goScreen('p06',this)"><span class="nav-icon">⚙</span><span>P-06 ตั้งค่าการเงิน</span></a>
+
+    <div class="sidebar-footer">
+      <strong>Payment Management · Sprint 5</strong>
+      <p>P-01 ถึง P-06 พร้อม Production Prototype, LocalStorage, Dark Mode และ Wizard</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb"><strong id="pageTitle">ภาพรวมการเงิน</strong><span>ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</span></div>
+      <div class="top-actions">
+        <button class="btn" onclick="showToast('ยังไม่มีการแจ้งเตือนใหม่')">🔔</button>
+        <div class="user-chip"><div class="avatar">กง</div><div><strong>กองการเงิน</strong><span>Finance Officer</span></div></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="p01" class="screen active-screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-01 ภาพรวมการเงิน</h2>
+            <p>ติดตามรายรับ ยอดชำระ ค้างชำระ ใบแจ้งหนี้ และแนวโน้มรายได้ของบริการศูนย์วิทยาศาสตร์การกีฬาแบบรวมศูนย์</p>
+            <div class="meta-strip"><span class="meta-pill">Real-time Finance Overview</span><span class="meta-pill">Sprint 1</span><span class="meta-pill">Role: Finance Officer</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportDashboard()">Export Summary</button><button class="btn primary" onclick="openInvoiceModal()">+ สร้างใบแจ้งชำระ</button></div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-top"><small>รายรับวันนี้</small><div class="kpi-icon">฿</div></div><strong>128,450</strong><p>↑ 12.8% จากเมื่อวาน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ยอดชำระเดือนนี้</small><div class="kpi-icon">✓</div></div><strong>1.84M</strong><p>82% ของเป้าหมาย</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ยอดค้างชำระ</small><div class="kpi-icon">!</div></div><strong>246,900</strong><p style="color:var(--warning)">28 รายการรอดำเนินการ</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ใบแจ้งชำระเดือนนี้</small><div class="kpi-icon">▤</div></div><strong>186</strong><p>ชำระแล้ว 152 รายการ</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>แนวโน้มรายรับ 7 วัน</h3><p>หน่วย: พันบาท</p></div><select><option>7 วันล่าสุด</option><option>30 วันล่าสุด</option></select></div>
+            <div class="card-body">
+              <div class="chart">
+                <div class="bar" style="height:46%"><b>72</b><span>จ.</span></div>
+                <div class="bar" style="height:61%"><b>95</b><span>อ.</span></div>
+                <div class="bar" style="height:53%"><b>83</b><span>พ.</span></div>
+                <div class="bar" style="height:78%"><b>121</b><span>พฤ.</span></div>
+                <div class="bar" style="height:68%"><b>106</b><span>ศ.</span></div>
+                <div class="bar" style="height:89%"><b>139</b><span>ส.</span></div>
+                <div class="bar" style="height:82%"><b>128</b><span>อา.</span></div>
+              </div>
+              <div class="summary-line" style="margin-top:28px"><span>รายรับรวม 7 วัน</span><strong>744,000 บาท</strong></div>
+              <div class="summary-line"><span>เฉลี่ยต่อวัน</span><strong>106,286 บาท</strong></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>สถานะใบแจ้งชำระ</h3><p>สรุปเดือนปัจจุบัน</p></div><button class="btn" onclick="goScreen('p02')">ดูทั้งหมด</button></div>
+            <div class="card-body">
+              <div class="summary-line"><span>ชำระแล้ว</span><strong style="color:var(--success)">152 รายการ</strong></div>
+              <div class="progress"><i style="width:82%"></i></div>
+              <div class="summary-line"><span>รอชำระ</span><strong style="color:var(--warning)">22 รายการ</strong></div>
+              <div class="progress"><i style="width:12%;background:var(--warning)"></i></div>
+              <div class="summary-line"><span>เกินกำหนด</span><strong style="color:var(--danger)">6 รายการ</strong></div>
+              <div class="progress"><i style="width:4%;background:var(--danger)"></i></div>
+              <div class="summary-line"><span>ฉบับร่าง</span><strong>6 รายการ</strong></div>
+              <div class="progress"><i style="width:4%;background:#9AAEBD"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>รายการรับชำระล่าสุด</h3><p>อัปเดตล่าสุด 16:40 น.</p></div><button class="btn">ดูประวัติ</button></div>
+            <div class="card-body recent-list">
+              <div class="recent-item"><div class="recent-icon">QR</div><div><strong>INV-2569-00186 · กิตติพงษ์ พรหมมา</strong><p>ค่าสมาชิกฟิตเนสรายเดือน · PromptPay</p></div><strong>1,500 บาท</strong></div>
+              <div class="recent-item"><div class="recent-icon">฿</div><div><strong>INV-2569-00185 · บริษัท สปอร์ตพลัส จำกัด</strong><p>ค่าทดสอบสมรรถภาพกลุ่ม · โอนเงิน</p></div><strong>18,000 บาท</strong></div>
+              <div class="recent-item"><div class="recent-icon">CC</div><div><strong>INV-2569-00184 · ณัฐวดี ศรีสุข</strong><p>ค่าโปรแกรมออกกำลังกาย · บัตรเครดิต</p></div><strong>3,200 บาท</strong></div>
+              <div class="recent-item"><div class="recent-icon">฿</div><div><strong>INV-2569-00183 · โรงเรียนกีฬาเทศบาล</strong><p>ค่าบริการอบรมกลุ่ม · เงินสด</p></div><strong>24,500 บาท</strong></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>บริการที่สร้างรายได้สูงสุด</h3><p>เดือนกรกฎาคม 2569</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>1. ค่าสมาชิกฟิตเนส</span><strong>684,000 บาท</strong></div>
+              <div class="progress"><i style="width:100%"></i></div>
+              <div class="summary-line"><span>2. ทดสอบสมรรถภาพ</span><strong>492,500 บาท</strong></div>
+              <div class="progress"><i style="width:72%"></i></div>
+              <div class="summary-line"><span>3. โปรแกรมออกกำลังกาย</span><strong>358,400 บาท</strong></div>
+              <div class="progress"><i style="width:52%"></i></div>
+              <div class="summary-line"><span>4. อบรมและคลาสกลุ่ม</span><strong>301,600 บาท</strong></div>
+              <div class="progress"><i style="width:44%"></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="p02" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-02 ใบแจ้งชำระเงิน</h2>
+            <p>สร้าง ตรวจสอบ ติดตามสถานะ และจัดการใบแจ้งชำระเงินสำหรับสมาชิก บุคคลทั่วไป และหน่วยงานที่ใช้บริการ</p>
+            <div class="meta-strip"><span class="meta-pill">Invoice Management</span><span class="meta-pill">VAT / Discount</span><span class="meta-pill">Sprint 1</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportInvoices()">Export Excel</button><button class="btn primary" onclick="openInvoiceModal()">+ สร้างใบแจ้งชำระ</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-head">
+            <div><h3>รายการใบแจ้งชำระเงิน</h3><p>ทั้งหมด 186 รายการในเดือนนี้</p></div>
+            <div class="actions-row"><button class="btn">พิมพ์รายการ</button></div>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box"><span>⌕</span><input id="invoiceSearch" oninput="filterInvoices()" placeholder="ค้นหาเลขที่ใบแจ้ง ชื่อผู้รับบริการ หรือรายการ..."></div>
+              <div class="filter-row">
+                <select id="invoiceStatus" onchange="filterInvoices()"><option value="">ทุกสถานะ</option><option value="paid">ชำระแล้ว</option><option value="pending">รอชำระ</option><option value="overdue">เกินกำหนด</option><option value="draft">ฉบับร่าง</option></select>
+                <select id="invoiceType" onchange="filterInvoices()"><option value="">ทุกประเภท</option><option>สมาชิกฟิตเนส</option><option>ทดสอบสมรรถภาพ</option><option>โปรแกรมออกกำลังกาย</option><option>คลาส/อบรม</option></select>
+                <input type="date" value="2026-07-21">
+              </div>
+            </div>
+
+            <div class="table-wrap" style="margin-top:15px">
+              <table>
+                <thead><tr><th>เลขที่ใบแจ้ง</th><th>ผู้รับบริการ</th><th>รายการ</th><th>วันที่ออก</th><th>ครบกำหนด</th><th>ยอดสุทธิ</th><th>สถานะ</th><th>ดำเนินการ</th></tr></thead>
+                <tbody id="invoiceTableBody">
+                  <tr data-status="paid" data-type="สมาชิกฟิตเนส"><td><strong>INV-2569-00186</strong></td><td>กิตติพงษ์ พรหมมา</td><td>สมาชิกฟิตเนสรายเดือน</td><td>21 ก.ค. 69</td><td>21 ก.ค. 69</td><td><strong>1,500 บาท</strong></td><td><span class="status paid">ชำระแล้ว</span></td><td><button class="btn" onclick="viewInvoice('INV-2569-00186')">ดู</button></td></tr>
+                  <tr data-status="pending" data-type="ทดสอบสมรรถภาพ"><td><strong>INV-2569-00185</strong></td><td>บริษัท สปอร์ตพลัส จำกัด</td><td>ทดสอบสมรรถภาพกลุ่ม</td><td>21 ก.ค. 69</td><td>28 ก.ค. 69</td><td><strong>18,000 บาท</strong></td><td><span class="status pending">รอชำระ</span></td><td><button class="btn" onclick="viewInvoice('INV-2569-00185')">ดู</button></td></tr>
+                  <tr data-status="paid" data-type="โปรแกรมออกกำลังกาย"><td><strong>INV-2569-00184</strong></td><td>ณัฐวดี ศรีสุข</td><td>โปรแกรมออกกำลังกาย</td><td>20 ก.ค. 69</td><td>20 ก.ค. 69</td><td><strong>3,200 บาท</strong></td><td><span class="status paid">ชำระแล้ว</span></td><td><button class="btn" onclick="viewInvoice('INV-2569-00184')">ดู</button></td></tr>
+                  <tr data-status="overdue" data-type="คลาส/อบรม"><td><strong>INV-2569-00179</strong></td><td>ชมรมผู้สูงอายุเทศบาล</td><td>คลาสออกกำลังกายกลุ่ม</td><td>10 ก.ค. 69</td><td>17 ก.ค. 69</td><td><strong>12,500 บาท</strong></td><td><span class="status overdue">เกินกำหนด</span></td><td><button class="btn" onclick="viewInvoice('INV-2569-00179')">ดู</button></td></tr>
+                  <tr data-status="draft" data-type="ทดสอบสมรรถภาพ"><td><strong>INV-2569-00187</strong></td><td>โรงเรียนกีฬาจังหวัด</td><td>ทดสอบสมรรถภาพนักกีฬา</td><td>21 ก.ค. 69</td><td>30 ก.ค. 69</td><td><strong>28,000 บาท</strong></td><td><span class="status draft">ฉบับร่าง</span></td><td><button class="btn" onclick="editInvoice('INV-2569-00187')">แก้ไข</button></td></tr>
+                  <tr data-status="pending" data-type="สมาชิกฟิตเนส"><td><strong>INV-2569-00182</strong></td><td>ปาริชาติ ใจดี</td><td>สมาชิกฟิตเนส 3 เดือน</td><td>19 ก.ค. 69</td><td>26 ก.ค. 69</td><td><strong>4,200 บาท</strong></td><td><span class="status pending">รอชำระ</span></td><td><button class="btn" onclick="viewInvoice('INV-2569-00182')">ดู</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:18px">
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">มูลค่าใบแจ้งทั้งหมด</small><strong style="font-size:22px;display:block;margin-top:6px">2,091,350 บาท</strong><p style="font-size:9px;color:var(--muted)">รวม VAT และส่วนลด</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">ยอดรับชำระแล้ว</small><strong style="font-size:22px;display:block;margin-top:6px;color:var(--success)">1,844,450 บาท</strong><p style="font-size:9px;color:var(--muted)">88.2% ของยอดทั้งหมด</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">ยอดที่ต้องติดตาม</small><strong style="font-size:22px;display:block;margin-top:6px;color:var(--warning)">246,900 บาท</strong><p style="font-size:9px;color:var(--muted)">28 รายการ</p></div></div>
+        </div>
+      </section>
+
+
+      <section id="p03" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-03 รับชำระเงิน</h2>
+            <p>ค้นหาใบแจ้งชำระ เลือกช่องทางรับชำระ ตรวจสอบยอดเงิน และออกใบเสร็จรับเงินให้สมาชิกหรือหน่วยงาน</p>
+            <div class="meta-strip"><span class="meta-pill">Cash / PromptPay / Card</span><span class="meta-pill">Receipt Generation</span><span class="meta-pill">Sprint 2</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="clearPaymentForm()">ล้างรายการ</button><button class="btn primary" onclick="confirmPayment()">ยืนยันรับชำระ</button></div>
+        </div>
+
+        <div class="payment-layout" style="margin-top:18px">
+          <div>
+            <div class="card">
+              <div class="card-head"><div><h3>ค้นหาใบแจ้งชำระ</h3><p>ค้นหาจากเลขที่ใบแจ้งหรือชื่อผู้รับบริการ</p></div></div>
+              <div class="card-body">
+                <div class="invoice-search-panel">
+                  <input id="paymentInvoiceSearch" value="INV-2569-00185" placeholder="กรอกเลขที่ใบแจ้งชำระ">
+                  <button class="btn primary" onclick="loadInvoiceForPayment()">ค้นหา</button>
+                </div>
+                <div id="paymentInvoiceResult" style="margin-top:15px">
+                  <div class="summary-line"><span>เลขที่ใบแจ้ง</span><strong>INV-2569-00185</strong></div>
+                  <div class="summary-line"><span>ผู้รับบริการ</span><strong>บริษัท สปอร์ตพลัส จำกัด</strong></div>
+                  <div class="summary-line"><span>รายการ</span><strong>ทดสอบสมรรถภาพกลุ่ม</strong></div>
+                  <div class="summary-line"><span>วันครบกำหนด</span><strong>28 ก.ค. 2569</strong></div>
+                  <div class="summary-line"><span>สถานะ</span><span class="status pending">รอชำระ</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:18px">
+              <div class="card-head"><div><h3>เลือกช่องทางชำระเงิน</h3><p>รองรับช่องทางการรับชำระหลายรูปแบบ</p></div></div>
+              <div class="card-body">
+                <div class="payment-methods" id="paymentMethods">
+                  <div class="payment-method active" data-method="โอนเงิน/PromptPay" onclick="selectPaymentMethod(this)">
+                    <div class="method-icon">QR</div><strong>PromptPay</strong><span>สแกน QR Code</span>
+                  </div>
+                  <div class="payment-method" data-method="เงินสด" onclick="selectPaymentMethod(this)">
+                    <div class="method-icon">฿</div><strong>เงินสด</strong><span>รับชำระหน้าเคาน์เตอร์</span>
+                  </div>
+                  <div class="payment-method" data-method="บัตรเครดิต/เดบิต" onclick="selectPaymentMethod(this)">
+                    <div class="method-icon">CC</div><strong>บัตร</strong><span>Credit / Debit</span>
+                  </div>
+                  <div class="payment-method" data-method="E-Payment" onclick="selectPaymentMethod(this)">
+                    <div class="method-icon">E</div><strong>E-Payment</strong><span>ช่องทางอิเล็กทรอนิกส์</span>
+                  </div>
+                </div>
+
+                <div id="promptpayPanel" style="margin-top:16px">
+                  <div class="qr-box"></div>
+                  <div style="text-align:center"><strong>PromptPay: 099-999-9999</strong><p style="font-size:9px;color:var(--muted)">ยอดชำระ 18,000.00 บาท</p></div>
+                </div>
+
+                <div id="cashPanel" style="display:none;margin-top:16px">
+                  <div class="field"><label>จำนวนเงินที่รับ</label><input id="cashReceived" type="number" value="18000" oninput="calculateChange()"></div>
+                  <div class="cash-grid" style="margin-top:10px">
+                    <button class="cash-btn" onclick="setCash(18000)">พอดี 18,000</button>
+                    <button class="cash-btn" onclick="setCash(20000)">20,000</button>
+                    <button class="cash-btn" onclick="setCash(25000)">25,000</button>
+                  </div>
+                  <div class="summary-line" style="margin-top:10px"><span>เงินทอน</span><strong id="changeAmount">0.00 บาท</strong></div>
+                </div>
+
+                <div id="cardPanel" style="display:none;margin-top:16px">
+                  <div class="form-grid">
+                    <div class="field full"><label>หมายเลขอ้างอิงจากเครื่องรับบัตร</label><input id="cardReference" placeholder="เช่น POS-20260721-001"></div>
+                    <div class="field"><label>ประเภทบัตร</label><select><option>Visa</option><option>Mastercard</option><option>JCB</option></select></div>
+                    <div class="field"><label>เลขท้ายบัตร 4 หลัก</label><input maxlength="4" placeholder="1234"></div>
+                  </div>
+                </div>
+
+                <div id="epaymentPanel" style="display:none;margin-top:16px">
+                  <div class="form-grid">
+                    <div class="field"><label>ผู้ให้บริการ</label><select><option>Mobile Banking</option><option>Payment Gateway</option><option>Government E-Payment</option></select></div>
+                    <div class="field"><label>เลขที่ธุรกรรม</label><input placeholder="Transaction ID"></div>
+                  </div>
+                </div>
+
+                <div class="field" style="margin-top:16px"><label>หมายเหตุการรับชำระ</label><textarea id="paymentNote" rows="2" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="payment-summary">
+              <div><span style="font-size:9px;color:#DCEFFF">ยอดที่ต้องชำระ</span><div class="amount-box">18,000.00 บาท</div></div>
+              <div class="summary-line"><span>ยอดก่อนภาษี</span><strong>16,822.43 บาท</strong></div>
+              <div class="summary-line"><span>VAT 7%</span><strong>1,177.57 บาท</strong></div>
+              <div class="summary-line"><span>ส่วนลด</span><strong>0.00 บาท</strong></div>
+              <div class="summary-line"><span>ช่องทางชำระ</span><strong id="selectedPaymentMethod">โอนเงิน/PromptPay</strong></div>
+            </div>
+
+            <div class="receipt-preview" style="margin-top:18px">
+              <div class="receipt-head">
+                <h3>ตัวอย่างใบเสร็จรับเงิน</h3>
+                <p>ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</p>
+              </div>
+              <div class="summary-line"><span>เลขที่ใบเสร็จ</span><strong>RC-2569-00152</strong></div>
+              <div class="summary-line"><span>วันที่</span><strong>21 ก.ค. 2569</strong></div>
+              <div class="summary-line"><span>ผู้ชำระเงิน</span><strong>บริษัท สปอร์ตพลัส จำกัด</strong></div>
+              <div class="summary-line"><span>อ้างอิงใบแจ้ง</span><strong>INV-2569-00185</strong></div>
+              <div class="summary-line"><span>รายการ</span><strong>ทดสอบสมรรถภาพกลุ่ม</strong></div>
+              <div class="receipt-total">18,000.00 บาท</div>
+              <div class="actions-row" style="justify-content:flex-end;margin-top:15px">
+                <button class="btn" onclick="showToast('เตรียมตัวอย่างใบเสร็จแล้ว')">Preview</button>
+                <button class="btn primary" onclick="showToast('พิมพ์ใบเสร็จแล้ว')">พิมพ์ใบเสร็จ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="p04" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-04 ประวัติการชำระเงิน</h2>
+            <p>ค้นหาและตรวจสอบรายการรับชำระย้อนหลัง พร้อมเลขที่ใบเสร็จ ช่องทางชำระ ผู้รับเงิน และเอกสารอ้างอิง</p>
+            <div class="meta-strip"><span class="meta-pill">Payment History</span><span class="meta-pill">Receipt / Invoice</span><span class="meta-pill">Sprint 2</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportPaymentHistory()">Export Excel</button><button class="btn primary" onclick="showToast('เปิดหน้าพิมพ์รายงานประวัติการชำระ')">พิมพ์รายงาน</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-head"><div><h3>ค้นหารายการชำระเงิน</h3><p>กรองตามข้อความ วันที่ ช่องทาง หรือสถานะ</p></div></div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box"><span>⌕</span><input id="historySearch" oninput="filterPaymentHistory()" placeholder="ค้นหาเลขที่ใบเสร็จ ใบแจ้ง หรือชื่อผู้ชำระ..."></div>
+              <div class="filter-row">
+                <input id="historyDate" type="date" value="2026-07-21" onchange="filterPaymentHistory()">
+                <select id="historyMethod" onchange="filterPaymentHistory()">
+                  <option value="">ทุกช่องทาง</option>
+                  <option value="promptpay">PromptPay</option>
+                  <option value="cash">เงินสด</option>
+                  <option value="card">บัตรเครดิต/เดบิต</option>
+                  <option value="transfer">โอนเงิน</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="filter-chips" style="margin-top:14px">
+              <button class="filter-chip active" onclick="setHistoryChip(this,'all')">ทั้งหมด</button>
+              <button class="filter-chip" onclick="setHistoryChip(this,'today')">วันนี้</button>
+              <button class="filter-chip" onclick="setHistoryChip(this,'week')">7 วันล่าสุด</button>
+              <button class="filter-chip" onclick="setHistoryChip(this,'month')">เดือนนี้</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>Payment Timeline</h3><p>รายการล่าสุดเรียงตามวันและเวลา</p></div><span class="tag">152 รายการ</span></div>
+            <div class="card-body history-timeline" id="paymentHistoryList">
+              <div class="history-item" data-method="promptpay">
+                <div class="history-dot">QR</div>
+                <div><strong>RC-2569-00152 · บริษัท สปอร์ตพลัส จำกัด</strong><p>ชำระใบแจ้ง INV-2569-00185 · ทดสอบสมรรถภาพกลุ่ม</p><div class="history-meta"><span class="status paid">สำเร็จ</span><span class="tag">PromptPay</span><span class="tag">16:40 น.</span></div></div>
+                <div style="text-align:right"><strong>18,000 บาท</strong><div style="margin-top:7px"><button class="btn" onclick="viewReceipt('RC-2569-00152','18,000')">ดูใบเสร็จ</button></div></div>
+              </div>
+              <div class="history-item" data-method="cash">
+                <div class="history-dot">฿</div>
+                <div><strong>RC-2569-00151 · โรงเรียนกีฬาเทศบาล</strong><p>ค่าบริการอบรมกลุ่ม · รับชำระหน้าเคาน์เตอร์</p><div class="history-meta"><span class="status paid">สำเร็จ</span><span class="tag">เงินสด</span><span class="tag">15:25 น.</span></div></div>
+                <div style="text-align:right"><strong>24,500 บาท</strong><div style="margin-top:7px"><button class="btn" onclick="viewReceipt('RC-2569-00151','24,500')">ดูใบเสร็จ</button></div></div>
+              </div>
+              <div class="history-item" data-method="card">
+                <div class="history-dot">CC</div>
+                <div><strong>RC-2569-00150 · ณัฐวดี ศรีสุข</strong><p>โปรแกรมออกกำลังกาย · บัตรเครดิต Visa **** 2481</p><div class="history-meta"><span class="status paid">สำเร็จ</span><span class="tag">บัตรเครดิต</span><span class="tag">14:10 น.</span></div></div>
+                <div style="text-align:right"><strong>3,200 บาท</strong><div style="margin-top:7px"><button class="btn" onclick="viewReceipt('RC-2569-00150','3,200')">ดูใบเสร็จ</button></div></div>
+              </div>
+              <div class="history-item" data-method="transfer">
+                <div class="history-dot">↗</div>
+                <div><strong>RC-2569-00149 · ชมรมวิ่งเพื่อสุขภาพ</strong><p>ค่าทดสอบสมรรถภาพสมาชิกชมรม · โอนผ่านธนาคาร</p><div class="history-meta"><span class="status paid">สำเร็จ</span><span class="tag">โอนเงิน</span><span class="tag">12:05 น.</span></div></div>
+                <div style="text-align:right"><strong>9,800 บาท</strong><div style="margin-top:7px"><button class="btn" onclick="viewReceipt('RC-2569-00149','9,800')">ดูใบเสร็จ</button></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-head"><div><h3>สรุปยอดวันนี้</h3><p>แยกตามช่องทางรับชำระ</p></div></div>
+              <div class="card-body">
+                <div class="summary-line"><span>PromptPay / QR</span><strong>58,250 บาท</strong></div>
+                <div class="progress"><i style="width:45%"></i></div>
+                <div class="summary-line"><span>เงินสด</span><strong>31,500 บาท</strong></div>
+                <div class="progress"><i style="width:25%;background:var(--success)"></i></div>
+                <div class="summary-line"><span>บัตรเครดิต/เดบิต</span><strong>22,700 บาท</strong></div>
+                <div class="progress"><i style="width:18%;background:var(--warning)"></i></div>
+                <div class="summary-line"><span>โอนเงิน</span><strong>16,000 บาท</strong></div>
+                <div class="progress"><i style="width:12%;background:#7E72D8"></i></div>
+                <div class="summary-line" style="margin-top:10px"><span>รวมทั้งหมด</span><strong style="font-size:15px;color:var(--primary)">128,450 บาท</strong></div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:18px">
+              <div class="card-head"><div><h3>เอกสารที่เกี่ยวข้อง</h3><p>ใบเสร็จ ใบแจ้งชำระ และหลักฐานการชำระ</p></div></div>
+              <div class="card-body recent-list">
+                <div class="recent-item"><div class="recent-icon">PDF</div><div><strong>Receipt RC-2569-00152.pdf</strong><p>ออกเมื่อ 21 ก.ค. 2569 เวลา 16:41 น.</p></div><button class="btn" onclick="showToast('ดาวน์โหลดใบเสร็จแล้ว')">ดาวน์โหลด</button></div>
+                <div class="recent-item"><div class="recent-icon">INV</div><div><strong>Invoice INV-2569-00185.pdf</strong><p>เอกสารใบแจ้งชำระที่อ้างอิง</p></div><button class="btn" onclick="showToast('เปิดใบแจ้งชำระแล้ว')">เปิด</button></div>
+                <div class="recent-item"><div class="recent-icon">IMG</div><div><strong>payment-proof-00152.jpg</strong><p>หลักฐานการโอนเงินจากผู้ชำระ</p></div><button class="btn" onclick="showToast('เปิดหลักฐานการชำระแล้ว')">เปิด</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="p05" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-05 รายงานการเงิน</h2>
+            <p>วิเคราะห์รายรับ แนวโน้มการเติบโต ช่องทางการชำระ บริการที่สร้างรายได้ และสถานะลูกหนี้ เพื่อสนับสนุนการบริหารและตัดสินใจ</p>
+            <div class="meta-strip"><span class="meta-pill">Revenue Dashboard</span><span class="meta-pill">Financial Analytics</span><span class="meta-pill">Sprint 4</span></div>
+          </div>
+          <div class="actions-row">
+            <button class="btn" onclick="exportFinancialReport('excel')">Export Excel</button>
+            <button class="btn" onclick="exportFinancialReport('pdf')">Export PDF</button>
+            <button class="btn primary" onclick="printFinancialReport()">พิมพ์รายงาน</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="period-tabs">
+                <button class="period-tab" onclick="setReportPeriod(this,'day')">รายวัน</button>
+                <button class="period-tab" onclick="setReportPeriod(this,'week')">รายสัปดาห์</button>
+                <button class="period-tab active" onclick="setReportPeriod(this,'month')">รายเดือน</button>
+                <button class="period-tab" onclick="setReportPeriod(this,'year')">รายปี</button>
+              </div>
+              <div class="filter-row">
+                <input id="reportDateFrom" type="date" value="2026-07-01">
+                <input id="reportDateTo" type="date" value="2026-07-31">
+                <select id="reportBranch" onchange="refreshFinancialReport()">
+                  <option>ทุกศูนย์บริการ</option>
+                  <option>ศูนย์บริการหลัก</option>
+                  <option>ศูนย์ฝึกกีฬา</option>
+                </select>
+                <button class="btn primary" onclick="refreshFinancialReport()">แสดงรายงาน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-kpi-grid" style="margin-top:18px">
+          <div class="report-kpi"><span class="label">รายรับรวม</span><strong id="reportRevenue">1,844,450 บาท</strong><small>↑ 12.4% จากเดือนก่อน</small></div>
+          <div class="report-kpi"><span class="label">จำนวนธุรกรรม</span><strong>152 รายการ</strong><small>เฉลี่ย 59,498 บาท/วัน</small></div>
+          <div class="report-kpi"><span class="label">ยอดค้างชำระ</span><strong style="color:var(--warning)">246,900 บาท</strong><small style="color:var(--warning)">28 รายการต้องติดตาม</small></div>
+          <div class="report-kpi"><span class="label">อัตราเก็บเงินสำเร็จ</span><strong>88.2%</strong><small>↑ 3.1 จุด</small></div>
+        </div>
+
+        <div class="analytics-grid" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head">
+              <div><h3>แนวโน้มรายรับ</h3><p id="revenueChartSubtitle">รายรับประจำเดือน กรกฎาคม 2569</p></div>
+              <select id="revenueMetric" onchange="drawRevenueTrend()"><option value="revenue">รายรับ</option><option value="transactions">จำนวนธุรกรรม</option></select>
+            </div>
+            <div class="card-body report-chart-box"><canvas id="revenueTrendChart"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>สัดส่วนช่องทางชำระ</h3><p>ตามมูลค่ารายรับ</p></div></div>
+            <div class="card-body">
+              <div class="donut-wrap">
+                <div style="position:relative">
+                  <div class="donut"></div>
+                  <div class="donut-center"><div><strong>1.84M</strong><span>บาท</span></div></div>
+                </div>
+                <div class="legend-list">
+                  <div class="legend-item"><span><i style="background:#1976D2"></i>PromptPay / QR</span><strong>45%</strong></div>
+                  <div class="legend-item"><span><i style="background:#42A5F5"></i>เงินสด</span><strong>25%</strong></div>
+                  <div class="legend-item"><span><i style="background:#E49A2B"></i>บัตรเครดิต/เดบิต</span><strong>18%</strong></div>
+                  <div class="legend-item"><span><i style="background:#7E72D8"></i>โอนเงิน</span><strong>12%</strong></div>
+                </div>
+              </div>
+              <div class="summary-line" style="margin-top:16px"><span>ช่องทางที่เติบโตสูงสุด</span><strong>PromptPay +18.6%</strong></div>
+              <div class="summary-line"><span>ค่าธรรมเนียมรวม</span><strong>12,840 บาท</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>บริการที่สร้างรายได้สูงสุด</h3><p>จัดอันดับตามรายรับสุทธิ</p></div><button class="btn" onclick="showToast('เปิดรายละเอียดรายได้ตามบริการ')">ดูทั้งหมด</button></div>
+            <div class="card-body rank-list">
+              <div class="rank-item"><div class="rank-no">1</div><div><strong>ค่าสมาชิกฟิตเนส</strong><p>487 ธุรกรรม · รายรับเฉลี่ย 1,405 บาท</p></div><strong>684,000 บาท</strong></div>
+              <div class="rank-item"><div class="rank-no">2</div><div><strong>ทดสอบสมรรถภาพ</strong><p>96 ธุรกรรม · รายรับเฉลี่ย 5,130 บาท</p></div><strong>492,500 บาท</strong></div>
+              <div class="rank-item"><div class="rank-no">3</div><div><strong>โปรแกรมออกกำลังกาย</strong><p>112 ธุรกรรม · รายรับเฉลี่ย 3,200 บาท</p></div><strong>358,400 บาท</strong></div>
+              <div class="rank-item"><div class="rank-no">4</div><div><strong>อบรมและคลาสกลุ่ม</strong><p>38 ธุรกรรม · รายรับเฉลี่ย 7,937 บาท</p></div><strong>301,600 บาท</strong></div>
+            </div>
+          </div>
+
+          <div class="forecast-box">
+            <div><span style="font-size:9px;color:#DCEFFF">ประมาณการรายรับสิ้นเดือน</span><div style="font-size:31px;font-weight:600;margin:10px 0">2,180,000 บาท</div></div>
+            <div class="summary-line"><span>รายรับปัจจุบัน</span><strong>1,844,450 บาท</strong></div>
+            <div class="summary-line"><span>คาดการณ์เพิ่ม</span><strong>335,550 บาท</strong></div>
+            <div class="summary-line"><span>เทียบเป้าหมาย</span><strong>97.3%</strong></div>
+            <div class="summary-line"><span>ความเชื่อมั่นของประมาณการ</span><strong>86%</strong></div>
+            <div class="progress" style="margin-top:14px;background:rgba(255,255,255,.22)"><i style="width:86%;background:#fff"></i></div>
+            <p style="font-size:8px;color:#DCEFFF;line-height:1.6;margin:13px 0 0">ประมาณการจากค่าเฉลี่ยรายรับย้อนหลัง แนวโน้มจำนวนธุรกรรม และรายการใบแจ้งชำระที่ยังไม่ครบกำหนด</p>
+          </div>
+        </div>
+
+        <div class="card report-table" style="margin-top:18px">
+          <div class="card-head"><div><h3>สรุปรายรับรายวัน</h3><p>ข้อมูลรายการรับชำระและยอดสุทธิ</p></div><button class="btn" onclick="exportFinancialReport('csv')">Export CSV</button></div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead><tr><th>วันที่</th><th>จำนวนธุรกรรม</th><th>เงินสด</th><th>PromptPay</th><th>บัตร</th><th>โอนเงิน</th><th>ค่าธรรมเนียม</th><th>ยอดสุทธิ</th></tr></thead>
+              <tbody>
+                <tr><td><strong>21 ก.ค. 2569</strong></td><td>18</td><td>31,500</td><td>58,250</td><td>22,700</td><td>16,000</td><td>920</td><td><strong>127,530 บาท</strong></td></tr>
+                <tr><td><strong>20 ก.ค. 2569</strong></td><td>21</td><td>28,000</td><td>64,500</td><td>18,200</td><td>10,500</td><td>840</td><td><strong>120,360 บาท</strong></td></tr>
+                <tr><td><strong>19 ก.ค. 2569</strong></td><td>16</td><td>24,500</td><td>51,200</td><td>16,800</td><td>12,000</td><td>790</td><td><strong>103,710 บาท</strong></td></tr>
+                <tr><td><strong>18 ก.ค. 2569</strong></td><td>19</td><td>30,000</td><td>56,900</td><td>20,400</td><td>14,500</td><td>870</td><td><strong>120,930 บาท</strong></td></tr>
+                <tr><td><strong>17 ก.ค. 2569</strong></td><td>17</td><td>25,500</td><td>49,800</td><td>19,700</td><td>11,000</td><td>760</td><td><strong>105,240 บาท</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>สถานะลูกหนี้ค้างชำระ</h3><p>จำแนกตามอายุหนี้</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>ยังไม่เกินกำหนด</span><strong>142,500 บาท</strong></div>
+              <div class="progress"><i style="width:58%"></i></div>
+              <div class="summary-line"><span>เกินกำหนด 1–7 วัน</span><strong style="color:var(--warning)">62,400 บาท</strong></div>
+              <div class="progress"><i style="width:25%;background:var(--warning)"></i></div>
+              <div class="summary-line"><span>เกินกำหนด 8–30 วัน</span><strong style="color:var(--danger)">31,000 บาท</strong></div>
+              <div class="progress"><i style="width:13%;background:var(--danger)"></i></div>
+              <div class="summary-line"><span>เกินกำหนดมากกว่า 30 วัน</span><strong style="color:var(--danger)">11,000 บาท</strong></div>
+              <div class="progress"><i style="width:4%;background:#A73833"></i></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>ข้อสังเกตเชิงบริหาร</h3><p>Financial Insight จากข้อมูลรายงาน</p></div></div>
+            <div class="card-body">
+              <div class="recent-item"><div class="recent-icon">↑</div><div><strong>รายรับเติบโตต่อเนื่อง</strong><p>รายรับเพิ่มขึ้น 12.4% จากเดือนก่อน โดย PromptPay เป็นช่องทางหลัก</p></div><span class="status paid">บวก</span></div>
+              <div class="recent-item" style="margin-top:9px"><div class="recent-icon">!</div><div><strong>ควรติดตามลูกหนี้เกินกำหนด</strong><p>มีรายการเกินกำหนดรวม 104,400 บาท คิดเป็น 42.3% ของยอดค้าง</p></div><span class="status overdue">ติดตาม</span></div>
+              <div class="recent-item" style="margin-top:9px"><div class="recent-icon">★</div><div><strong>บริการสมาชิกยังเป็นรายได้หลัก</strong><p>สร้างรายได้ 37.1% ของรายรับรวมทั้งหมด</p></div><span class="status pending">สำคัญ</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="p06" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>P-06 ตั้งค่าการเงิน</h2>
+            <p>กำหนดข้อมูลภาษี ช่องทางรับชำระ เลขที่เอกสาร รูปแบบใบเสร็จ การแจ้งเตือน สิทธิ์ผู้ใช้งาน และค่าการทำงานของระบบ</p>
+            <div class="meta-strip"><span class="meta-pill">Finance Configuration</span><span class="meta-pill">LocalStorage</span><span class="meta-pill">Sprint 5</span><span class="production-badge">● Production Prototype</span></div>
+          </div>
+          <div class="actions-row">
+            <span class="save-indicator" id="saveIndicator">ยังไม่มีการเปลี่ยนแปลง</span>
+            <button class="btn" onclick="resetFinanceSettings()">คืนค่าเริ่มต้น</button>
+            <button class="btn primary" onclick="saveFinanceSettings()">บันทึกการตั้งค่า</button>
+          </div>
+        </div>
+
+        <div class="settings-grid" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>ข้อมูลหน่วยงานและภาษี</h3><p>ใช้สำหรับใบแจ้งชำระและใบเสร็จรับเงิน</p></div></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="field full"><label>ชื่อหน่วยงาน</label><input id="settingOrgName" value="ศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย" oninput="markSettingsChanged()"></div>
+                <div class="field"><label>เลขประจำตัวผู้เสียภาษี</label><input id="settingTaxId" value="0994000123456" oninput="markSettingsChanged()"></div>
+                <div class="field"><label>อัตรา VAT เริ่มต้น</label><select id="settingVat" onchange="markSettingsChanged()"><option value="0">ไม่คิด VAT</option><option value="7" selected>VAT 7%</option></select></div>
+                <div class="field full"><label>ที่อยู่หน่วยงาน</label><textarea id="settingAddress" rows="3" oninput="markSettingsChanged()">154 ถนนพระราม 1 แขวงวังใหม่ เขตปทุมวัน กรุงเทพมหานคร 10330</textarea></div>
+                <div class="field"><label>โทรศัพท์</label><input id="settingPhone" value="02-000-0000" oninput="markSettingsChanged()"></div>
+                <div class="field"><label>อีเมลการเงิน</label><input id="settingEmail" value="finance@sportcenter.go.th" oninput="markSettingsChanged()"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>PromptPay และบัญชีธนาคาร</h3><p>ข้อมูลที่แสดงใน QR Payment และเอกสารการเงิน</p></div></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="field"><label>ประเภท PromptPay</label><select id="settingPromptType" onchange="markSettingsChanged()"><option>เลขประจำตัวผู้เสียภาษี</option><option>หมายเลขโทรศัพท์</option></select></div>
+                <div class="field"><label>หมายเลข PromptPay</label><input id="settingPromptNo" value="0994000123456" oninput="markSettingsChanged()"></div>
+                <div class="field"><label>ธนาคาร</label><select id="settingBank" onchange="markSettingsChanged()"><option>ธนาคารกรุงไทย</option><option>ธนาคารกสิกรไทย</option><option>ธนาคารไทยพาณิชย์</option></select></div>
+                <div class="field"><label>เลขที่บัญชี</label><input id="settingAccount" value="123-4-56789-0" oninput="markSettingsChanged()"></div>
+                <div class="field full"><label>ชื่อบัญชี</label><input id="settingAccountName" value="ศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย" oninput="markSettingsChanged()"></div>
+              </div>
+              <div class="actions-row" style="margin-top:15px"><button class="btn" onclick="testPromptPay()">ทดสอบสร้าง QR</button><button class="btn" onclick="showToast('ตรวจสอบบัญชีธนาคารสำเร็จ')">ตรวจสอบบัญชี</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-grid" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>เลขที่เอกสาร</h3><p>กำหนดรูปแบบเลขที่ใบแจ้ง ใบเสร็จ และใบคืนเงิน</p></div></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="field"><label>Prefix ใบแจ้งชำระ</label><input id="settingInvoicePrefix" value="INV" oninput="updateDocumentPreview()"></div>
+                <div class="field"><label>Prefix ใบเสร็จ</label><input id="settingReceiptPrefix" value="RC" oninput="updateDocumentPreview()"></div>
+                <div class="field"><label>Prefix ใบคืนเงิน</label><input id="settingRefundPrefix" value="RF" oninput="updateDocumentPreview()"></div>
+                <div class="field"><label>จำนวนหลัก Running Number</label><select id="settingDigits" onchange="updateDocumentPreview()"><option>4</option><option selected>5</option><option>6</option></select></div>
+                <div class="field"><label>เริ่มเลขใหม่</label><select id="settingResetCycle" onchange="markSettingsChanged()"><option>ทุกปีงบประมาณ</option><option>ทุกปีปฏิทิน</option><option>ทุกเดือน</option><option>ไม่เริ่มใหม่</option></select></div>
+                <div class="field"><label>ปีที่ใช้ในเอกสาร</label><select id="settingYearFormat" onchange="markSettingsChanged()"><option>พ.ศ.</option><option>ค.ศ.</option></select></div>
+              </div>
+              <div class="code-preview" id="documentPreview" style="margin-top:15px">INV-2569-00187<br>RC-2569-00153<br>RF-2569-00001</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>การแจ้งเตือนและระบบอัตโนมัติ</h3><p>ตั้งค่าการส่งข้อความและติดตามรายการค้างชำระ</p></div></div>
+            <div class="card-body setting-list">
+              <div class="setting-row"><div><strong>แจ้งเตือนเมื่อได้รับชำระ</strong><p>แจ้งเจ้าหน้าที่เมื่อมีธุรกรรมสำเร็จ</p></div><label class="switch"><input id="notifyPayment" type="checkbox" checked onchange="markSettingsChanged()"><span></span></label></div>
+              <div class="setting-row"><div><strong>ส่งใบเสร็จทางอีเมลอัตโนมัติ</strong><p>จัดส่ง PDF ให้ผู้ชำระหลังยืนยันรายการ</p></div><label class="switch"><input id="autoReceiptEmail" type="checkbox" checked onchange="markSettingsChanged()"><span></span></label></div>
+              <div class="setting-row"><div><strong>แจ้งเตือนก่อนครบกำหนด</strong><p>ส่งข้อความก่อนครบกำหนดชำระ 3 วัน</p></div><label class="switch"><input id="dueReminder" type="checkbox" checked onchange="markSettingsChanged()"><span></span></label></div>
+              <div class="setting-row"><div><strong>อนุมัติคืนเงินโดยหัวหน้างาน</strong><p>รายการคืนเงินต้องผ่านผู้มีสิทธิ์อนุมัติ</p></div><label class="switch"><input id="refundApproval" type="checkbox" checked onchange="markSettingsChanged()"><span></span></label></div>
+              <div class="setting-row"><div><strong>บันทึก Audit Log</strong><p>เก็บประวัติการสร้าง แก้ไข รับชำระ และคืนเงิน</p></div><label class="switch"><input id="auditEnabled" type="checkbox" checked onchange="markSettingsChanged()"><span></span></label></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>รูปแบบใบเสร็จ</h3><p>กำหนดข้อความและข้อมูลบนเอกสาร</p></div><button class="btn" onclick="openReceiptTemplateWizard()">เปิด Template Wizard</button></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="field full"><label>หัวข้อเอกสาร</label><input id="settingReceiptTitle" value="ใบเสร็จรับเงิน / ใบกำกับภาษี" oninput="markSettingsChanged()"></div>
+                <div class="field full"><label>ข้อความท้ายเอกสาร</label><textarea id="settingReceiptFooter" rows="3" oninput="markSettingsChanged()">ขอขอบคุณที่ใช้บริการ กรุณาเก็บเอกสารฉบับนี้ไว้เป็นหลักฐาน</textarea></div>
+                <div class="field"><label>ลายเซ็นผู้รับเงิน</label><select id="settingSignature" onchange="markSettingsChanged()"><option>แสดง</option><option>ไม่แสดง</option></select></div>
+                <div class="field"><label>QR ตรวจสอบเอกสาร</label><select id="settingVerifyQR" onchange="markSettingsChanged()"><option>แสดง</option><option>ไม่แสดง</option></select></div>
+              </div>
+              <div class="actions-row" style="margin-top:14px"><button class="btn" onclick="showToast('เปิดตัวอย่างใบเสร็จตาม Template แล้ว')">Preview Template</button></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Audit Log ล่าสุด</h3><p>ประวัติการตั้งค่าและการใช้งานระบบ</p></div><button class="btn" onclick="showToast('ส่งออก Audit Log แล้ว')">Export Log</button></div>
+            <div class="card-body audit-list">
+              <div class="audit-item"><div class="audit-icon">⚙</div><div><strong>แก้ไขอัตรา VAT</strong><p>Finance Admin · วันนี้ 15:40 น.</p></div><span class="tag">Setting</span></div>
+              <div class="audit-item"><div class="audit-icon">฿</div><div><strong>รับชำระ INV-2569-00185</strong><p>Finance Officer · วันนี้ 16:40 น.</p></div><span class="tag">Payment</span></div>
+              <div class="audit-item"><div class="audit-icon">↶</div><div><strong>สร้างคำขอคืนเงิน RF-2569-00001</strong><p>Finance Officer · วันนี้ 16:52 น.</p></div><span class="tag">Refund</span></div>
+              <div class="audit-item"><div class="audit-icon">PDF</div><div><strong>Export รายงานรายเดือน</strong><p>Finance Admin · วันนี้ 17:05 น.</p></div><span class="tag">Report</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="invoiceModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="invoiceModalTitle">สร้างใบแจ้งชำระเงิน</h3><button class="btn" onclick="closeInvoiceModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>ประเภทผู้รับบริการ</label><select id="customerType"><option>สมาชิก</option><option>บุคคลทั่วไป</option><option>หน่วยงาน/นิติบุคคล</option></select></div>
+        <div class="field"><label>ผู้รับบริการ</label><input id="customerName" placeholder="ค้นหาหรือกรอกชื่อผู้รับบริการ"></div>
+        <div class="field"><label>เลขประจำตัวผู้เสียภาษี</label><input id="taxId" placeholder="กรณีต้องการใบกำกับภาษี"></div>
+        <div class="field"><label>วันครบกำหนดชำระ</label><input id="dueDate" type="date" value="2026-07-28"></div>
+        <div class="field full"><label>ที่อยู่สำหรับออกเอกสาร</label><textarea id="billingAddress" rows="2" placeholder="ที่อยู่ผู้รับบริการหรือหน่วยงาน"></textarea></div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:9px">
+        <strong style="font-size:12px">รายการค่าบริการ</strong>
+        <button class="btn" onclick="addInvoiceItem()">+ เพิ่มรายการ</button>
+      </div>
+
+      <div class="invoice-items" id="invoiceItems">
+        <div class="invoice-item-row">
+          <input class="item-name" value="ค่าสมาชิกฟิตเนสรายเดือน">
+          <input class="item-qty" type="number" value="1" min="1" oninput="calculateInvoice()">
+          <input class="item-price" type="number" value="1500" min="0" oninput="calculateInvoice()">
+          <input class="item-total" value="1500.00" readonly>
+          <button class="btn danger" onclick="removeInvoiceItem(this)">×</button>
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top:16px">
+        <div class="field"><label>ส่วนลด (บาท)</label><input id="discount" type="number" value="0" min="0" oninput="calculateInvoice()"></div>
+        <div class="field"><label>ภาษีมูลค่าเพิ่ม</label><select id="vatRate" onchange="calculateInvoice()"><option value="0">ไม่คิด VAT</option><option value="7">VAT 7%</option></select></div>
+        <div class="field full"><label>หมายเหตุ</label><textarea id="invoiceNote" rows="2" placeholder="เงื่อนไขการชำระหรือรายละเอียดเพิ่มเติม"></textarea></div>
+      </div>
+
+      <div class="invoice-summary">
+        <div class="summary-line"><span>รวมก่อนส่วนลด</span><strong id="subtotalText">1,500.00 บาท</strong></div>
+        <div class="summary-line"><span>ส่วนลด</span><strong id="discountText">0.00 บาท</strong></div>
+        <div class="summary-line"><span>VAT</span><strong id="vatText">0.00 บาท</strong></div>
+        <div class="summary-line"><span>ยอดสุทธิ</span><strong id="grandTotalText" style="font-size:15px;color:var(--primary)">1,500.00 บาท</strong></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="saveInvoice('draft')">บันทึกฉบับร่าง</button><button class="btn primary" onclick="saveInvoice('issued')">ออกใบแจ้งชำระ</button></div>
+  </div>
+</div>
+
+<div class="modal" id="viewInvoiceModal">
+  <div class="modal-box" style="width:min(720px,100%)">
+    <div class="modal-head"><h3>รายละเอียดใบแจ้งชำระ</h3><button class="btn" onclick="closeViewInvoice()">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;justify-content:space-between;gap:20px">
+        <div><strong style="font-size:18px">INVOICE</strong><p style="font-size:9px;color:var(--muted)">ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</p></div>
+        <div style="text-align:right"><strong id="viewInvoiceNo">INV-2569-00186</strong><p style="font-size:9px;color:var(--muted)">ออกวันที่ 21 ก.ค. 2569</p></div>
+      </div>
+      <div class="card" style="box-shadow:none;margin-top:15px">
+        <div class="card-body">
+          <div class="summary-line"><span>ผู้รับบริการ</span><strong>กิตติพงษ์ พรหมมา</strong></div>
+          <div class="summary-line"><span>รายการ</span><strong>ค่าสมาชิกฟิตเนสรายเดือน</strong></div>
+          <div class="summary-line"><span>ยอดก่อนภาษี</span><strong>1,500.00 บาท</strong></div>
+          <div class="summary-line"><span>ภาษีมูลค่าเพิ่ม</span><strong>0.00 บาท</strong></div>
+          <div class="summary-line"><span>ยอดสุทธิ</span><strong style="color:var(--primary)">1,500.00 บาท</strong></div>
+          <div class="summary-line"><span>สถานะ</span><span class="status paid">ชำระแล้ว</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="showToast('เตรียมไฟล์ PDF แล้ว')">Export PDF</button><button class="btn primary" onclick="showToast('ส่งใบแจ้งชำระทางอีเมลแล้ว')">ส่งอีเมล</button></div>
+  </div>
+</div>
+
+
+<div class="wizard" id="receiptWizard">
+  <div class="wizard-box">
+    <div class="modal-head">
+      <div><h3 style="margin:0">Receipt Template Wizard</h3><p style="font-size:8px;color:var(--muted);margin:4px 0 0">กำหนดรูปแบบใบเสร็จทีละขั้นตอน</p></div>
+      <button class="btn" onclick="closeReceiptTemplateWizard()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="wizard-steps">
+        <div class="wizard-step active" data-wstep="1">1 ข้อมูลหน่วยงาน</div>
+        <div class="wizard-step" data-wstep="2">2 รูปแบบเอกสาร</div>
+        <div class="wizard-step" data-wstep="3">3 การรับรอง</div>
+        <div class="wizard-step" data-wstep="4">4 ตรวจสอบ</div>
+      </div>
+
+      <div class="wizard-page active" data-wpage="1" style="margin-top:18px">
+        <div class="form-grid">
+          <div class="field full"><label>ชื่อที่แสดงบนใบเสร็จ</label><input id="wizardOrgName" value="ศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย"></div>
+          <div class="field"><label>เลขประจำตัวผู้เสียภาษี</label><input value="0994000123456"></div>
+          <div class="field"><label>หมายเลขโทรศัพท์</label><input value="02-000-0000"></div>
+        </div>
+      </div>
+
+      <div class="wizard-page" data-wpage="2" style="margin-top:18px">
+        <div class="form-grid">
+          <div class="field"><label>ขนาดกระดาษ</label><select><option>A4</option><option>80 mm</option><option>58 mm</option></select></div>
+          <div class="field"><label>รูปแบบ</label><select><option>Government Premium</option><option>Minimal</option><option>Compact</option></select></div>
+          <div class="field full"><label>สีหลัก</label><input type="color" value="#1976D2"></div>
+        </div>
+      </div>
+
+      <div class="wizard-page" data-wpage="3" style="margin-top:18px">
+        <div class="setting-list">
+          <div class="setting-row"><div><strong>แสดงลายเซ็นอิเล็กทรอนิกส์</strong><p>แสดงชื่อและตำแหน่งผู้รับเงิน</p></div><label class="switch"><input type="checkbox" checked><span></span></label></div>
+          <div class="setting-row"><div><strong>แสดง QR ตรวจสอบเอกสาร</strong><p>เชื่อมโยงไปยังหน้าตรวจสอบใบเสร็จ</p></div><label class="switch"><input type="checkbox" checked><span></span></label></div>
+        </div>
+      </div>
+
+      <div class="wizard-page" data-wpage="4" style="margin-top:18px">
+        <div class="receipt-preview">
+          <div class="receipt-head"><h3>ใบเสร็จรับเงิน / ใบกำกับภาษี</h3><p>ตัวอย่างเอกสารจาก Template Wizard</p></div>
+          <div class="summary-line"><span>เลขที่เอกสาร</span><strong>RC-2569-00153</strong></div>
+          <div class="summary-line"><span>ผู้ชำระเงิน</span><strong>สมาชิกตัวอย่าง</strong></div>
+          <div class="summary-line"><span>ยอดสุทธิ</span><strong style="color:var(--primary)">1,500.00 บาท</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="wizardPrevBtn" onclick="changeWizardStep(-1)" disabled>ย้อนกลับ</button>
+      <button class="btn primary" id="wizardNextBtn" onclick="changeWizardStep(1)">ถัดไป</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const pageTitles={
+  p01:'ภาพรวมการเงิน',
+  p02:'ใบแจ้งชำระเงิน',
+  p03:'รับชำระเงิน',
+  p04:'ประวัติการชำระ',
+  p05:'รายงานการเงิน',
+  p06:'ตั้งค่าการเงิน'
+};
+
+function goScreen(id,nav){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));
+  document.getElementById(id).classList.add('active-screen');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(nav) nav.classList.add('active');
+  else{
+    const items=[...document.querySelectorAll('.nav-item')];
+    const idx=['p01','p02','p03','p04','p05','p06'].indexOf(id);
+    if(items[idx])items[idx].classList.add('active');
+  }
+  document.getElementById('pageTitle').textContent=pageTitles[id]||'Payment Management';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showToast(message){
+  const wrap=document.getElementById('toastContainer');
+  const toast=document.createElement('div');
+  toast.className='toast';
+  toast.innerHTML='<strong>'+message+'</strong><div style="font-size:8px;color:#72889A;margin-top:2px">Payment Management</div>';
+  wrap.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
+function openInvoiceModal(){
+  document.getElementById('invoiceModalTitle').textContent='สร้างใบแจ้งชำระเงิน';
+  document.getElementById('invoiceModal').classList.add('show');
+  calculateInvoice();
+}
+function closeInvoiceModal(){document.getElementById('invoiceModal').classList.remove('show')}
+function editInvoice(no){
+  document.getElementById('invoiceModalTitle').textContent='แก้ไขใบแจ้งชำระ '+no;
+  document.getElementById('customerName').value='โรงเรียนกีฬาจังหวัด';
+  document.getElementById('invoiceModal').classList.add('show');
+}
+function viewInvoice(no){
+  document.getElementById('viewInvoiceNo').textContent=no;
+  document.getElementById('viewInvoiceModal').classList.add('show');
+}
+function closeViewInvoice(){document.getElementById('viewInvoiceModal').classList.remove('show')}
+
+function addInvoiceItem(){
+  const row=document.createElement('div');
+  row.className='invoice-item-row';
+  row.innerHTML='<input class="item-name" placeholder="ชื่อรายการ"><input class="item-qty" type="number" value="1" min="1" oninput="calculateInvoice()"><input class="item-price" type="number" value="0" min="0" oninput="calculateInvoice()"><input class="item-total" value="0.00" readonly><button class="btn danger" onclick="removeInvoiceItem(this)">×</button>';
+  document.getElementById('invoiceItems').appendChild(row);
+}
+function removeInvoiceItem(btn){
+  const rows=document.querySelectorAll('.invoice-item-row');
+  if(rows.length<=1){showToast('ต้องมีรายการค่าบริการอย่างน้อย 1 รายการ');return}
+  btn.closest('.invoice-item-row').remove();
+  calculateInvoice();
+}
+function money(n){return Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function calculateInvoice(){
+  let subtotal=0;
+  document.querySelectorAll('.invoice-item-row').forEach(row=>{
+    const qty=Number(row.querySelector('.item-qty').value)||0;
+    const price=Number(row.querySelector('.item-price').value)||0;
+    const total=qty*price;
+    row.querySelector('.item-total').value=money(total);
+    subtotal+=total;
+  });
+  const discount=Math.min(Number(document.getElementById('discount').value)||0,subtotal);
+  const vatRate=Number(document.getElementById('vatRate').value)||0;
+  const vat=(subtotal-discount)*vatRate/100;
+  const grand=subtotal-discount+vat;
+  document.getElementById('subtotalText').textContent=money(subtotal)+' บาท';
+  document.getElementById('discountText').textContent=money(discount)+' บาท';
+  document.getElementById('vatText').textContent=money(vat)+' บาท';
+  document.getElementById('grandTotalText').textContent=money(grand)+' บาท';
+}
+function saveInvoice(mode){
+  const customer=document.getElementById('customerName').value.trim();
+  if(!customer){showToast('กรุณาระบุชื่อผู้รับบริการ');return}
+  closeInvoiceModal();
+  showToast(mode==='draft'?'บันทึกใบแจ้งชำระฉบับร่างแล้ว':'ออกใบแจ้งชำระเงินเรียบร้อย');
+}
+function filterInvoices(){
+  const q=document.getElementById('invoiceSearch').value.toLowerCase();
+  const status=document.getElementById('invoiceStatus').value;
+  const type=document.getElementById('invoiceType').value;
+  document.querySelectorAll('#invoiceTableBody tr').forEach(row=>{
+    const text=row.innerText.toLowerCase();
+    const okQ=!q||text.includes(q);
+    const okStatus=!status||row.dataset.status===status;
+    const okType=!type||row.dataset.type===type;
+    row.style.display=okQ&&okStatus&&okType?'':'none';
+  });
+}
+function exportDashboard(){showToast('เตรียมส่งออกสรุป Dashboard เป็น PDF/Excel')}
+function exportInvoices(){showToast('เตรียมส่งออกรายการใบแจ้งชำระเป็น Excel')}
+
+window.addEventListener('click',e=>{
+  if(e.target.classList.contains('modal'))e.target.classList.remove('show');
+});
+
+/* Sprint 2 */
+let currentPaymentMethod='โอนเงิน/PromptPay';
+function loadInvoiceForPayment(){
+  const no=document.getElementById('paymentInvoiceSearch').value.trim();
+  if(!no){showToast('กรุณากรอกเลขที่ใบแจ้งชำระ');return}
+  showToast('โหลดข้อมูล '+no+' เรียบร้อย');
+}
+function selectPaymentMethod(el){
+  document.querySelectorAll('.payment-method').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  currentPaymentMethod=el.dataset.method;
+  document.getElementById('selectedPaymentMethod').textContent=currentPaymentMethod;
+  ['promptpayPanel','cashPanel','cardPanel','epaymentPanel'].forEach(id=>document.getElementById(id).style.display='none');
+  if(currentPaymentMethod==='โอนเงิน/PromptPay')document.getElementById('promptpayPanel').style.display='block';
+  if(currentPaymentMethod==='เงินสด')document.getElementById('cashPanel').style.display='block';
+  if(currentPaymentMethod==='บัตรเครดิต/เดบิต')document.getElementById('cardPanel').style.display='block';
+  if(currentPaymentMethod==='E-Payment')document.getElementById('epaymentPanel').style.display='block';
+}
+function setCash(amount){
+  document.getElementById('cashReceived').value=amount;
+  calculateChange();
+}
+function calculateChange(){
+  const received=Number(document.getElementById('cashReceived').value)||0;
+  const change=Math.max(0,received-18000);
+  document.getElementById('changeAmount').textContent=money(change)+' บาท';
+}
+function clearPaymentForm(){
+  document.getElementById('paymentInvoiceSearch').value='';
+  document.getElementById('paymentNote').value='';
+  showToast('ล้างข้อมูลการรับชำระแล้ว');
+}
+function confirmPayment(){
+  if(currentPaymentMethod==='เงินสด'){
+    const received=Number(document.getElementById('cashReceived').value)||0;
+    if(received<18000){showToast('จำนวนเงินที่รับน้อยกว่ายอดที่ต้องชำระ');return}
+  }
+  showToast('รับชำระเงินเรียบร้อย และสร้างใบเสร็จ RC-2569-00152 แล้ว');
+}
+function filterPaymentHistory(){
+  const q=document.getElementById('historySearch').value.toLowerCase();
+  const method=document.getElementById('historyMethod').value;
+  document.querySelectorAll('#paymentHistoryList .history-item').forEach(item=>{
+    const okQ=!q||item.innerText.toLowerCase().includes(q);
+    const okMethod=!method||item.dataset.method===method;
+    item.style.display=okQ&&okMethod?'':'none';
+  });
+}
+function setHistoryChip(btn,range){
+  document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  showToast('กรองประวัติ: '+btn.textContent);
+}
+function viewReceipt(no,amount){
+  showToast('เปิดใบเสร็จ '+no+' ยอด '+amount+' บาท');
+}
+function exportPaymentHistory(){
+  showToast('เตรียมส่งออกประวัติการชำระเงินเป็น Excel');
+}
+
+
+function simulateQR(){
+ document.getElementById('qrStatus').innerHTML='สถานะ : <b style="color:green">Payment Completed</b>';
+ showToast('ตรวจพบการชำระเงินผ่าน QR แล้ว');
+}
+function generateReceipt(){
+ showToast('สร้างใบเสร็จรับเงินอัตโนมัติเรียบร้อย');
+}
+function refundPayment(){
+ const r=document.getElementById('refundReason').value;
+ showToast('ดำเนินการคืนเงินแล้ว : '+r);
+}
+
+
+/* Sprint 4 */
+let reportPeriod='month';
+
+function setReportPeriod(btn,period){
+  document.querySelectorAll('.period-tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  reportPeriod=period;
+  const labels={day:'รายวัน',week:'รายสัปดาห์',month:'รายเดือน',year:'รายปี'};
+  document.getElementById('revenueChartSubtitle').textContent='มุมมอง'+labels[period]+' · ข้อมูลตัวอย่างปี 2569';
+  drawRevenueTrend();
+  showToast('เปลี่ยนรูปแบบรายงานเป็น'+labels[period]);
+}
+
+function refreshFinancialReport(){
+  const branch=document.getElementById('reportBranch').value;
+  showToast('อัปเดตรายงานการเงินสำหรับ '+branch+' แล้ว');
+  drawRevenueTrend();
+}
+
+function exportFinancialReport(type){
+  const names={excel:'Excel',pdf:'PDF',csv:'CSV'};
+  showToast('เตรียมส่งออกรายงานการเงินเป็น '+(names[type]||type));
+}
+
+function printFinancialReport(){
+  showToast('เปิดตัวอย่างก่อนพิมพ์รายงานการเงิน');
+}
+
+function drawRevenueTrend(){
+  const canvas=document.getElementById('revenueTrendChart');
+  if(!canvas)return;
+
+  let labels,values;
+  const metric=document.getElementById('revenueMetric')?.value||'revenue';
+
+  if(reportPeriod==='day'){
+    labels=['08:00','10:00','12:00','14:00','16:00','18:00'];
+    values=metric==='revenue'?[12,28,49,73,106,128]:[2,5,8,11,15,18];
+  }else if(reportPeriod==='week'){
+    labels=['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
+    values=metric==='revenue'?[72,95,83,121,106,139,128]:[10,13,12,17,15,20,18];
+  }else if(reportPeriod==='year'){
+    labels=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'];
+    values=metric==='revenue'?[1.42,1.51,1.56,1.62,1.70,1.74,1.84]:[118,124,129,135,141,146,152];
+  }else{
+    labels=['W1','W2','W3','W4'];
+    values=metric==='revenue'?[398,421,472,553]:[32,35,39,46];
+  }
+
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.clientWidth||700,h=canvas.clientHeight||300;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,w,h);
+
+  const pad={l:54,r:20,t:22,b:40};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const min=Math.min(...values),max=Math.max(...values),range=max-min||1;
+
+  ctx.font='10px Kanit';
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*i/4;
+    ctx.strokeStyle='#D7EAF8';
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+    const val=max-range*i/4;
+    ctx.fillStyle='#72889A';
+    ctx.fillText(metric==='revenue'?val.toFixed(reportPeriod==='year'?2:0):val.toFixed(0),7,y+3);
+  }
+
+  ctx.strokeStyle='#1976D2';
+  ctx.lineWidth=3;
+  ctx.beginPath();
+  values.forEach((v,i)=>{
+    const x=pad.l+(cw*i/(values.length-1||1));
+    const y=pad.t+ch-((v-min)/range*ch);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  values.forEach((v,i)=>{
+    const x=pad.l+(cw*i/(values.length-1||1));
+    const y=pad.t+ch-((v-min)/range*ch);
+    ctx.fillStyle='#1976D2';
+    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#72889A';
+    ctx.fillText(labels[i],x-11,h-13);
+  });
+}
+
+const sprint4OriginalGoScreen = goScreen;
+goScreen = function(id,nav){
+  sprint4OriginalGoScreen(id,nav);
+  if(id==='p05')setTimeout(drawRevenueTrend,80);
+};
+
+window.addEventListener('resize',()=>{
+  if(document.getElementById('p05')?.classList.contains('active-screen')){
+    drawRevenueTrend();
+  }
+});
+
+
+/* Sprint 5 */
+const FINANCE_SETTINGS_KEY='payment-finance-settings-v1';
+let receiptWizardStep=1;
+
+function markSettingsChanged(){
+  const el=document.getElementById('saveIndicator');
+  if(el){
+    el.textContent='มีการเปลี่ยนแปลงที่ยังไม่บันทึก';
+    el.style.color='var(--warning)';
+  }
+}
+
+function collectFinanceSettings(){
+  const ids=[
+    'settingOrgName','settingTaxId','settingVat','settingAddress','settingPhone','settingEmail',
+    'settingPromptType','settingPromptNo','settingBank','settingAccount','settingAccountName',
+    'settingInvoicePrefix','settingReceiptPrefix','settingRefundPrefix','settingDigits',
+    'settingResetCycle','settingYearFormat','settingReceiptTitle','settingReceiptFooter',
+    'settingSignature','settingVerifyQR'
+  ];
+  const data={};
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)data[id]=el.value;
+  });
+  ['notifyPayment','autoReceiptEmail','dueReminder','refundApproval','auditEnabled'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)data[id]=el.checked;
+  });
+  data.theme=document.body.classList.contains('dark')?'dark':'light';
+  return data;
+}
+
+function applyFinanceSettings(data){
+  if(!data)return;
+  Object.entries(data).forEach(([id,value])=>{
+    if(id==='theme'){
+      document.body.classList.toggle('dark',value==='dark');
+      return;
+    }
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(el.type==='checkbox')el.checked=Boolean(value);
+    else el.value=value;
+  });
+  updateDocumentPreview();
+}
+
+function saveFinanceSettings(){
+  const data=collectFinanceSettings();
+  localStorage.setItem(FINANCE_SETTINGS_KEY,JSON.stringify(data));
+  const el=document.getElementById('saveIndicator');
+  if(el){
+    el.textContent='บันทึกล่าสุดเมื่อ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    el.style.color='var(--success)';
+  }
+  showToast('บันทึกการตั้งค่าการเงินใน LocalStorage แล้ว');
+}
+
+function loadFinanceSettings(){
+  try{
+    const raw=localStorage.getItem(FINANCE_SETTINGS_KEY);
+    if(raw)applyFinanceSettings(JSON.parse(raw));
+  }catch(e){
+    console.warn('Cannot load settings',e);
+  }
+}
+
+function resetFinanceSettings(){
+  localStorage.removeItem(FINANCE_SETTINGS_KEY);
+  location.reload();
+}
+
+function updateDocumentPreview(){
+  const inv=document.getElementById('settingInvoicePrefix')?.value||'INV';
+  const rc=document.getElementById('settingReceiptPrefix')?.value||'RC';
+  const rf=document.getElementById('settingRefundPrefix')?.value||'RF';
+  const digits=Number(document.getElementById('settingDigits')?.value||5);
+  const num=(187).toString().padStart(digits,'0');
+  const receipt=(153).toString().padStart(digits,'0');
+  const refund=(1).toString().padStart(digits,'0');
+  const preview=document.getElementById('documentPreview');
+  if(preview)preview.innerHTML=`${inv}-2569-${num}<br>${rc}-2569-${receipt}<br>${rf}-2569-${refund}`;
+  markSettingsChanged();
+}
+
+function testPromptPay(){
+  const no=document.getElementById('settingPromptNo')?.value.trim();
+  if(!no){showToast('กรุณาระบุหมายเลข PromptPay');return}
+  showToast('สร้าง QR PromptPay ทดสอบสำหรับ '+no+' แล้ว');
+}
+
+function toggleDarkMode(){
+  document.body.classList.toggle('dark');
+  const data=collectFinanceSettings();
+  localStorage.setItem(FINANCE_SETTINGS_KEY,JSON.stringify(data));
+  showToast(document.body.classList.contains('dark')?'เปิด Dark Mode แล้ว':'เปิด Light Mode แล้ว');
+  if(document.getElementById('p05')?.classList.contains('active-screen'))setTimeout(drawRevenueTrend,60);
+}
+
+function openReceiptTemplateWizard(){
+  receiptWizardStep=1;
+  updateReceiptWizard();
+  document.getElementById('receiptWizard').classList.add('show');
+}
+function closeReceiptTemplateWizard(){
+  document.getElementById('receiptWizard').classList.remove('show');
+}
+function changeWizardStep(delta){
+  if(receiptWizardStep===4&&delta>0){
+    closeReceiptTemplateWizard();
+    showToast('บันทึก Receipt Template จาก Wizard แล้ว');
+    return;
+  }
+  receiptWizardStep=Math.max(1,Math.min(4,receiptWizardStep+delta));
+  updateReceiptWizard();
+}
+function updateReceiptWizard(){
+  document.querySelectorAll('[data-wstep]').forEach(el=>el.classList.toggle('active',Number(el.dataset.wstep)===receiptWizardStep));
+  document.querySelectorAll('[data-wpage]').forEach(el=>el.classList.toggle('active',Number(el.dataset.wpage)===receiptWizardStep));
+  const prev=document.getElementById('wizardPrevBtn');
+  const next=document.getElementById('wizardNextBtn');
+  if(prev)prev.disabled=receiptWizardStep===1;
+  if(next)next.textContent=receiptWizardStep===4?'บันทึก Template':'ถัดไป';
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  loadFinanceSettings();
+
+  const actions=document.querySelector('.top-actions');
+  if(actions && !document.getElementById('themeToggleBtn')){
+    const themeBtn=document.createElement('button');
+    themeBtn.id='themeToggleBtn';
+    themeBtn.className='btn';
+    themeBtn.textContent='◐ Theme';
+    themeBtn.onclick=toggleDarkMode;
+    actions.prepend(themeBtn);
+
+    const wizardBtn=document.createElement('button');
+    wizardBtn.className='btn';
+    wizardBtn.textContent='Receipt Wizard';
+    wizardBtn.onclick=openReceiptTemplateWizard;
+    actions.prepend(wizardBtn);
+  }
+});
+
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeReceiptTemplateWizard();
+    closeInvoiceModal();
+    closeViewInvoice();
+  }
+});
+
+</script>
+<a class="portal-home-button" href="portal1_new.html" title="กลับหน้ารวมระบบ"><span class="portal-home-icon">⌂</span><span class="portal-home-label">Home</span></a>
+
+<script>
+(function(){
+  function openScreenFromHash(){
+    const id=(location.hash||'').slice(1).trim().toLowerCase();
+    if(!id || !document.getElementById(id)) return;
+    const fn=window.goScreen;
+    if(typeof fn==='function'){
+      fn(id);
+      setTimeout(()=>window.scrollTo({top:0,behavior:'auto'}),0);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',openScreenFromHash);
+  window.addEventListener('hashchange',openScreenFromHash);
+})();
+</script>
+
+</body>
+</html>
