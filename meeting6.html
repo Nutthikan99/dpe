@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DPE | Meeting Navigation 3 Systems</title>
+  <style>
+    :root{
+      --navy:#0b3f72; --blue:#1368b5; --blue2:#eaf3fb; --green:#15965a; --green2:#edf9f2;
+      --ink:#17324d; --muted:#6c8195; --line:#dfe8f1; --bg:#f4f7fb; --white:#fff;
+      --shadow:0 14px 34px rgba(24,60,93,.09);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tahoma","Leelawadee UI",Arial,sans-serif}
+    .page{max-width:1240px;margin:0 auto;padding:28px 24px 44px}
+
+    .header{display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(135deg,#0b3f72 0%,#126bb7 100%);color:#fff;border-radius:22px;padding:26px 30px;box-shadow:0 16px 35px rgba(14,74,127,.20)}
+    .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.76;margin-bottom:5px}
+    .header h1{font-size:28px;line-height:1.25;margin:0 0 7px}.header p{margin:0;font-size:14px;opacity:.9;line-height:1.65}
+    .count{min-width:116px;height:78px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);border-radius:18px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+    .count strong{font-size:31px;line-height:1}.count span{font-size:12px;margin-top:7px;opacity:.9}
+
+    .section{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+    .section-head{display:flex;align-items:center;gap:15px;padding:20px 24px;border-bottom:1px solid var(--line);background:#fbfdff}
+    .num{width:42px;height:42px;border-radius:13px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:800;flex:0 0 auto}
+    .section-title h2{margin:0 0 3px;font-size:20px;color:#113e69}.section-title p{margin:0;color:var(--muted);font-size:13px}
+    .section-body{padding:22px 24px 24px}
+
+    .compare{display:grid;grid-template-columns:minmax(0,1fr) 74px minmax(0,1fr);gap:16px;align-items:stretch}
+    .panel{border-radius:18px;padding:20px;border:1px solid var(--line);min-height:215px;display:flex;flex-direction:column}
+    .panel.old{background:#f8fafc}.panel.new{background:var(--green2);border-color:#c7ead6}
+    .badge{display:inline-flex;width:max-content;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;margin-bottom:13px}
+    .old .badge{background:#e9eef4;color:#52687d}.new .badge{background:#d5f0e0;color:#137040}
+    .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+    .panel h3{font-size:17px;line-height:1.45;margin:0 0 10px;color:#173a5a}.panel .url{font-size:12px;line-height:1.55;color:#6b7f91;word-break:break-all;margin-bottom:18px}
+    .action{margin-top:auto;display:flex;gap:10px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:11px;padding:10px 14px;font-size:13px;font-weight:800;transition:.18s}
+    .old .btn{background:#e7edf3;color:#234660}.new .btn{background:var(--green);color:#fff;box-shadow:0 7px 16px rgba(21,150,90,.18)}
+    .btn:hover{transform:translateY(-1px)}
+    .center-arrow{display:flex;align-items:center;justify-content:center;flex-direction:column;color:#6f879a;text-align:center;font-size:11px;font-weight:700;line-height:1.35}
+    .center-arrow .circle{width:44px;height:44px;border-radius:50%;background:var(--blue2);color:var(--blue);display:grid;place-items:center;font-size:25px;margin-bottom:7px}
+
+    .req-wrap{display:grid;grid-template-columns:1.05fr 1.55fr;gap:18px}
+    .req-summary{background:linear-gradient(145deg,#0e5798,#1173be);color:#fff;border-radius:18px;padding:22px;display:flex;flex-direction:column;justify-content:center}
+    .req-summary .label{font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.75;text-transform:uppercase;margin-bottom:8px}.req-summary h3{font-size:19px;line-height:1.48;margin:0 0 11px}.req-summary p{margin:0;font-size:13px;line-height:1.65;opacity:.92}
+    .req-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .req-item{border:1px solid var(--line);border-radius:15px;padding:15px;background:#fbfdff;min-height:96px}
+    .req-item strong{display:block;color:#0e518c;font-size:13px;margin-bottom:6px}.req-item span{font-size:12px;color:#657c90;line-height:1.5}
+    .req-note{grid-column:1/-1;background:#fff8e8;border:1px solid #f1dfa5;border-radius:14px;padding:13px 15px;font-size:12px;line-height:1.55;color:#725d1f}
+
+    .footer{text-align:center;margin-top:18px;color:#8494a4;font-size:11px}
+    @media(max-width:900px){.header{align-items:flex-start}.count{display:none}.compare{grid-template-columns:1fr}.center-arrow{padding:2px 0}.center-arrow .circle{transform:rotate(90deg)}.req-wrap{grid-template-columns:1fr}.req-grid{grid-template-columns:1fr}.req-note{grid-column:auto}.page{padding:18px 14px 32px}.section-body{padding:16px}.section-head{padding:17px}.header{padding:22px}.header h1{font-size:23px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <div class="eyebrow">DPE • Meeting Navigation</div>
+        <h1>หน้ารวมสำหรับประชุม 3 ระบบ</h1>
+        <p>เปิดดูระบบเดิม เทียบกับระบบหลังเก็บ Requirement และตรวจสอบ Requirement ของระบบอบรมได้จากหน้าเดียว</p>
+      </div>
+      <div class="count"><strong>3</strong><span>ระบบสำหรับประชุม</span></div>
+    </header>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="num">01</div>
+        <div class="section-title">
+          <h2>ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</h2>
+          <p>เปรียบเทียบ Prototype เดิม กับระบบหลังเก็บ Requirement</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="compare">
+          <article class="panel old">
+            <div class="badge"><span class="dot"></span>ระบบเดิม • URL 1</div>
+            <h3>System Navigation &amp; Wireframe Roadmap</h3>
+            <div class="url">https://nutthikan99.github.io/dpe/portal1_new/portal1_new.html</div>
+            <div class="action"><a class="btn" href="https://nutthikan99.github.io/dpe/portal1_new/portal1_new.html" target="_blank" rel="noopener">เปิดระบบเดิม ↗</a></div>
+          </article>
+          <div class="center-arrow"><div class="circle">→</div><span>หลังเก็บ<br>Requirement</span></div>
+          <article class="panel new">
+            <div class="badge"><span class="dot"></span>หลังเก็บ Requirement • URL 2</div>
+            <h3>DPE Login v29 • Sports Science Service Center</h3>
+            <div class="url">https://nutthikan99.github.io/dpe/Fitness/</div>
+            <div class="action"><a class="btn" href="https://nutthikan99.github.io/dpe/Fitness/" target="_blank" rel="noopener">เปิดระบบล่าสุด ↗</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="num">02</div>
+        <div class="section-title">
+          <h2>ระบบบริการขอใช้อาคารสถานกีฬา</h2>
+          <p>เปรียบเทียบ Wireframe เดิม กับระบบหลังประชุมเก็บ Requirement</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="compare">
+          <article class="panel old">
+            <div class="badge"><span class="dot"></span>ระบบเดิม • URL 3</div>
+            <h3>Wireframe v2.1 — ระบบขอใช้อาคารสถานกีฬา</h3>
+            <div class="url">https://nutthikan99.github.io/dpe/portal3.html</div>
+            <div class="action"><a class="btn" href="https://nutthikan99.github.io/dpe/portal3.html" target="_blank" rel="noopener">เปิดระบบเดิม ↗</a></div>
+          </article>
+          <div class="center-arrow"><div class="circle">→</div><span>หลังเก็บ<br>Requirement</span></div>
+          <article class="panel new">
+            <div class="badge"><span class="dot"></span>หลังเก็บ Requirement • URL 4</div>
+            <h3>Requirement &amp; Wireframe Traceability</h3>
+            <div class="url">https://nutthikan99.github.io/dpe/sportservice/</div>
+            <div class="action"><a class="btn" href="https://nutthikan99.github.io/dpe/sportservice/" target="_blank" rel="noopener">เปิดระบบล่าสุด ↗</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="num">03</div>
+        <div class="section-title">
+          <h2>ระบบบริการอบรมบุคลากรกีฬาและนันทนาการ</h2>
+          <p>Requirement สำหรับการเชื่อมโยงกับ “ทางรัฐ” และระบบอบรมบุคลากร</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="req-wrap">
+          <div class="req-summary">
+            <div class="label">Requirement • System 03</div>
+            <h3>เชื่อมจาก “ทางรัฐ” เข้าสู่ระบบอบรมโดยไม่แสดงหน้า Login ซ้ำ</h3>
+            <p>รับ AppID และเลขบัตรประชาชน 13 หลัก เพื่อเข้าสู่ระบบอัตโนมัติ และเปิดหน้าบริการที่เกี่ยวข้องโดยตรง</p>
+            <div class="action" style="margin-top:16px"><a class="btn" style="background:#fff;color:#0e5798;box-shadow:none" href="./ข้อมูลการเชื่อมกับTMS-V2.pdf" target="_blank" rel="noopener">เปิดเอกสาร Requirement PDF ↗</a></div>
+          </div>
+          <div class="req-grid">
+            <div class="req-item"><strong>01 • ทะเบียนบุคลากร</strong><span>แสดงข้อมูลทะเบียนบุคลากรการกีฬาและนันทนาการ</span></div>
+            <div class="req-item"><strong>02 • หลักสูตรอบรม</strong><span>แสดงรายการและรายละเอียดหลักสูตรการอบรม</span></div>
+            <div class="req-item"><strong>03 • สมัครอบรม</strong><span>แสดงหน้าจอสำหรับสมัครเข้ารับการอบรม</span></div>
+            <div class="req-item"><strong>04 • สถานะการอบรม</strong><span>แสดงหน้าจอสถานะของการอบรม</span></div>
+            <div class="req-note"><strong>เงื่อนไขสำคัญ:</strong> URL ต้องรองรับการส่ง AppID + citizenId และต้อง Bypass / Auto Login เพื่อไม่ให้ผู้ใช้ Login ซ้ำจากทางรัฐ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">DPE • Meeting Navigation • 3 Systems</div>
+  </main>
+</body>
+</html>
