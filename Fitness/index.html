@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DPE Login · v29</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135deg,#eaf5ff,#fbfdff);color:#17324a;min-height:100vh;display:grid;place-items:center}
+.wrap{width:min(1040px,94vw);display:grid;grid-template-columns:1.05fr .95fr;background:#fff;border:1px solid #cfe3f3;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px rgba(25,91,145,.16)}
+.brand{padding:46px;background:linear-gradient(145deg,#0d5a9b,#2587d8);color:#fff}.brand h1{font-size:31px;margin:18px 0 10px}.brand p{line-height:1.7;color:#d8edff}
+.flow{margin-top:28px;display:grid;gap:9px}.flow div{padding:11px 13px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:rgba(255,255,255,.08)}
+.login{padding:46px}.login h2{margin:0 0 7px;font-size:25px}.muted{color:#73889a;font-size:12px}.field{margin-top:17px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.field input{width:100%;padding:13px;border:1px solid #cfe0ee;border-radius:11px;font-size:14px}
+.btn{width:100%;padding:13px;border:0;border-radius:11px;font-weight:700;cursor:pointer;margin-top:13px}.primary{background:#1476c9;color:#fff}.thaid{background:#fff;border:1px solid #83bde8;color:#0d5a9b}.links{display:flex;justify-content:space-between;font-size:12px;margin-top:11px}.links a{color:#1476c9;text-decoration:none}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.brand,.login{padding:30px}}
+
+/* v37 GLOBAL READABILITY — larger typography on all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important}
+.sidebar .nav-item,.sidebar .nav-item span,.side-link{font-size:14px!important;line-height:1.35!important}
+.sidebar .nav-code{font-size:12px!important}
+.brand-title,.brand h1{font-size:19px!important}
+.brand-sub,.brand p{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important;line-height:1.3!important}
+.topbar p,.breadcrumb,.screen-hero p,.meta-strip,.meta-pill{font-size:13px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.card-head h3,.panel-head h3{font-size:19px!important;line-height:1.3!important}
+.card-head p,.panel-head p{font-size:13px!important;line-height:1.45!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important;font-weight:700!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.45!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong,.kpi-card span{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.audit-line,.step-note{font-size:12px!important}
+.footer,.muted,.small,small{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th{font-size:12px!important} table td{font-size:12px!important}
+}
+
+
+/* v40 GLOBAL TYPOGRAPHY AUDIT — readable across all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important;line-height:1.4!important}
+.sidebar .nav-code{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.screen-hero p,.hero p,.breadcrumb,.meta-pill{font-size:13px!important}
+.card-head h3,.panel-head h3{font-size:19px!important}
+.card-head p,.panel-head p{font-size:13px!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.5!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.step-note,.audit-line{font-size:12px!important}
+small,.small,.muted,.footer{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th,table td{font-size:12px!important}
+}
+
+</style></head><body>
+<div class="wrap"><section class="brand"><div style="font-weight:800;font-size:20px">DPE · Sports Science Service Center</div><h1>ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</h1><p>สมัครสมาชิก ติดตามสถานะคำขอ และเข้าสู่ระบบเพื่อใช้บริการ</p><div class="flow"><div>① สมัคร/ยื่นคำขอ</div><div>② ตรวจข้อมูลและเอกสาร</div><div>③ ชำระเงินและอนุมัติ</div><div>④ ออกบัตรและเข้าใช้บริการ</div></div></section>
+<section class="login"><h2>เข้าสู่ระบบ</h2><div class="muted">สมาชิก / ผู้สมัคร / เจ้าหน้าที่</div><div class="field"><label>Username หรือ Email</label><input value="member.demo"></div><div class="field"><label>Password</label><input type="password" value="12345678"></div><div class="links"><a href="#">ลืมรหัสผ่าน?</a><a href="member.html#m03">สมัครสมาชิก</a></div><button class="btn primary" onclick="location.href='portal1_new.html'">เข้าสู่ระบบ</button><button class="btn thaid" onclick="alert('ThaiD Login สำเร็จ (Prototype)'); location.href='portal1_new.html'">เข้าสู่ระบบด้วย ThaiD</button></section></div>
+<div style="position:fixed;right:18px;bottom:18px;background:#0b6fc2;color:#fff;padding:7px 11px;border-radius:9px;font:700 11px sans-serif">Prototype v49</div></body></html>

@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporting & Analytics – Sprint 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1976D2;
+  --secondary:#42A5F5;
+  --bg:#F5FAFF;
+  --card:#FFFFFF;
+  --border:#D7EAF8;
+  --text:#17324A;
+  --muted:#72889A;
+  --success:#2E9B63;
+  --warning:#E49A2B;
+  --danger:#D9534F;
+  --purple:#7E72D8;
+  --shadow:0 12px 34px rgba(25,118,210,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Kanit",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font-family:inherit}
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{
+  background:linear-gradient(180deg,#0A4F8A 0%,#0F68B8 55%,#1976D2 100%);
+  color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto
+}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 20px}
+.brand-logo{width:45px;height:45px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:20px;font-weight:700}
+.brand h1{font-size:15px;line-height:1.35;margin:0}
+.brand p{font-size:9px;color:#CFEAFF;margin:3px 0 0}
+.nav-title{font-size:9px;color:#B9DDF8;margin:15px 10px 8px;text-transform:uppercase;letter-spacing:.08em}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;
+  color:#E7F5FF;text-decoration:none;font-size:11px;margin-bottom:5px;cursor:pointer;transition:.2s
+}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.18);transform:translateX(2px)}
+.nav-icon{width:27px;height:27px;border-radius:9px;background:rgba(255,255,255,.13);display:grid;place-items:center}
+.sidebar-footer{margin-top:20px;padding:13px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.08)}
+.sidebar-footer strong{font-size:10px}.sidebar-footer p{font-size:9px;color:#D7EDFC;line-height:1.55;margin:5px 0 0}
+.main{min-width:0}
+.topbar{
+  height:76px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:20
+}
+.breadcrumb strong{font-size:14px}.breadcrumb span{display:block;font-size:9px;color:var(--muted);margin-top:2px}
+.top-actions{display:flex;gap:10px;align-items:center}
+.user-chip{display:flex;gap:9px;align-items:center;padding:6px 10px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.avatar{width:31px;height:31px;border-radius:10px;background:linear-gradient(135deg,#8CCCF6,#1976D2);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600}
+.user-chip strong{font-size:10px;display:block}.user-chip span{font-size:8px;color:var(--muted)}
+.content{padding:25px 28px 40px}
+.screen{display:none}.screen.active-screen{display:block}
+.screen-hero{
+  background:linear-gradient(135deg,#FFFFFF 0%,#EEF8FF 100%);
+  border:1px solid var(--border);border-radius:22px;padding:22px 24px;
+  display:flex;justify-content:space-between;gap:18px;align-items:center;box-shadow:var(--shadow)
+}
+.screen-hero h2{font-size:22px;margin:0 0 6px}.screen-hero p{font-size:10px;color:var(--muted);margin:0;max-width:760px;line-height:1.65}
+.actions-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 13px;border-radius:10px;font-size:10px;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(25,118,210,.10)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.meta-strip{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.meta-pill,.tag{font-size:8px;padding:5px 8px;border-radius:999px;background:#EAF5FD;color:#1768A7;border:1px solid #CCE7F8}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.kpi-top{display:flex;justify-content:space-between;align-items:center}
+.kpi-icon{width:38px;height:38px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center;font-size:18px}
+.kpi small{font-size:8px;color:var(--muted)}.kpi strong{font-size:23px;display:block;margin-top:10px}.kpi p{margin:2px 0 0;font-size:8px;color:var(--success)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.card-head h3{margin:0;font-size:14px}.card-head p{margin:3px 0 0;font-size:8px;color:var(--muted)}
+.card-body{padding:17px 18px}
+.summary-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--border);font-size:10px}
+.summary-line:last-child{border-bottom:0}
+.progress{height:7px;background:#EAF2F8;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:99px}
+.chart-box{height:280px;position:relative}
+.chart-box canvas{width:100%;height:100%}
+.insight-list{display:grid;gap:10px}
+.insight-item{display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.insight-icon{width:40px;height:40px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center}
+.insight-item strong{font-size:10px}.insight-item p{font-size:8px;color:var(--muted);margin:3px 0 0;line-height:1.5}
+.status{font-size:8px;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.status.good{background:#E9F7EF;color:var(--success)}
+.status.warn{background:#FFF5E5;color:#B87611}
+.status.bad{background:#FFF0EF;color:var(--danger)}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.search-box{position:relative;min-width:260px;flex:1;max-width:400px}
+.search-box input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:11px;background:#fff;font-size:10px}
+.search-box span{position:absolute;left:12px;top:9px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+select,input{border:1px solid var(--border);border-radius:10px;padding:9px 10px;background:#fff;color:var(--text);font-size:10px;outline:none}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:11px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:9px;vertical-align:middle}
+th{background:#F5FAFE;color:#547187;font-weight:500}
+td strong{font-size:10px}
+.donut-wrap{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
+.donut{width:160px;height:160px;border-radius:50%;background:conic-gradient(#1976D2 0 48%,#42A5F5 48% 72%,#E49A2B 72% 88%,#7E72D8 88% 100%);position:relative}
+.donut:after{content:"";position:absolute;inset:30px;background:#fff;border-radius:50%}
+.donut-center{position:absolute;inset:0;display:grid;place-items:center;z-index:2;text-align:center}
+.donut-center strong{font-size:20px;display:block}.donut-center span{font-size:8px;color:var(--muted)}
+.legend-list{display:grid;gap:9px}.legend-item{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:9px}
+.legend-item i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:7px}
+.coming{min-height:580px;display:grid;place-items:center;border:1px dashed #A9D3EF;border-radius:20px;background:#F8FCFF;text-align:center}
+.coming h2{margin:0 0 6px}.coming p{font-size:10px;color:var(--muted)}
+.toast-container{position:fixed;right:20px;bottom:20px;z-index:120;display:grid;gap:8px}
+.toast{background:#fff;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;padding:11px 14px;box-shadow:0 12px 28px rgba(0,0,0,.16);font-size:10px}
+
+/* Sprint 2 */
+.heatmap{display:grid;grid-template-columns:90px repeat(7,1fr);gap:6px;align-items:center}
+.heatmap .label{font-size:8px;color:var(--muted)}
+.heat{height:30px;border-radius:8px;background:#EAF5FD;display:grid;place-items:center;font-size:8px;color:#1768A7}
+.heat.l2{background:#CFE9FA}.heat.l3{background:#9ED2F3}.heat.l4{background:#62B5EB;color:#fff}.heat.l5{background:#1976D2;color:#fff}
+.service-rank{display:grid;gap:10px}
+.service-item{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.rank-no{width:28px;height:28px;border-radius:9px;background:#EAF5FD;color:var(--primary);display:grid;place-items:center;font-size:10px;font-weight:600}
+.service-item strong{font-size:10px}.service-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+.bar-chart{height:260px;display:flex;align-items:flex-end;gap:14px;padding:20px 8px 0;border-bottom:1px solid var(--border)}
+.bar-chart .bar{flex:1;background:linear-gradient(180deg,#62B4EC,#1976D2);border-radius:9px 9px 0 0;min-width:22px;position:relative}
+.bar-chart .bar span{position:absolute;bottom:-23px;width:100%;text-align:center;font-size:8px;color:var(--muted)}
+.bar-chart .bar b{position:absolute;top:-20px;width:100%;text-align:center;font-size:8px;color:var(--text)}
+.trainer-list{display:grid;gap:10px}
+.trainer-item{display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.trainer-avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#8CCCF6,#1976D2);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600}
+.trainer-item strong{font-size:10px}.trainer-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric-box{border:1px solid var(--border);border-radius:14px;padding:13px;background:#FBFDFF}
+.metric-box small{font-size:8px;color:var(--muted)}.metric-box strong{font-size:18px;display:block;margin-top:5px}
+@media(max-width:1050px){.metric-grid{grid-template-columns:repeat(2,1fr)}.heatmap{grid-template-columns:75px repeat(7,1fr)}}
+@media(max-width:650px){.metric-grid{grid-template-columns:1fr}.heatmap{grid-template-columns:65px repeat(7,50px);overflow:auto}}
+
+
+/* Sprint 4 */
+.financial-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.financial-card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:16px;box-shadow:var(--shadow)}
+.financial-card small{font-size:8px;color:var(--muted)}
+.financial-card strong{display:block;font-size:22px;margin:7px 0 3px}
+.financial-card p{font-size:8px;margin:0;color:var(--success)}
+.cross-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.compare-card{border:1px solid var(--border);border-radius:15px;padding:14px;background:#FBFDFF}
+.compare-card small{font-size:8px;color:var(--muted)}
+.compare-card strong{display:block;font-size:18px;margin:5px 0}
+.compare-card .delta{font-size:8px;color:var(--success)}
+.compare-card .delta.down{color:var(--danger)}
+.stacked-bar{height:18px;border-radius:999px;overflow:hidden;background:#EAF2F8;display:flex}
+.stacked-bar span{display:block;height:100%}
+.matrix{display:grid;grid-template-columns:150px repeat(4,1fr);gap:6px;align-items:center}
+.matrix .head{font-size:8px;color:var(--muted);text-align:center}
+.matrix .rowlabel{font-size:9px;color:var(--text)}
+.matrix .cell{padding:10px 6px;border-radius:9px;text-align:center;font-size:8px;background:#EAF5FD;color:#1768A7}
+.matrix .cell.good{background:#E9F7EF;color:var(--success)}
+.matrix .cell.warn{background:#FFF5E5;color:#B87611}
+.matrix .cell.bad{background:#FFF0EF;color:var(--danger)}
+.executive-banner{background:linear-gradient(135deg,#0D5A9B,#1976D2 60%,#59B8F4);color:#fff;border-radius:18px;padding:18px}
+.executive-banner .summary-line{border-color:rgba(255,255,255,.2)}
+.executive-banner .summary-line span{color:#DCEFFF}
+.timeline{display:grid;gap:10px}
+.timeline-item{display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+.timeline-icon{width:40px;height:40px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center}
+.timeline-item strong{font-size:10px}.timeline-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+@media(max-width:1100px){.financial-grid{grid-template-columns:repeat(2,1fr)}.cross-grid{grid-template-columns:1fr}.compare-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.financial-grid,.compare-grid{grid-template-columns:1fr}.matrix{grid-template-columns:120px repeat(4,80px);overflow:auto}}
+
+
+/* Sprint 5 */
+body.dark{
+  --bg:#0F1B26;--card:#162635;--border:#294255;--text:#E8F3FB;--muted:#9CB2C2;
+  --shadow:0 12px 34px rgba(0,0,0,.28)
+}
+body.dark .topbar,body.dark .card,body.dark .kpi,body.dark .financial-card,
+body.dark .compare-card,body.dark .metric-box,body.dark .module-card,
+body.dark .screen-hero,body.dark .btn,body.dark input,body.dark select,
+body.dark .user-chip,body.dark .service-item,body.dark .trainer-item,
+body.dark .timeline-item,body.dark .insight-item{background:#162635;color:var(--text)}
+body.dark th{background:#1B3042}
+body.dark .coming{background:#132331}
+body.dark .donut:after{background:#162635}
+body.dark .bar-chart{border-color:var(--border)}
+body.dark .module-card p,body.dark .screen-hero p{color:var(--muted)}
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap}
+.icon-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:11px;background:#fff;cursor:pointer;font-size:15px}
+.wizard-overlay{position:fixed;inset:0;background:rgba(8,24,38,.58);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.wizard-overlay.open{display:flex}
+.wizard{width:min(760px,96vw);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.wizard-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.wizard-head h3{margin:0;font-size:16px}
+.wizard-body{padding:20px}
+.wizard-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.wizard-step{padding:9px;border-radius:10px;background:#EAF5FD;color:#1768A7;font-size:8px;text-align:center}
+.wizard-step.active{background:var(--primary);color:#fff}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:grid;gap:6px}
+.form-group label{font-size:9px;color:var(--muted)}
+.check-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.check-card{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:11px;background:#FBFDFF}
+body.dark .check-card{background:#1A2D3D}
+.check-card strong{font-size:9px}.check-card p{margin:2px 0 0;font-size:8px;color:var(--muted)}
+.wizard-footer{padding:15px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px}
+.saved-panel{position:fixed;right:18px;top:88px;width:330px;max-height:72vh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.2);z-index:150;display:none}
+.saved-panel.open{display:block}
+.saved-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.saved-head h3{font-size:13px;margin:0}
+.saved-list{padding:12px;display:grid;gap:9px}
+.saved-item{border:1px solid var(--border);border-radius:12px;padding:11px;background:#FBFDFF}
+body.dark .saved-item{background:#1A2D3D}
+.saved-item strong{font-size:9px}.saved-item p{font-size:8px;color:var(--muted);margin:3px 0 8px}
+.saved-actions{display:flex;gap:6px}
+.health-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.health-card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:16px;box-shadow:var(--shadow)}
+.health-card small{font-size:8px;color:var(--muted)}
+.health-card strong{display:block;font-size:22px;margin:7px 0}
+.gauge{height:10px;border-radius:99px;background:#EAF2F8;overflow:hidden}
+.gauge i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#42A5F5,#1976D2)}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.score-box{border:1px solid var(--border);border-radius:14px;padding:13px;background:#FBFDFF}
+body.dark .score-box{background:#1A2D3D}
+.score-box small{font-size:8px;color:var(--muted)}.score-box strong{display:block;font-size:18px;margin-top:5px}
+.wordcloud{min-height:220px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:15px}
+.wordcloud span{color:var(--primary);font-weight:500}
+.wordcloud .w1{font-size:28px}.wordcloud .w2{font-size:22px}.wordcloud .w3{font-size:17px}.wordcloud .w4{font-size:13px}
+.nps-ring{width:160px;height:160px;border-radius:50%;background:conic-gradient(#2E9B63 0 62%,#E49A2B 62% 82%,#D9534F 82% 100%);position:relative;margin:auto}
+.nps-ring:after{content:"";position:absolute;inset:30px;background:var(--card);border-radius:50%}
+.nps-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:2}
+.nps-center strong{font-size:28px}.nps-center span{font-size:8px;color:var(--muted)}
+.report-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+@media(max-width:900px){.health-grid,.score-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.health-grid,.score-grid,.check-grid{grid-template-columns:1fr}.saved-panel{left:10px;right:10px;width:auto}.wizard-steps{grid-template-columns:1fr 1fr}}
+
+@media(max-width:1150px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.topbar{top:0}.screen-hero{align-items:flex-start;flex-direction:column}.donut-wrap{grid-template-columns:1fr}}
+@media(max-width:560px){.content{padding:18px 14px}.topbar{padding:0 14px}.kpi-grid{grid-template-columns:1fr}.user-chip{display:none}}
+
+/* v37 GLOBAL READABILITY — larger typography on all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important}
+.sidebar .nav-item,.sidebar .nav-item span,.side-link{font-size:14px!important;line-height:1.35!important}
+.sidebar .nav-code{font-size:12px!important}
+.brand-title,.brand h1{font-size:19px!important}
+.brand-sub,.brand p{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important;line-height:1.3!important}
+.topbar p,.breadcrumb,.screen-hero p,.meta-strip,.meta-pill{font-size:13px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.card-head h3,.panel-head h3{font-size:19px!important;line-height:1.3!important}
+.card-head p,.panel-head p{font-size:13px!important;line-height:1.45!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important;font-weight:700!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.45!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong,.kpi-card span{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.audit-line,.step-note{font-size:12px!important}
+.footer,.muted,.small,small{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th{font-size:12px!important} table td{font-size:12px!important}
+}
+
+
+/* v40 GLOBAL TYPOGRAPHY AUDIT — readable across all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important;line-height:1.4!important}
+.sidebar .nav-code{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.screen-hero p,.hero p,.breadcrumb,.meta-pill{font-size:13px!important}
+.card-head h3,.panel-head h3{font-size:19px!important}
+.card-head p,.panel-head p{font-size:13px!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.5!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.step-note,.audit-line{font-size:12px!important}
+small,.small,.muted,.footer{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th,table td{font-size:12px!important}
+}
+
+
+/* v44 R03 Usage & Revenue report */
+.r03-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.r03-filter-grid{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:12px;align-items:end}
+.r03-filter-action .btn{width:100%}
+.r03-kpis{margin-top:18px}
+.r03-table{width:100%;border-collapse:collapse}
+.r03-table th,.r03-table td{padding:13px 14px;border-bottom:1px solid #e3edf5;text-align:left}
+.r03-table thead th{background:#edf6fc}
+.r03-table tfoot th{background:#f7fbfe}
+.r03-method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.r03-method-grid>div{padding:14px;border:1px solid #d9e8f3;border-radius:12px;background:#fbfdff}
+.r03-method-grid strong,.r03-method-grid span{display:block}
+.r03-method-grid strong{font-size:14px;margin-bottom:6px}
+.r03-method-grid span{font-size:12px;color:#637b90;line-height:1.5}
+@media(max-width:1200px){.r03-filter-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.r03-filter-grid,.r03-method-grid{grid-template-columns:1fr}}
+
+</style>
+
+<style>
+.portal-home-button{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-radius:14px;background:#1976D2;color:#fff!important;
+  text-decoration:none;font-family:"Kanit",sans-serif;font-size:12px;font-weight:600;
+  box-shadow:0 12px 28px rgba(25,118,210,.30);
+  border:1px solid rgba(255,255,255,.35);transition:.2s
+}
+.portal-home-button:hover{transform:translateY(-2px);background:#0F5CA3}
+.portal-home-icon{font-size:18px;line-height:1}
+@media(max-width:700px){
+  .portal-home-button{right:12px;bottom:12px;padding:10px 12px}
+  .portal-home-label{display:none}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">R</div>
+      <div><h1>ระบบรายงานและ<br>วิเคราะห์ข้อมูล</h1><p>Reporting & Analytics</p></div>
+    </div>
+
+    <div class="nav-title">Reporting Management</div>
+    <a class="nav-item active" onclick="goScreen('r01',this)"><span class="nav-icon">⌂</span><span>R-01 Executive Dashboard</span></a>
+    <a class="nav-item" onclick="goScreen('r02',this)"><span class="nav-icon">M</span><span>R-02 รายงานสมาชิก</span></a>
+    <a class="nav-item" onclick="goScreen('r03',this)"><span class="nav-icon">▥</span><span>R-03 การใช้บริการ</span></a>
+    <a class="nav-item" onclick="goScreen('r04',this)"><span class="nav-icon">C</span><span>R-04 คลาสและกิจกรรม</span></a>
+    <a class="nav-item" onclick="goScreen('r05',this)"><span class="nav-icon">♥</span><span>R-05 สุขภาพและ Workout</span></a>
+    <a class="nav-item" onclick="goScreen('r06',this)"><span class="nav-icon">★</span><span>R-06 ความพึงพอใจ</span></a>
+    <a class="nav-item" onclick="goScreen('r07',this)"><span class="nav-icon">฿</span><span>R-07 รายรับและการเงิน</span></a>
+
+    <div class="sidebar-footer">
+      <strong>Reporting & Analytics · Sprint 5</strong>
+      <p>R-01 ถึง R-07 พร้อมใช้งาน พร้อม Report Wizard, Dark Mode, LocalStorage และ Saved Filters</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb"><strong id="pageTitle">Executive Dashboard</strong><span>ระบบบริการศูนย์วิทยาศาสตร์การกีฬาและการออกกำลังกาย</span></div>
+      <div class="top-actions">
+        <button class="icon-btn" title="Report Wizard" onclick="openReportWizard()">＋</button>
+        <button class="icon-btn" title="Saved Filters" onclick="toggleSavedPanel()">★</button>
+        <button class="icon-btn" title="Dark Mode" onclick="toggleDarkMode()">◐</button>
+        <button class="btn" onclick="refreshCurrentReport()">↻ Refresh</button>
+        <div class="user-chip"><div class="avatar">ผบ</div><div><strong>ผู้บริหารระบบ</strong><span>Executive Viewer</span></div></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="r01" class="screen active-screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-01 Executive Dashboard</h2>
+            <p>สรุปภาพรวมข้อมูลสมาชิก การใช้บริการ คลาส การออกกำลังกาย ความพึงพอใจ และรายรับในหน้าจอเดียว เพื่อสนับสนุนการตัดสินใจของผู้บริหาร</p>
+            <div class="meta-strip"><span class="meta-pill">Cross-module Overview</span><span class="meta-pill">Executive KPI</span><span class="meta-pill">Sprint 1</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportExecutive('excel')">Export Excel</button><button class="btn primary" onclick="exportExecutive('pdf')">Export PDF</button></div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-top"><small>สมาชิกทั้งหมด</small><div class="kpi-icon">M</div></div><strong>12,486</strong><p>↑ 8.4% จากเดือนก่อน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ผู้เข้าใช้บริการเดือนนี้</small><div class="kpi-icon">▥</div></div><strong>8,942</strong><p>71.6% ของสมาชิกทั้งหมด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>คลาสที่จัดแล้ว</small><div class="kpi-icon">C</div></div><strong>326</strong><p>Attendance 84.2%</p></div>
+          <div class="kpi"><div class="kpi-top"><small>รายรับเดือนนี้</small><div class="kpi-icon">฿</div></div><strong>1.84M</strong><p>↑ 12.4% จากเดือนก่อน</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>แนวโน้มผู้ใช้บริการและรายรับ</h3><p>ข้อมูล 6 เดือนล่าสุด</p></div><select id="execMetric" onchange="drawExecutiveChart()"><option value="visits">ผู้ใช้บริการ</option><option value="revenue">รายรับ</option></select></div>
+            <div class="card-body chart-box"><canvas id="executiveChart"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>สัดส่วนการใช้บริการ</h3><p>แยกตามประเภทบริการหลัก</p></div></div>
+            <div class="card-body">
+              <div class="donut-wrap">
+                <div style="position:relative">
+                  <div class="donut"></div>
+                  <div class="donut-center"><div><strong>8,942</strong><span>ครั้ง</span></div></div>
+                </div>
+                <div class="legend-list">
+                  <div class="legend-item"><span><i style="background:#1976D2"></i>ฟิตเนสและ Workout</span><strong>48%</strong></div>
+                  <div class="legend-item"><span><i style="background:#42A5F5"></i>คลาสออกกำลังกาย</span><strong>24%</strong></div>
+                  <div class="legend-item"><span><i style="background:#E49A2B"></i>ทดสอบสมรรถภาพ</span><strong>16%</strong></div>
+                  <div class="legend-item"><span><i style="background:#7E72D8"></i>อบรมและกิจกรรม</span><strong>12%</strong></div>
+                </div>
+              </div>
+              <div class="summary-line" style="margin-top:15px"><span>บริการเติบโตสูงสุด</span><strong>Workout +18.2%</strong></div>
+              <div class="summary-line"><span>ช่วงเวลาใช้งานสูงสุด</span><strong>17:00–19:00 น.</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:18px">
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">สมาชิกใหม่เดือนนี้</small><strong style="font-size:22px;display:block;margin-top:6px">684 คน</strong><p style="font-size:9px;color:var(--success)">เพิ่มขึ้น 9.1%</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">Workout Compliance</small><strong style="font-size:22px;display:block;margin-top:6px">76.8%</strong><p style="font-size:9px;color:var(--warning)">ต่ำกว่าเป้าหมาย 3.2 จุด</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">ความพึงพอใจรวม</small><strong style="font-size:22px;display:block;margin-top:6px">4.58 / 5</strong><p style="font-size:9px;color:var(--success)">ผลตอบรับระดับดีมาก</p></div></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>Executive Insights</h3><p>ประเด็นสำคัญที่ควรติดตาม</p></div></div>
+            <div class="card-body insight-list">
+              <div class="insight-item"><div class="insight-icon">↑</div><div><strong>จำนวนสมาชิก Active เพิ่มขึ้น</strong><p>Active Member เพิ่ม 11.6% หลังเปิดคลาสใหม่ช่วงเย็น</p></div><span class="status good">บวก</span></div>
+              <div class="insight-item"><div class="insight-icon">!</div><div><strong>Workout Compliance ยังต่ำกว่าเป้า</strong><p>สมาชิก 23.2% ทำตามแผนไม่ครบ ควรเพิ่มการติดตามจาก Trainer</p></div><span class="status warn">ติดตาม</span></div>
+              <div class="insight-item"><div class="insight-icon">฿</div><div><strong>รายรับเติบโตต่อเนื่อง</strong><p>รายรับเพิ่มขึ้น 12.4% โดยบริการสมาชิกและทดสอบสมรรถภาพเป็นรายได้หลัก</p></div><span class="status good">บวก</span></div>
+              <div class="insight-item"><div class="insight-icon">C</div><div><strong>คลาสยอดนิยมเริ่มเต็มเร็ว</strong><p>คลาส Yoga และ Circuit Training มี Waitlist สูงกว่า 20%</p></div><span class="status warn">วางแผน</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>เป้าหมายประจำเดือน</h3><p>สถานะเทียบกับเป้าหมายที่กำหนด</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>สมาชิกใหม่ 750 คน</span><strong>684 คน</strong></div><div class="progress"><i style="width:91%"></i></div>
+              <div class="summary-line"><span>ผู้ใช้บริการ 9,500 ครั้ง</span><strong>8,942 ครั้ง</strong></div><div class="progress"><i style="width:94%"></i></div>
+              <div class="summary-line"><span>รายรับ 2.0 ล้านบาท</span><strong>1.84 ล้านบาท</strong></div><div class="progress"><i style="width:92%"></i></div>
+              <div class="summary-line"><span>ความพึงพอใจ 4.50</span><strong>4.58</strong></div><div class="progress"><i style="width:100%;background:var(--success)"></i></div>
+            </div>
+          </div>
+        </div>
+      
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>Report Filters ตาม Requirement กรรมการ</h3><p>Requirement ข้อ 6 — ใช้ Filter ร่วมกับรายงานแต่ละประเภท</p></div></div>
+<div class="card-body"><div class="filter-row">
+<div class="field"><label>ช่วงเวลา</label><select><option>รายวัน</option><option>รายเดือน</option><option>รายไตรมาส</option><option>ทุก 6 เดือน</option><option>รายปี</option></select></div>
+<div class="field"><label>เพศ</label><select><option>ทั้งหมด</option><option>ชาย</option><option>หญิง</option></select></div>
+<div class="field"><label>ประเภทผู้รับบริการ</label><select><option>ทั้งหมด</option><option>สมาชิก</option><option>รายวัน</option><option>กลุ่ม/หน่วยงาน</option></select></div>
+<div class="field"><label>วัตถุประสงค์สมัคร</label><select><option>ทั้งหมด</option><option>ดูแลสุขภาพ</option><option>พัฒนาสมรรถภาพ</option><option>เตรียมนักกีฬา</option></select></div>
+</div><div class="kpi-grid" style="margin-top:14px"><div class="kpi-card"><strong>52,839</strong><span>ผู้รับบริการรวม</span></div><div class="kpi-card"><strong>18:00–19:00</strong><span>Peak Usage</span></div><div class="kpi-card"><strong>26</strong><span>สมาชิกใหม่วันนี้</span></div><div class="kpi-card"><strong>88.32%</strong><span>ความพึงพอใจ</span></div></div></div></div>
+</section>
+
+      <section id="r02" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-02 รายงานสมาชิก</h2>
+            <p>วิเคราะห์จำนวนสมาชิก สมาชิกใหม่ สถานะ Active/Inactive ประเภทสมาชิก ช่วงอายุ พื้นที่ และอัตราการต่ออายุ เพื่อใช้วางแผนบริการและกิจกรรม</p>
+            <div class="meta-strip"><span class="meta-pill">Member Analytics</span><span class="meta-pill">Demographic Report</span><span class="meta-pill">Sprint 1</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportMemberReport('excel')">Export Excel</button><button class="btn primary" onclick="exportMemberReport('pdf')">Export PDF</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box"><span>⌕</span><input id="memberSearch" oninput="filterMemberTable()" placeholder="ค้นหารหัสสมาชิก ชื่อ หรือประเภทสมาชิก..."></div>
+              <div class="filter-row">
+                <select id="memberStatusFilter" onchange="filterMemberTable()"><option value="">ทุกสถานะ</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="expired">หมดอายุ</option></select>
+                <select id="memberTypeFilter" onchange="filterMemberTable()"><option value="">ทุกประเภท</option><option>ทั่วไป</option><option>นักกีฬา</option><option>ผู้สูงอายุ</option><option>องค์กร</option></select>
+                <input type="date" value="2026-07-01">
+                <input type="date" value="2026-07-31">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-top"><small>สมาชิกทั้งหมด</small><div class="kpi-icon">M</div></div><strong>12,486</strong><p>ข้อมูลสะสมทั้งหมด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Active Member</small><div class="kpi-icon">✓</div></div><strong>9,842</strong><p>78.8% ของสมาชิกทั้งหมด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>สมาชิกใหม่เดือนนี้</small><div class="kpi-icon">+</div></div><strong>684</strong><p>↑ 9.1% จากเดือนก่อน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>อัตราต่ออายุ</small><div class="kpi-icon">↻</div></div><strong>82.6%</strong><p>สูงกว่าเป้าหมาย 2.6 จุด</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>แนวโน้มสมาชิกใหม่</h3><p>สมาชิกใหม่รายเดือน</p></div></div>
+            <div class="card-body chart-box"><canvas id="memberTrendChart"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>สัดส่วนสมาชิกตามช่วงอายุ</h3><p>ข้อมูลสมาชิก Active</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>อายุต่ำกว่า 18 ปี</span><strong>1,248 คน</strong></div><div class="progress"><i style="width:13%"></i></div>
+              <div class="summary-line"><span>18–30 ปี</span><strong>3,542 คน</strong></div><div class="progress"><i style="width:36%"></i></div>
+              <div class="summary-line"><span>31–45 ปี</span><strong>2,966 คน</strong></div><div class="progress"><i style="width:30%"></i></div>
+              <div class="summary-line"><span>46–60 ปี</span><strong>1,378 คน</strong></div><div class="progress"><i style="width:14%"></i></div>
+              <div class="summary-line"><span>มากกว่า 60 ปี</span><strong>708 คน</strong></div><div class="progress"><i style="width:7%"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:18px">
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">เพศชาย</small><strong style="font-size:22px;display:block;margin-top:6px">52.4%</strong><p style="font-size:9px;color:var(--muted)">6,544 คน</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">เพศหญิง</small><strong style="font-size:22px;display:block;margin-top:6px">46.8%</strong><p style="font-size:9px;color:var(--muted)">5,844 คน</p></div></div>
+          <div class="card"><div class="card-body"><small style="color:var(--muted)">ไม่ระบุ</small><strong style="font-size:22px;display:block;margin-top:6px">0.8%</strong><p style="font-size:9px;color:var(--muted)">98 คน</p></div></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-head"><div><h3>รายละเอียดสมาชิก</h3><p>ตัวอย่างข้อมูลสำหรับรายงานและตรวจสอบ</p></div><button class="btn" onclick="showToast('เตรียมพิมพ์รายงานสมาชิกแล้ว')">พิมพ์รายการ</button></div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead><tr><th>รหัสสมาชิก</th><th>ชื่อสมาชิก</th><th>ประเภท</th><th>ช่วงอายุ</th><th>วันที่สมัคร</th><th>เข้าใช้ล่าสุด</th><th>สถานะ</th><th>การต่ออายุ</th></tr></thead>
+              <tbody id="memberTableBody">
+                <tr data-status="active" data-type="ทั่วไป"><td><strong>M-2569-012486</strong></td><td>กิตติพงษ์ พรหมมา</td><td>ทั่วไป</td><td>31–45 ปี</td><td>21 ก.ค. 69</td><td>21 ก.ค. 69</td><td><span class="status good">Active</span></td><td>ครบกำหนด 21 ส.ค. 69</td></tr>
+                <tr data-status="active" data-type="นักกีฬา"><td><strong>M-2569-012485</strong></td><td>ณัฐวดี ศรีสุข</td><td>นักกีฬา</td><td>18–30 ปี</td><td>20 ก.ค. 69</td><td>21 ก.ค. 69</td><td><span class="status good">Active</span></td><td>ครบกำหนด 20 ต.ค. 69</td></tr>
+                <tr data-status="inactive" data-type="ผู้สูงอายุ"><td><strong>M-2569-011928</strong></td><td>สมชาย ใจดี</td><td>ผู้สูงอายุ</td><td>มากกว่า 60 ปี</td><td>12 พ.ค. 69</td><td>2 ก.ค. 69</td><td><span class="status warn">Inactive</span></td><td>ครบกำหนด 12 ส.ค. 69</td></tr>
+                <tr data-status="expired" data-type="ทั่วไป"><td><strong>M-2568-009874</strong></td><td>ปาริชาติ แสงทอง</td><td>ทั่วไป</td><td>31–45 ปี</td><td>4 ธ.ค. 68</td><td>18 มิ.ย. 69</td><td><span class="status bad">หมดอายุ</span></td><td>หมดอายุ 4 ก.ค. 69</td></tr>
+                <tr data-status="active" data-type="องค์กร"><td><strong>ORG-2569-000214</strong></td><td>บริษัท สปอร์ตพลัส จำกัด</td><td>องค์กร</td><td>—</td><td>1 ก.ค. 69</td><td>21 ก.ค. 69</td><td><span class="status good">Active</span></td><td>ครบกำหนด 30 ก.ย. 69</td></tr>
+                <tr data-status="active" data-type="ทั่วไป"><td><strong>M-2569-012361</strong></td><td>ธนกร พัฒนสุข</td><td>ทั่วไป</td><td>18–30 ปี</td><td>15 ก.ค. 69</td><td>20 ก.ค. 69</td><td><span class="status good">Active</span></td><td>ครบกำหนด 15 ส.ค. 69</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="r03" class="screen">
+  <div class="screen-hero">
+    <div>
+      <h2>R-03 รายงานการใช้บริการ</h2>
+      <p>เลือกช่วงวันที่เพื่อดูจำนวนผู้เข้าใช้แบบไม่ซ้ำ จำนวนครั้งเข้าใช้ รายได้รวม ช่วงเวลาที่มีผู้ใช้สูงสุด และรายละเอียดรายวัน</p>
+      <div class="meta-strip"><span class="meta-pill">Visit Record</span><span class="meta-pill">Payment Transaction</span><span class="meta-pill">Usage & Revenue</span></div>
+    </div>
+    <div class="actions-row">
+      <button class="btn" onclick="exportUsageReport('excel')">Export Excel</button>
+      <button class="btn primary" onclick="exportUsageReport('pdf')">Export PDF</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-head">
+      <div><h3>กำหนดช่วงรายงาน</h3><p>สามารถดูรายวัน รายเดือน หรือกำหนดช่วงวันที่เองได้</p></div>
+    </div>
+    <div class="card-body">
+      <div class="r03-presets">
+        <button class="btn" onclick="setUsagePreset('today')">วันนี้</button>
+        <button class="btn" onclick="setUsagePreset('yesterday')">เมื่อวาน</button>
+        <button class="btn" onclick="setUsagePreset('week')">7 วันล่าสุด</button>
+        <button class="btn" onclick="setUsagePreset('month')">เดือนนี้</button>
+      </div>
+      <div class="r03-filter-grid">
+        <div class="field"><label>วันที่เริ่มต้น</label><input type="date" id="usageFrom" value="2026-08-01"></div>
+        <div class="field"><label>วันที่สิ้นสุด</label><input type="date" id="usageTo" value="2026-08-14"></div>
+        <div class="field"><label>ประเภทบริการ</label>
+          <select id="usageService"><option>ทุกบริการ</option><option>Fitness</option><option>Class</option><option>ทดสอบสมรรถภาพ</option><option>Body Composition</option></select>
+        </div>
+        <div class="field"><label>ประเภทสมาชิก</label>
+          <select id="usageMemberType"><option>ทุกประเภท</option><option>สมาชิกประเภท ก</option><option>สมาชิกประเภท ข</option><option>บุคคลทั่วไป</option></select>
+        </div>
+        <div class="field"><label>ช่วงเวลา</label>
+          <select id="usageTime"><option>ทุกช่วงเวลา</option><option>06:00–09:00</option><option>09:00–12:00</option><option>12:00–16:00</option><option>16:00–20:00</option></select>
+        </div>
+        <div class="field r03-filter-action"><label>&nbsp;</label><button class="btn primary" onclick="refreshUsageReportV44()">แสดงรายงาน</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid r03-kpis">
+    <div class="kpi"><div class="kpi-top"><small>ผู้เข้าใช้ไม่ซ้ำ</small><div class="kpi-icon">M</div></div><strong id="usageUnique">376</strong><p>นับสมาชิกแต่ละคน 1 ครั้งในช่วงที่เลือก</p></div>
+    <div class="kpi"><div class="kpi-top"><small>จำนวนครั้งเข้าใช้</small><div class="kpi-icon">▥</div></div><strong id="usageVisits">440</strong><p>รวม Check-in ทั้งหมดในช่วงที่เลือก</p></div>
+    <div class="kpi"><div class="kpi-top"><small>รายได้รวม</small><div class="kpi-icon">฿</div></div><strong id="usageRevenue">54,550 บาท</strong><p>จาก Payment Transaction ที่ชำระสำเร็จ</p></div>
+    <div class="kpi"><div class="kpi-top"><small>Peak Time</small><div class="kpi-icon">◷</div></div><strong id="usagePeak">17:00–19:00</strong><p>ช่วงเวลาที่มีการใช้บริการสูงสุด</p></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card">
+      <div class="card-head"><div><h3>แนวโน้มจำนวนครั้งเข้าใช้</h3><p>จำนวน Check-in รายวันตามช่วงวันที่ที่เลือก</p></div></div>
+      <div class="card-body chart-box"><canvas id="usageTrendChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>สัดส่วนการใช้บริการ</h3><p>แยกตามประเภทบริการ</p></div></div>
+      <div class="card-body chart-box"><canvas id="usageServiceChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-head">
+      <div><h3>สรุปรายวัน</h3><p>แยก “จำนวนคน” ออกจาก “จำนวนครั้ง” และแสดงรายได้ของแต่ละวัน</p></div>
+      <button class="btn" onclick="alert('Prototype: เปิดรายละเอียดรายการของวันที่เลือก')">Drill-down รายการ</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div class="table-wrap">
+        <table class="r03-table">
+          <thead><tr><th>วันที่</th><th>ผู้ใช้ไม่ซ้ำ</th><th>จำนวนครั้งเข้าใช้</th><th>Fitness</th><th>Class</th><th>ทดสอบสมรรถภาพ</th><th>รายได้</th></tr></thead>
+          <tbody id="usageDailyBody">
+            <tr><td>14 ส.ค. 2569</td><td>126</td><td>148</td><td>82</td><td>41</td><td>25</td><td>18,450 บาท</td></tr>
+            <tr><td>13 ส.ค. 2569</td><td>118</td><td>137</td><td>76</td><td>38</td><td>23</td><td>16,900 บาท</td></tr>
+            <tr><td>12 ส.ค. 2569</td><td>132</td><td>155</td><td>91</td><td>40</td><td>24</td><td>19,200 บาท</td></tr>
+          </tbody>
+          <tfoot><tr><th>รวม</th><th id="usageTotalUnique">376</th><th id="usageTotalVisits">440</th><th>249</th><th>119</th><th>72</th><th id="usageTotalRevenue">54,550 บาท</th></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-head"><div><h3>หลักการคำนวณ</h3><p>เพื่อให้ตัวเลขในรายงานตีความตรงกัน</p></div></div>
+    <div class="card-body">
+      <div class="r03-method-grid">
+        <div><strong>ผู้เข้าใช้ไม่ซ้ำ</strong><span>นับ Member Code แต่ละคนเพียง 1 ครั้งภายในช่วงวันที่ที่เลือก</span></div>
+        <div><strong>จำนวนครั้งเข้าใช้</strong><span>นับ Visit Record / Check-in ทุกครั้ง จึงอาจมากกว่าจำนวนคน</span></div>
+        <div><strong>รายได้</strong><span>รวมเฉพาะ Payment Transaction ที่สถานะชำระสำเร็จ ไม่คำนวณจาก Check-in โดยตรง</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="r04" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-04 รายงานคลาสและกิจกรรม</h2>
+            <p>วิเคราะห์จำนวนคลาส การจอง Attendance, Waitlist, Cancellation, ความนิยมของกิจกรรม และผลการดำเนินงานของ Trainer</p>
+            <div class="meta-strip"><span class="meta-pill">Class Analytics</span><span class="meta-pill">Trainer Performance</span><span class="meta-pill">Sprint 2</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="exportClassReport('excel')">Export Excel</button><button class="btn primary" onclick="exportClassReport('pdf')">Export PDF</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="filter-row">
+                <input type="date" value="2026-07-01">
+                <input type="date" value="2026-07-31">
+                <select id="classCategoryFilter" onchange="refreshClassReport()"><option>ทุกประเภทคลาส</option><option>Yoga</option><option>Circuit Training</option><option>ผู้สูงอายุ</option><option>นักกีฬา</option></select>
+                <select id="trainerFilter" onchange="refreshClassReport()"><option>Trainer ทุกคน</option><option>พิมพ์ชนก</option><option>ธนภัทร</option><option>ศิริพร</option></select>
+                <button class="btn primary" onclick="refreshClassReport()">แสดงรายงาน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-top"><small>คลาสที่จัดทั้งหมด</small><div class="kpi-icon">C</div></div><strong>326</strong><p>↑ 7.9% จากเดือนก่อน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>จำนวนการจอง</small><div class="kpi-icon">▤</div></div><strong>3,284</strong><p>เฉลี่ย 10.1 คน/คลาส</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Attendance Rate</small><div class="kpi-icon">✓</div></div><strong>84.2%</strong><p>สูงกว่าเป้าหมาย 4.2 จุด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Cancellation Rate</small><div class="kpi-icon">×</div></div><strong>7.8%</strong><p style="color:var(--warning)">256 รายการ</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>จำนวนการจองรายสัปดาห์</h3><p>เปรียบเทียบ Booking กับ Attendance</p></div></div>
+            <div class="card-body">
+              <div class="bar-chart">
+                <div class="bar" style="height:64%"><b>742</b><span>W1</span></div>
+                <div class="bar" style="height:72%"><b>816</b><span>W2</span></div>
+                <div class="bar" style="height:81%"><b>924</b><span>W3</span></div>
+                <div class="bar" style="height:70%"><b>802</b><span>W4</span></div>
+              </div>
+              <div class="summary-line" style="margin-top:28px"><span>Booking รวม</span><strong>3,284 รายการ</strong></div>
+              <div class="summary-line"><span>Attendance จริง</span><strong>2,765 คน</strong></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>คลาสยอดนิยม</h3><p>เรียงตามอัตราการจองเต็ม</p></div></div>
+            <div class="card-body service-rank">
+              <div class="service-item"><div class="rank-no">1</div><div><strong>Yoga Evening</strong><p>เต็ม 96% · Waitlist 24%</p></div><strong>4.8/5</strong></div>
+              <div class="service-item"><div class="rank-no">2</div><div><strong>Circuit Training</strong><p>เต็ม 93% · Waitlist 21%</p></div><strong>4.7/5</strong></div>
+              <div class="service-item"><div class="rank-no">3</div><div><strong>Senior Fit</strong><p>เต็ม 88% · Waitlist 12%</p></div><strong>4.9/5</strong></div>
+              <div class="service-item"><div class="rank-no">4</div><div><strong>Mobility & Stretch</strong><p>เต็ม 82% · Waitlist 8%</p></div><strong>4.6/5</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-grid" style="margin-top:18px">
+          <div class="metric-box"><small>Waitlist รวม</small><strong>418 รายการ</strong><span style="font-size:8px;color:var(--warning)">12.7% ของ Booking</span></div>
+          <div class="metric-box"><small>No-show</small><strong>263 รายการ</strong><span style="font-size:8px;color:var(--warning)">8.0% ของ Booking</span></div>
+          <div class="metric-box"><small>คลาสเต็ม</small><strong>98 คลาส</strong><span style="font-size:8px;color:var(--success)">30.1% ของทั้งหมด</span></div>
+          <div class="metric-box"><small>คะแนนเฉลี่ย</small><strong>4.68 / 5</strong><span style="font-size:8px;color:var(--success)">ระดับดีมาก</span></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>Trainer Performance</h3><p>ผลการสอนและความพึงพอใจ</p></div></div>
+            <div class="card-body trainer-list">
+              <div class="trainer-item"><div class="trainer-avatar">พช</div><div><strong>พิมพ์ชนก ชัยวัฒนา</strong><p>42 คลาส · Attendance 91% · Rating 4.9</p></div><span class="status good">Excellent</span></div>
+              <div class="trainer-item"><div class="trainer-avatar">ธภ</div><div><strong>ธนภัทร สุขเกษม</strong><p>38 คลาส · Attendance 87% · Rating 4.8</p></div><span class="status good">Very Good</span></div>
+              <div class="trainer-item"><div class="trainer-avatar">ศพ</div><div><strong>ศิริพร พัฒนสุข</strong><p>35 คลาส · Attendance 84% · Rating 4.7</p></div><span class="status good">Very Good</span></div>
+              <div class="trainer-item"><div class="trainer-avatar">กช</div><div><strong>กิตติชัย แสงทอง</strong><p>31 คลาส · Attendance 76% · Rating 4.4</p></div><span class="status warn">ติดตาม</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Class Insights</h3><p>ข้อเสนอเพื่อปรับแผนคลาส</p></div></div>
+            <div class="card-body insight-list">
+              <div class="insight-item"><div class="insight-icon">+</div><div><strong>ควรเพิ่มรอบ Yoga Evening</strong><p>มี Waitlist เฉลี่ย 24% ต่อรอบ และเต็มก่อนวันเรียน 3 วัน</p></div><span class="status good">แนะนำ</span></div>
+              <div class="insight-item"><div class="insight-icon">!</div><div><strong>No-show สูงในคลาสเช้า</strong><p>คลาสก่อน 08:00 น. มี No-show เฉลี่ย 13.2%</p></div><span class="status warn">ติดตาม</span></div>
+              <div class="insight-item"><div class="insight-icon">★</div><div><strong>Senior Fit ได้คะแนนสูงสุด</strong><p>คะแนนความพึงพอใจ 4.9 และมีอัตรากลับมาเรียนซ้ำ 86%</p></div><span class="status good">จุดแข็ง</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-head"><div><h3>รายละเอียดคลาส</h3><p>ข้อมูลตัวอย่างสำหรับตรวจสอบและส่งออก</p></div><button class="btn" onclick="showToast('เตรียมพิมพ์รายงานคลาสแล้ว')">พิมพ์รายการ</button></div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead><tr><th>รหัสคลาส</th><th>ชื่อคลาส</th><th>Trainer</th><th>รอบเรียน</th><th>ความจุ</th><th>จอง</th><th>เข้าเรียน</th><th>Waitlist</th><th>Rating</th></tr></thead>
+              <tbody>
+                <tr><td><strong>C-2569-0326</strong></td><td>Yoga Evening</td><td>พิมพ์ชนก</td><td>21 ก.ค. 18:00</td><td>20</td><td>20</td><td>19</td><td>5</td><td>4.9</td></tr>
+                <tr><td><strong>C-2569-0325</strong></td><td>Circuit Training</td><td>ธนภัทร</td><td>21 ก.ค. 17:30</td><td>16</td><td>16</td><td>15</td><td>3</td><td>4.8</td></tr>
+                <tr><td><strong>C-2569-0324</strong></td><td>Senior Fit</td><td>ศิริพร</td><td>21 ก.ค. 10:00</td><td>18</td><td>17</td><td>16</td><td>1</td><td>4.9</td></tr>
+                <tr><td><strong>C-2569-0323</strong></td><td>Mobility & Stretch</td><td>กิตติชัย</td><td>21 ก.ค. 08:00</td><td>15</td><td>12</td><td>10</td><td>0</td><td>4.4</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="r05" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-05 รายงานสุขภาพและการออกกำลังกาย</h2>
+            <p>ติดตามผลทดสอบสมรรถภาพ BMI องค์ประกอบร่างกาย ความก้าวหน้า และอัตราการทำตามแผน Workout เพื่อค้นหากลุ่มที่ควรติดตาม</p>
+            <div class="meta-strip"><span class="meta-pill">Health Analytics</span><span class="meta-pill">Workout Progress</span><span class="meta-pill">Sprint 5 Complete</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="saveCurrentFilter('รายงานสุขภาพ')">บันทึกตัวกรอง</button><button class="btn" onclick="exportHealthReport('excel')">Export Excel</button><button class="btn primary" onclick="exportHealthReport('pdf')">Export PDF</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px"><div class="card-body"><div class="toolbar"><div class="filter-row">
+          <input type="date" value="2026-01-01"><input type="date" value="2026-07-31">
+          <select><option>สมาชิกทุกกลุ่ม</option><option>ทั่วไป</option><option>นักกีฬา</option><option>ผู้สูงอายุ</option></select>
+          <select><option>ทุกโปรแกรม</option><option>Weight Control</option><option>Strength</option><option>Senior Wellness</option></select>
+          <button class="btn primary" onclick="refreshHealthReport()">แสดงรายงาน</button>
+        </div></div></div></div>
+
+        <div class="health-grid" style="margin-top:18px">
+          <div class="health-card"><small>BMI เฉลี่ย</small><strong>23.6</strong><div class="gauge"><i style="width:72%"></i></div><p style="font-size:8px;color:var(--success)">อยู่ในเกณฑ์ปกติ</p></div>
+          <div class="health-card"><small>Body Fat เฉลี่ย</small><strong>24.8%</strong><div class="gauge"><i style="width:66%"></i></div><p style="font-size:8px;color:var(--warning)">ควรติดตามบางกลุ่ม</p></div>
+          <div class="health-card"><small>Fitness Score</small><strong>78.4</strong><div class="gauge"><i style="width:78%"></i></div><p style="font-size:8px;color:var(--success)">เพิ่มขึ้น 5.2 คะแนน</p></div>
+          <div class="health-card"><small>Workout Compliance</small><strong>76.8%</strong><div class="gauge"><i style="width:77%"></i></div><p style="font-size:8px;color:var(--warning)">ต่ำกว่าเป้าหมาย 3.2 จุด</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card"><div class="card-head"><div><h3>แนวโน้ม Fitness Score</h3><p>ค่าเฉลี่ย 6 เดือนล่าสุด</p></div></div><div class="card-body chart-box"><canvas id="healthTrendChart"></canvas></div></div>
+          <div class="card"><div class="card-head"><div><h3>Before / After Comparison</h3><p>ผลเฉลี่ยก่อนและหลังเข้าร่วมโปรแกรม</p></div></div><div class="card-body">
+            <div class="summary-line"><span>น้ำหนักเฉลี่ย</span><strong>72.4 → 69.8 กก.</strong></div><div class="progress"><i style="width:82%"></i></div>
+            <div class="summary-line"><span>BMI</span><strong>24.8 → 23.6</strong></div><div class="progress"><i style="width:76%"></i></div>
+            <div class="summary-line"><span>Fitness Score</span><strong>69.2 → 78.4</strong></div><div class="progress"><i style="width:88%"></i></div>
+            <div class="summary-line"><span>การออกกำลังกาย/สัปดาห์</span><strong>1.8 → 3.4 ครั้ง</strong></div><div class="progress"><i style="width:90%"></i></div>
+          </div></div>
+        </div>
+
+        <div class="score-grid" style="margin-top:18px">
+          <div class="score-box"><small>กลุ่มสุขภาพดี</small><strong>62.4%</strong><span style="font-size:8px;color:var(--success)">7,794 คน</span></div>
+          <div class="score-box"><small>กลุ่มควรติดตาม</small><strong>24.8%</strong><span style="font-size:8px;color:var(--warning)">3,097 คน</span></div>
+          <div class="score-box"><small>กลุ่มความเสี่ยงสูง</small><strong>12.8%</strong><span style="font-size:8px;color:var(--danger)">1,595 คน</span></div>
+          <div class="score-box"><small>สมาชิกมีพัฒนาการ</small><strong>71.6%</strong><span style="font-size:8px;color:var(--success)">จากผู้มีข้อมูลครบ</span></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card"><div class="card-head"><div><h3>AI Health Insights</h3><p>ข้อเสนอแนะจากข้อมูลสุขภาพและ Workout</p></div></div><div class="card-body insight-list">
+            <div class="insight-item"><div class="insight-icon">♥</div><div><strong>กลุ่มผู้สูงอายุมีพัฒนาการดี</strong><p>Fitness Score เพิ่มเฉลี่ย 8.6 คะแนนหลังเข้าร่วม Senior Wellness</p></div><span class="status good">จุดแข็ง</span></div>
+            <div class="insight-item"><div class="insight-icon">!</div><div><strong>สมาชิก 418 คนหยุด Workout ต่อเนื่อง</strong><p>ไม่มีบันทึกกิจกรรมเกิน 21 วัน ควรแจ้งเตือนและให้ Trainer ติดตาม</p></div><span class="status warn">ติดตาม</span></div>
+            <div class="insight-item"><div class="insight-icon">↑</div><div><strong>โปรแกรม Strength ให้ผลดีที่สุด</strong><p>Muscle Mass เพิ่มเฉลี่ย 3.8% ภายใน 12 สัปดาห์</p></div><span class="status good">แนะนำ</span></div>
+          </div></div>
+          <div class="card"><div class="card-head"><div><h3>สมาชิกพัฒนาการเด่น</h3><p>Top Improvement</p></div></div><div class="card-body table-wrap">
+            <table style="min-width:600px"><thead><tr><th>สมาชิก</th><th>โปรแกรม</th><th>Fitness Score</th><th>BMI</th><th>Compliance</th></tr></thead><tbody>
+              <tr><td><strong>ณัฐวดี ศรีสุข</strong></td><td>Strength</td><td>+14.2</td><td>-1.4</td><td>96%</td></tr>
+              <tr><td><strong>สมชาย ใจดี</strong></td><td>Senior Wellness</td><td>+12.8</td><td>-0.8</td><td>92%</td></tr>
+              <tr><td><strong>ธนกร พัฒนสุข</strong></td><td>Weight Control</td><td>+11.4</td><td>-2.1</td><td>89%</td></tr>
+            </tbody></table>
+          </div></div>
+        </div>
+      </section>
+
+      <section id="r06" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-06 รายงานความพึงพอใจ</h2>
+            <p>วิเคราะห์คะแนนความพึงพอใจ NPS ความคิดเห็น ข้อร้องเรียน และประเด็นที่ควรปรับปรุง แยกตามบริการ บุคลากร สถานที่ และอุปกรณ์</p>
+            <div class="meta-strip"><span class="meta-pill">Satisfaction Analytics</span><span class="meta-pill">NPS & Feedback</span><span class="meta-pill">Sprint 5 Complete</span></div>
+          </div>
+          <div class="actions-row"><button class="btn" onclick="saveCurrentFilter('รายงานความพึงพอใจ')">บันทึกตัวกรอง</button><button class="btn" onclick="exportSatisfactionReport('excel')">Export Excel</button><button class="btn primary" onclick="exportSatisfactionReport('pdf')">Export PDF</button></div>
+        </div>
+
+        <div class="card" style="margin-top:18px"><div class="card-body"><div class="toolbar"><div class="filter-row">
+          <input type="date" value="2026-07-01"><input type="date" value="2026-07-31">
+          <select><option>ทุกบริการ</option><option>ฟิตเนส</option><option>คลาส</option><option>ทดสอบสมรรถภาพ</option></select>
+          <select><option>ทุกศูนย์บริการ</option><option>ศูนย์บริการหลัก</option><option>ศูนย์ฝึกกีฬา</option></select>
+          <button class="btn primary" onclick="refreshSatisfactionReport()">แสดงรายงาน</button>
+        </div></div></div></div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-top"><small>ความพึงพอใจรวม</small><div class="kpi-icon">★</div></div><strong>4.58 / 5</strong><p>ระดับดีมาก</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ผู้ตอบแบบประเมิน</small><div class="kpi-icon">▤</div></div><strong>2,486</strong><p>Response Rate 27.8%</p></div>
+          <div class="kpi"><div class="kpi-top"><small>NPS</small><div class="kpi-icon">N</div></div><strong>+44</strong><p>เพิ่มขึ้น 6 คะแนน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ข้อร้องเรียน</small><div class="kpi-icon">!</div></div><strong>38</strong><p style="color:var(--warning)">ลดลง 12.5%</p></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card"><div class="card-head"><div><h3>คะแนนความพึงพอใจรายด้าน</h3><p>ค่าเฉลี่ยจากแบบประเมิน</p></div></div><div class="card-body">
+            <div class="summary-line"><span>Trainer / ผู้ให้บริการ</span><strong>4.72</strong></div><div class="progress"><i style="width:94%"></i></div>
+            <div class="summary-line"><span>สถานที่และความสะอาด</span><strong>4.61</strong></div><div class="progress"><i style="width:92%"></i></div>
+            <div class="summary-line"><span>อุปกรณ์</span><strong>4.42</strong></div><div class="progress"><i style="width:88%"></i></div>
+            <div class="summary-line"><span>ระบบจองและชำระเงิน</span><strong>4.36</strong></div><div class="progress"><i style="width:87%"></i></div>
+            <div class="summary-line"><span>ความคุ้มค่า</span><strong>4.55</strong></div><div class="progress"><i style="width:91%"></i></div>
+          </div></div>
+          <div class="card"><div class="card-head"><div><h3>Net Promoter Score</h3><p>สัดส่วน Promoter / Passive / Detractor</p></div></div><div class="card-body">
+            <div style="position:relative;width:160px;margin:auto"><div class="nps-ring"></div><div class="nps-center"><div><strong>+44</strong><span>NPS</span></div></div></div>
+            <div class="summary-line"><span>Promoter</span><strong>62%</strong></div>
+            <div class="summary-line"><span>Passive</span><strong>20%</strong></div>
+            <div class="summary-line"><span>Detractor</span><strong>18%</strong></div>
+          </div></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card"><div class="card-head"><div><h3>แนวโน้มความพึงพอใจ</h3><p>ข้อมูล 6 เดือนล่าสุด</p></div></div><div class="card-body chart-box"><canvas id="satisfactionTrendChart"></canvas></div></div>
+          <div class="card"><div class="card-head"><div><h3>คำที่พบในความคิดเห็น</h3><p>Prototype Word Cloud</p></div></div><div class="card-body wordcloud">
+            <span class="w1">Trainer ดี</span><span class="w2">สะอาด</span><span class="w3">อุปกรณ์ครบ</span><span class="w2">บริการรวดเร็ว</span>
+            <span class="w4">ที่จอดรถ</span><span class="w3">คลาสเต็มเร็ว</span><span class="w4">ระบบจอง</span><span class="w3">เป็นกันเอง</span>
+          </div></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card"><div class="card-head"><div><h3>Complaint Analysis</h3><p>ข้อร้องเรียนจำแนกตามหัวข้อ</p></div></div><div class="card-body">
+            <div class="summary-line"><span>ระบบจอง / การชำระเงิน</span><strong>12 เรื่อง</strong></div><div class="progress"><i style="width:32%;background:var(--warning)"></i></div>
+            <div class="summary-line"><span>อุปกรณ์ไม่เพียงพอ</span><strong>9 เรื่อง</strong></div><div class="progress"><i style="width:24%;background:var(--warning)"></i></div>
+            <div class="summary-line"><span>ที่จอดรถ</span><strong>8 เรื่อง</strong></div><div class="progress"><i style="width:21%;background:var(--warning)"></i></div>
+            <div class="summary-line"><span>เวลาเปิดบริการ</span><strong>5 เรื่อง</strong></div><div class="progress"><i style="width:13%;background:var(--warning)"></i></div>
+            <div class="summary-line"><span>อื่น ๆ</span><strong>4 เรื่อง</strong></div><div class="progress"><i style="width:10%;background:var(--warning)"></i></div>
+          </div></div>
+          <div class="card"><div class="card-head"><div><h3>Improvement Recommendations</h3><p>ข้อเสนอแนะเพื่อยกระดับบริการ</p></div></div><div class="card-body insight-list">
+            <div class="insight-item"><div class="insight-icon">1</div><div><strong>ปรับปรุงขั้นตอนจองและชำระเงิน</strong><p>ลดจำนวนขั้นตอนและเพิ่มสถานะการชำระแบบ Real-time</p></div><span class="status bad">เร่งด่วน</span></div>
+            <div class="insight-item"><div class="insight-icon">2</div><div><strong>เพิ่มอุปกรณ์ในช่วง Peak Time</strong><p>อุปกรณ์ Cardio ถูกใช้งานเกิน 85% ช่วง 17:00–19:00 น.</p></div><span class="status warn">วางแผน</span></div>
+            <div class="insight-item"><div class="insight-icon">3</div><div><strong>ขยายคลาสยอดนิยม</strong><p>Yoga Evening และ Circuit Training มี Waitlist สูงต่อเนื่อง</p></div><span class="status good">แนะนำ</span></div>
+          </div></div>
+        </div>
+      </section>
+
+      <section id="r07" class="screen">
+        <div class="screen-hero">
+          <div>
+            <h2>R-07 รายงานรายรับและการเงิน</h2>
+            <p>วิเคราะห์รายรับ ช่องทางการชำระ ยอดค้างชำระ อัตราการจัดเก็บ เปรียบเทียบเป้าหมาย และเชื่อมโยงข้อมูลสมาชิก การใช้บริการ คลาส และ Workout</p>
+            <div class="meta-strip"><span class="meta-pill">Financial Analytics</span><span class="meta-pill">Cross-module Insight</span><span class="meta-pill">Sprint 4</span></div>
+          </div>
+          <div class="actions-row">
+            <button class="btn" onclick="exportFinanceAnalytics('excel')">Export Excel</button>
+            <button class="btn" onclick="exportFinanceAnalytics('csv')">Export CSV</button>
+            <button class="btn primary" onclick="exportFinanceAnalytics('pdf')">Export PDF</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="filter-row">
+                <input id="financeFrom" type="date" value="2026-07-01">
+                <input id="financeTo" type="date" value="2026-07-31">
+                <select id="financeBranch" onchange="refreshFinanceAnalytics()">
+                  <option>ทุกศูนย์บริการ</option>
+                  <option>ศูนย์บริการหลัก</option>
+                  <option>ศูนย์ฝึกกีฬา</option>
+                </select>
+                <select id="financeCompare" onchange="refreshFinanceAnalytics()">
+                  <option>เปรียบเทียบเดือนก่อน</option>
+                  <option>เปรียบเทียบไตรมาสก่อน</option>
+                  <option>เปรียบเทียบปีที่ผ่านมา</option>
+                </select>
+                <button class="btn primary" onclick="refreshFinanceAnalytics()">แสดงรายงาน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="financial-grid" style="margin-top:18px">
+          <div class="financial-card"><small>รายรับรวม</small><strong>1,844,450 บาท</strong><p>↑ 12.4% จากเดือนก่อน</p></div>
+          <div class="financial-card"><small>รายรับเฉลี่ยต่อสมาชิก</small><strong>147.72 บาท</strong><p>↑ 6.8%</p></div>
+          <div class="financial-card"><small>อัตราจัดเก็บสำเร็จ</small><strong>88.2%</strong><p>สูงกว่าเป้าหมาย 3.2 จุด</p></div>
+          <div class="financial-card"><small>ยอดค้างชำระ</small><strong style="color:var(--warning)">246,900 บาท</strong><p style="color:var(--warning)">28 รายการต้องติดตาม</p></div>
+        </div>
+
+        <div class="cross-grid" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>แนวโน้มรายรับและจำนวนธุรกรรม</h3><p>ข้อมูล 6 เดือนล่าสุด</p></div><select id="financeMetric" onchange="drawFinanceChart()"><option value="revenue">รายรับ</option><option value="transactions">จำนวนธุรกรรม</option></select></div>
+            <div class="card-body chart-box"><canvas id="financeChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>สัดส่วนรายรับตามบริการ</h3><p>มูลค่ารายรับสุทธิ</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>สมาชิกฟิตเนส</span><strong>684,000 บาท</strong></div>
+              <div class="stacked-bar"><span style="width:37%;background:#1976D2"></span><span style="width:27%;background:#42A5F5"></span><span style="width:20%;background:#E49A2B"></span><span style="width:16%;background:#7E72D8"></span></div>
+              <div class="summary-line"><span>ทดสอบสมรรถภาพ</span><strong>492,500 บาท</strong></div>
+              <div class="summary-line"><span>โปรแกรมออกกำลังกาย</span><strong>358,400 บาท</strong></div>
+              <div class="summary-line"><span>คลาสและอบรม</span><strong>301,600 บาท</strong></div>
+              <div class="summary-line"><span>อื่น ๆ</span><strong>7,950 บาท</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-grid" style="margin-top:18px">
+          <div class="compare-card"><small>สมาชิกใหม่</small><strong>684 คน</strong><span class="delta">↑ 9.1%</span></div>
+          <div class="compare-card"><small>Check-in</small><strong>8,942 ครั้ง</strong><span class="delta">↑ 6.2%</span></div>
+          <div class="compare-card"><small>รายรับ</small><strong>1.84 ล้านบาท</strong><span class="delta">↑ 12.4%</span></div>
+          <div class="compare-card"><small>Attendance</small><strong>84.2%</strong><span class="delta">↑ 4.2 จุด</span></div>
+          <div class="compare-card"><small>Workout Compliance</small><strong>76.8%</strong><span class="delta down">↓ 3.2 จุดจากเป้า</span></div>
+          <div class="compare-card"><small>ความพึงพอใจ</small><strong>4.58 / 5</strong><span class="delta">↑ 0.18</span></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>Cross-module Performance Matrix</h3><p>เปรียบเทียบผลการดำเนินงานรายโมดูล</p></div></div>
+            <div class="card-body">
+              <div class="matrix">
+                <div></div><div class="head">เป้าหมาย</div><div class="head">ผลจริง</div><div class="head">แนวโน้ม</div><div class="head">สถานะ</div>
+                <div class="rowlabel">Member</div><div class="cell">750</div><div class="cell good">684</div><div class="cell good">+9.1%</div><div class="cell good">ดี</div>
+                <div class="rowlabel">Service Usage</div><div class="cell">9,500</div><div class="cell good">8,942</div><div class="cell good">+6.2%</div><div class="cell good">ดี</div>
+                <div class="rowlabel">Class</div><div class="cell">80%</div><div class="cell good">84.2%</div><div class="cell good">+4.2</div><div class="cell good">ผ่าน</div>
+                <div class="rowlabel">Workout</div><div class="cell">80%</div><div class="cell warn">76.8%</div><div class="cell bad">-3.2</div><div class="cell warn">ติดตาม</div>
+                <div class="rowlabel">Payment</div><div class="cell">85%</div><div class="cell good">88.2%</div><div class="cell good">+3.2</div><div class="cell good">ผ่าน</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="executive-banner">
+            <span style="font-size:9px;color:#DCEFFF">Executive Financial Insight</span>
+            <div style="font-size:24px;font-weight:600;margin:10px 0">รายรับโตเร็วกว่าการใช้บริการ</div>
+            <div class="summary-line"><span>รายรับเติบโต</span><strong>12.4%</strong></div>
+            <div class="summary-line"><span>การใช้บริการเติบโต</span><strong>6.2%</strong></div>
+            <div class="summary-line"><span>รายรับต่อธุรกรรม</span><strong>12,135 บาท</strong></div>
+            <div class="summary-line"><span>ความเสี่ยงหลัก</span><strong>Workout Compliance</strong></div>
+            <p style="font-size:8px;color:#DCEFFF;line-height:1.6;margin-top:12px">ผลลัพธ์แสดงว่ารายได้เพิ่มขึ้นจากบริการมูลค่าสูงและการต่ออายุสมาชิก ขณะที่ควรเพิ่มมาตรการติดตามสมาชิกที่ทำตามแผน Workout ไม่ครบ</p>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="card-head"><div><h3>Comparative Report</h3><p>เปรียบเทียบรายรับกับเดือนก่อน</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>กรกฎาคม 2569</span><strong>1,844,450 บาท</strong></div><div class="progress"><i style="width:100%"></i></div>
+              <div class="summary-line"><span>มิถุนายน 2569</span><strong>1,640,800 บาท</strong></div><div class="progress"><i style="width:89%"></i></div>
+              <div class="summary-line"><span>พฤษภาคม 2569</span><strong>1,580,200 บาท</strong></div><div class="progress"><i style="width:86%"></i></div>
+              <div class="summary-line"><span>ค่าเฉลี่ย 3 เดือน</span><strong>1,688,483 บาท</strong></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Financial Alerts</h3><p>รายการสำคัญที่ต้องดำเนินการ</p></div></div>
+            <div class="card-body timeline">
+              <div class="timeline-item"><div class="timeline-icon">!</div><div><strong>ลูกหนี้เกินกำหนดมากกว่า 30 วัน</strong><p>ยอดรวม 11,000 บาท จาก 3 รายการ</p></div><span class="status bad">เร่งด่วน</span></div>
+              <div class="timeline-item"><div class="timeline-icon">↻</div><div><strong>สมาชิกใกล้ครบกำหนดต่ออายุ</strong><p>จำนวน 286 คน ภายใน 14 วัน</p></div><span class="status warn">ติดตาม</span></div>
+              <div class="timeline-item"><div class="timeline-icon">↑</div><div><strong>PromptPay เติบโตสูงสุด</strong><p>มูลค่าธุรกรรมเพิ่มขึ้น 18.6%</p></div><span class="status good">บวก</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="card-head"><div><h3>สรุปรายรับตามศูนย์บริการ</h3><p>ข้อมูลสำหรับเปรียบเทียบประสิทธิภาพ</p></div><button class="btn" onclick="showToast('เตรียมพิมพ์ Comparative Report แล้ว')">พิมพ์รายงาน</button></div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead><tr><th>ศูนย์บริการ</th><th>สมาชิก Active</th><th>Check-in</th><th>ธุรกรรม</th><th>รายรับ</th><th>ยอดค้าง</th><th>จัดเก็บสำเร็จ</th><th>เทียบเดือนก่อน</th></tr></thead>
+              <tbody>
+                <tr><td><strong>ศูนย์บริการหลัก</strong></td><td>6,842</td><td>5,820</td><td>98</td><td>1,248,500</td><td>142,500</td><td>89.8%</td><td><span class="status good">+13.2%</span></td></tr>
+                <tr><td><strong>ศูนย์ฝึกกีฬา</strong></td><td>2,184</td><td>2,184</td><td>38</td><td>438,200</td><td>72,400</td><td>85.8%</td><td><span class="status good">+9.6%</span></td></tr>
+                <tr><td><strong>หน่วยบริการเคลื่อนที่</strong></td><td>816</td><td>938</td><td>16</td><td>157,750</td><td>32,000</td><td>83.1%</td><td><span class="status warn">+2.8%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+
+<div class="saved-panel" id="savedPanel">
+  <div class="saved-head"><h3>Saved Filters & Reports</h3><button class="btn" onclick="toggleSavedPanel()">ปิด</button></div>
+  <div class="saved-list" id="savedList"></div>
+</div>
+
+<div class="wizard-overlay" id="reportWizard">
+  <div class="wizard">
+    <div class="wizard-head"><h3>Report Wizard</h3><button class="btn" onclick="closeReportWizard()">ปิด</button></div>
+    <div class="wizard-body">
+      <div class="wizard-steps">
+        <div class="wizard-step active" data-step="1">1. เลือกรายงาน</div>
+        <div class="wizard-step" data-step="2">2. กำหนดช่วงข้อมูล</div>
+        <div class="wizard-step" data-step="3">3. เลือกข้อมูล</div>
+        <div class="wizard-step" data-step="4">4. ส่งออก</div>
+      </div>
+      <div id="wizardContent"></div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn" onclick="wizardBack()">ย้อนกลับ</button>
+      <div class="actions-row"><button class="btn" onclick="saveWizardDraft()">บันทึกแบบร่าง</button><button class="btn primary" onclick="wizardNext()">ถัดไป</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const pageTitles={
+  r01:'Executive Dashboard',
+  r02:'รายงานสมาชิก',
+  r03:'รายงานการใช้บริการ',
+  r04:'รายงานคลาสและกิจกรรม',
+  r05:'รายงานสุขภาพและ Workout',
+  r06:'รายงานความพึงพอใจ',
+  r07:'รายงานรายรับและการเงิน'
+};
+
+function goScreen(id,nav){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));
+  document.getElementById(id).classList.add('active-screen');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(nav)nav.classList.add('active');
+  else{
+    const ids=['r01','r02','r03','r04','r05','r06','r07'];
+    const items=[...document.querySelectorAll('.nav-item')];
+    const idx=ids.indexOf(id);
+    if(items[idx])items[idx].classList.add('active');
+  }
+  document.getElementById('pageTitle').textContent=pageTitles[id]||'Reporting & Analytics';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='r01')setTimeout(drawExecutiveChart,80);
+  if(id==='r02')setTimeout(drawMemberTrendChart,80);
+}
+
+function showToast(message){
+  const wrap=document.getElementById('toastContainer');
+  const toast=document.createElement('div');
+  toast.className='toast';
+  toast.innerHTML='<strong>'+message+'</strong><div style="font-size:8px;color:#72889A;margin-top:2px">Reporting & Analytics</div>';
+  wrap.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
+function drawLineChart(canvasId,labels,values){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.clientWidth||700,h=canvas.clientHeight||280;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,w,h);
+  const pad={l:50,r:20,t:25,b:40};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const min=Math.min(...values),max=Math.max(...values),range=max-min||1;
+
+  ctx.font='10px Kanit';
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*i/4;
+    ctx.strokeStyle='#D7EAF8';
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+    const val=max-range*i/4;
+    ctx.fillStyle='#72889A';
+    ctx.fillText(val.toFixed(0),8,y+3);
+  }
+
+  ctx.strokeStyle='#1976D2';
+  ctx.lineWidth=3;
+  ctx.beginPath();
+  values.forEach((v,i)=>{
+    const x=pad.l+(cw*i/(values.length-1||1));
+    const y=pad.t+ch-((v-min)/range*ch);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  values.forEach((v,i)=>{
+    const x=pad.l+(cw*i/(values.length-1||1));
+    const y=pad.t+ch-((v-min)/range*ch);
+    ctx.fillStyle='#1976D2';
+    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#72889A';
+    ctx.fillText(labels[i],x-11,h-13);
+  });
+}
+
+function drawExecutiveChart(){
+  const metric=document.getElementById('execMetric')?.value||'visits';
+  const labels=['ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'];
+  const values=metric==='visits'?[6900,7240,7510,7960,8420,8942]:[1.31,1.42,1.49,1.58,1.64,1.84];
+  drawLineChart('executiveChart',labels,values);
+}
+function drawMemberTrendChart(){
+  drawLineChart('memberTrendChart',['ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'],[482,518,546,591,627,684]);
+}
+
+function filterMemberTable(){
+  const q=document.getElementById('memberSearch').value.toLowerCase();
+  const status=document.getElementById('memberStatusFilter').value;
+  const type=document.getElementById('memberTypeFilter').value;
+  document.querySelectorAll('#memberTableBody tr').forEach(row=>{
+    const okQ=!q||row.innerText.toLowerCase().includes(q);
+    const okStatus=!status||row.dataset.status===status;
+    const okType=!type||row.dataset.type===type;
+    row.style.display=okQ&&okStatus&&okType?'':'none';
+  });
+}
+
+function exportExecutive(type){showToast('เตรียมส่งออก Executive Dashboard เป็น '+type.toUpperCase())}
+function exportMemberReport(type){showToast('เตรียมส่งออกรายงานสมาชิกเป็น '+type.toUpperCase())}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  drawExecutiveChart();
+});
+window.addEventListener('resize',()=>{
+  if(document.getElementById('r01').classList.contains('active-screen'))drawExecutiveChart();
+  if(document.getElementById('r02').classList.contains('active-screen'))drawMemberTrendChart();
+});
+
+/* Sprint 2 */
+function drawUsageTrendChart(){
+  drawLineChart(
+    'usageTrendChart',
+    ['8','9','10','11','12','13','14','15','16','17','18','19','20','21'],
+    [248,271,259,286,301,338,352,317,329,346,361,389,402,418]
+  );
+}
+
+function refreshUsageReport(){
+  const branch=document.getElementById('usageBranch')?.value||'ทุกศูนย์บริการ';
+  showToast('อัปเดตรายงานการใช้บริการ: '+branch);
+  drawUsageTrendChart();
+}
+
+function refreshClassReport(){
+  const category=document.getElementById('classCategoryFilter')?.value||'ทุกประเภทคลาส';
+  showToast('อัปเดตรายงานคลาส: '+category);
+}
+
+function exportUsageReport(type){
+  showToast('เตรียมส่งออกรายงานการใช้บริการเป็น '+type.toUpperCase());
+}
+
+function exportClassReport(type){
+  showToast('เตรียมส่งออกรายงานคลาสเป็น '+type.toUpperCase());
+}
+
+const sprint2GoScreen=goScreen;
+goScreen=function(id,nav){
+  sprint2GoScreen(id,nav);
+  if(id==='r03')setTimeout(drawUsageTrendChart,80);
+};
+
+window.addEventListener('resize',()=>{
+  if(document.getElementById('r03')?.classList.contains('active-screen'))drawUsageTrendChart();
+});
+
+
+/* Sprint 4 */
+function drawFinanceChart(){
+  const metric=document.getElementById('financeMetric')?.value||'revenue';
+  const labels=['ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'];
+  const values=metric==='revenue'?[1.31,1.42,1.49,1.58,1.64,1.84]:[108,116,123,131,142,152];
+  drawLineChart('financeChart',labels,values);
+}
+
+function refreshFinanceAnalytics(){
+  const branch=document.getElementById('financeBranch')?.value||'ทุกศูนย์บริการ';
+  showToast('อัปเดตรายงานการเงินและ Cross-module: '+branch);
+  drawFinanceChart();
+}
+
+function exportFinanceAnalytics(type){
+  showToast('เตรียมส่งออกรายงานการเงินเป็น '+type.toUpperCase());
+}
+
+const sprint4GoScreen=goScreen;
+goScreen=function(id,nav){
+  sprint4GoScreen(id,nav);
+  if(id==='r07')setTimeout(drawFinanceChart,80);
+};
+
+window.addEventListener('resize',()=>{
+  if(document.getElementById('r07')?.classList.contains('active-screen'))drawFinanceChart();
+});
+
+
+/* Sprint 5 */
+let wizardStep=1;
+let wizardData={report:'Executive Dashboard',from:'2026-07-01',to:'2026-07-31',format:'PDF'};
+
+function toggleDarkMode(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('report_dark_mode',document.body.classList.contains('dark')?'1':'0');
+  showToast(document.body.classList.contains('dark')?'เปิด Dark Mode แล้ว':'ปิด Dark Mode แล้ว');
+  redrawVisibleCharts();
+}
+
+function redrawVisibleCharts(){
+  if(document.getElementById('r01')?.classList.contains('active-screen'))drawExecutiveChart();
+  if(document.getElementById('r02')?.classList.contains('active-screen'))drawMemberTrendChart();
+  if(document.getElementById('r03')?.classList.contains('active-screen'))drawUsageTrendChart();
+  if(document.getElementById('r05')?.classList.contains('active-screen'))drawHealthTrendChart();
+  if(document.getElementById('r06')?.classList.contains('active-screen'))drawSatisfactionTrendChart();
+  if(document.getElementById('r07')?.classList.contains('active-screen'))drawFinanceChart();
+}
+
+function refreshCurrentReport(){
+  const id=document.querySelector('.screen.active-screen')?.id||'r01';
+  const actions={r01:drawExecutiveChart,r02:drawMemberTrendChart,r03:refreshUsageReport,r04:refreshClassReport,r05:refreshHealthReport,r06:refreshSatisfactionReport,r07:refreshFinanceAnalytics};
+  if(actions[id])actions[id]();
+  showToast('อัปเดตข้อมูลรายงานล่าสุดแล้ว');
+}
+
+function drawHealthTrendChart(){
+  drawLineChart('healthTrendChart',['ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'],[69.2,71.4,72.8,74.6,76.1,78.4]);
+}
+function drawSatisfactionTrendChart(){
+  drawLineChart('satisfactionTrendChart',['ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.'],[4.22,4.31,4.36,4.41,4.49,4.58]);
+}
+function refreshHealthReport(){showToast('อัปเดตรายงานสุขภาพและ Workout แล้ว');drawHealthTrendChart()}
+function refreshSatisfactionReport(){showToast('อัปเดตรายงานความพึงพอใจแล้ว');drawSatisfactionTrendChart()}
+function exportHealthReport(type){showToast('เตรียมส่งออกรายงานสุขภาพเป็น '+type.toUpperCase())}
+function exportSatisfactionReport(type){showToast('เตรียมส่งออกรายงานความพึงพอใจเป็น '+type.toUpperCase())}
+
+function openReportWizard(){
+  wizardStep=1;
+  document.getElementById('reportWizard').classList.add('open');
+  renderWizard();
+}
+function closeReportWizard(){document.getElementById('reportWizard').classList.remove('open')}
+function renderWizard(){
+  document.querySelectorAll('.wizard-step').forEach((el,i)=>el.classList.toggle('active',i===wizardStep-1));
+  const box=document.getElementById('wizardContent');
+  if(wizardStep===1){
+    box.innerHTML=`<div class="form-group"><label>เลือกรายงาน</label><select id="wizReport" style="width:100%">
+      <option>Executive Dashboard</option><option>รายงานสมาชิก</option><option>รายงานการใช้บริการ</option><option>รายงานคลาสและกิจกรรม</option>
+      <option>รายงานสุขภาพและ Workout</option><option>รายงานความพึงพอใจ</option><option>รายงานรายรับและการเงิน</option>
+    </select></div>`;
+  }else if(wizardStep===2){
+    box.innerHTML=`<div class="form-grid"><div class="form-group"><label>วันที่เริ่มต้น</label><input id="wizFrom" type="date" value="${wizardData.from}"></div>
+    <div class="form-group"><label>วันที่สิ้นสุด</label><input id="wizTo" type="date" value="${wizardData.to}"></div>
+    <div class="form-group"><label>ศูนย์บริการ</label><select><option>ทุกศูนย์บริการ</option><option>ศูนย์บริการหลัก</option><option>ศูนย์ฝึกกีฬา</option></select></div>
+    <div class="form-group"><label>เปรียบเทียบ</label><select><option>ไม่เปรียบเทียบ</option><option>เดือนก่อน</option><option>ไตรมาสก่อน</option><option>ปีที่ผ่านมา</option></select></div></div>`;
+  }else if(wizardStep===3){
+    box.innerHTML=`<div class="check-grid">
+      <label class="check-card"><input type="checkbox" checked><div><strong>KPI Summary</strong><p>ตัวชี้วัดหลักของรายงาน</p></div></label>
+      <label class="check-card"><input type="checkbox" checked><div><strong>Charts</strong><p>กราฟแนวโน้มและเปรียบเทียบ</p></div></label>
+      <label class="check-card"><input type="checkbox" checked><div><strong>Detail Table</strong><p>ตารางรายละเอียดข้อมูล</p></div></label>
+      <label class="check-card"><input type="checkbox" checked><div><strong>Executive Insight</strong><p>ข้อสังเกตและคำแนะนำ</p></div></label>
+    </div>`;
+  }else{
+    box.innerHTML=`<div class="form-grid"><div class="form-group"><label>รูปแบบไฟล์</label><select id="wizFormat"><option>PDF</option><option>Excel</option><option>CSV</option></select></div>
+    <div class="form-group"><label>ชื่อรายงาน</label><input value="${wizardData.report} ${wizardData.from} ถึง ${wizardData.to}"></div>
+    <div class="form-group"><label>การจัดวาง</label><select><option>แนวนอน</option><option>แนวตั้ง</option></select></div>
+    <div class="form-group"><label>ภาษา</label><select><option>ภาษาไทย</option><option>English</option></select></div></div>
+    <div class="executive-banner" style="margin-top:16px"><strong>พร้อมสร้างรายงาน</strong><p style="font-size:9px;color:#DCEFFF">ตรวจสอบรายละเอียดแล้วกด “สร้างรายงาน”</p></div>`;
+  }
+  document.querySelector('.wizard-footer .btn.primary').textContent=wizardStep===4?'สร้างรายงาน':'ถัดไป';
+}
+function wizardNext(){
+  if(wizardStep===1)wizardData.report=document.getElementById('wizReport')?.value||wizardData.report;
+  if(wizardStep===2){wizardData.from=document.getElementById('wizFrom')?.value||wizardData.from;wizardData.to=document.getElementById('wizTo')?.value||wizardData.to}
+  if(wizardStep===4){
+    wizardData.format=document.getElementById('wizFormat')?.value||'PDF';
+    closeReportWizard();
+    saveCurrentFilter(wizardData.report);
+    showToast('สร้างรายงาน '+wizardData.report+' เป็น '+wizardData.format+' แล้ว');
+    return;
+  }
+  wizardStep=Math.min(4,wizardStep+1);renderWizard();
+}
+function wizardBack(){wizardStep=Math.max(1,wizardStep-1);renderWizard()}
+function saveWizardDraft(){
+  localStorage.setItem('report_wizard_draft',JSON.stringify({...wizardData,step:wizardStep}));
+  showToast('บันทึกแบบร่าง Report Wizard แล้ว');
+}
+
+function getSavedReports(){
+  try{return JSON.parse(localStorage.getItem('report_saved_filters')||'[]')}catch(e){return[]}
+}
+function saveCurrentFilter(name){
+  const list=getSavedReports();
+  list.unshift({id:Date.now(),name:name||document.getElementById('pageTitle').textContent,date:new Date().toLocaleString('th-TH'),screen:document.querySelector('.screen.active-screen')?.id||'r01'});
+  localStorage.setItem('report_saved_filters',JSON.stringify(list.slice(0,10)));
+  renderSavedList();
+  showToast('บันทึกตัวกรองรายงานแล้ว');
+}
+function renderSavedList(){
+  const list=getSavedReports();
+  const box=document.getElementById('savedList');
+  box.innerHTML=list.length?list.map(item=>`<div class="saved-item"><strong>${item.name}</strong><p>${item.date}</p><div class="saved-actions">
+    <button class="btn" onclick="loadSavedReport('${item.screen}')">เปิด</button><button class="btn" onclick="deleteSavedReport(${item.id})">ลบ</button></div></div>`).join(''):
+    '<div style="font-size:9px;color:var(--muted);padding:12px">ยังไม่มีรายงานที่บันทึกไว้</div>';
+}
+function toggleSavedPanel(){
+  document.getElementById('savedPanel').classList.toggle('open');
+  renderSavedList();
+}
+function loadSavedReport(screen){
+  goScreen(screen);
+  document.getElementById('savedPanel').classList.remove('open');
+  showToast('เปิดรายงานที่บันทึกไว้แล้ว');
+}
+function deleteSavedReport(id){
+  localStorage.setItem('report_saved_filters',JSON.stringify(getSavedReports().filter(x=>x.id!==id)));
+  renderSavedList();showToast('ลบรายการที่บันทึกแล้ว');
+}
+
+const sprint5GoScreen=goScreen;
+goScreen=function(id,nav){
+  sprint5GoScreen(id,nav);
+  localStorage.setItem('report_last_screen',id);
+  if(id==='r05')setTimeout(drawHealthTrendChart,80);
+  if(id==='r06')setTimeout(drawSatisfactionTrendChart,80);
+};
+
+window.addEventListener('DOMContentLoaded',()=>{
+  if(localStorage.getItem('report_dark_mode')==='1')document.body.classList.add('dark');
+  const last=localStorage.getItem('report_last_screen');
+  if(last&&document.getElementById(last))goScreen(last);
+  renderSavedList();
+});
+
+</script>
+<a class="portal-home-button" href="portal1_new.html" title="กลับหน้ารวมระบบ"><span class="portal-home-icon">⌂</span><span class="portal-home-label">Home</span></a>
+
+<script>
+(function(){
+  function openScreenFromHash(){
+    const id=(location.hash||'').slice(1).trim().toLowerCase();
+    if(!id || !document.getElementById(id)) return;
+    const fn=window.goScreen;
+    if(typeof fn==='function'){
+      fn(id);
+      setTimeout(()=>window.scrollTo({top:0,behavior:'auto'}),0);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',openScreenFromHash);
+  window.addEventListener('hashchange',openScreenFromHash);
+})();
+</script>
+
+<div style="position:fixed;right:18px;bottom:18px;background:#0b6fc2;color:#fff;padding:7px 11px;border-radius:9px;font:700 11px sans-serif;z-index:9999">Prototype v49</div>
+<script>
+function setUsagePreset(type){
+  const from=document.getElementById('usageFrom');
+  const to=document.getElementById('usageTo');
+  if(type==='today'){from.value='2026-08-14';to.value='2026-08-14';}
+  if(type==='yesterday'){from.value='2026-08-13';to.value='2026-08-13';}
+  if(type==='week'){from.value='2026-08-08';to.value='2026-08-14';}
+  if(type==='month'){from.value='2026-08-01';to.value='2026-08-14';}
+  refreshUsageReportV44();
+}
+function refreshUsageReportV44(){
+  const from=document.getElementById('usageFrom').value;
+  const to=document.getElementById('usageTo').value;
+  if(!from||!to){alert('กรุณาระบุวันที่เริ่มต้นและวันที่สิ้นสุด');return;}
+  if(from>to){alert('วันที่เริ่มต้นต้องไม่เกินวันที่สิ้นสุด');return;}
+
+  let unique=376, visits=440, revenue=54550, peak='17:00–19:00';
+  if(from===to){
+    if(to==='2026-08-14'){unique=126;visits=148;revenue=18450;}
+    else if(to==='2026-08-13'){unique=118;visits=137;revenue=16900;}
+    else {unique=132;visits=155;revenue=19200;}
+  }else if(from==='2026-08-08'){unique=812;visits=986;revenue=121700;}
+  else if(from==='2026-08-01'){unique=1684;visits=2074;revenue=258900;}
+
+  document.getElementById('usageUnique').textContent=unique.toLocaleString('th-TH');
+  document.getElementById('usageVisits').textContent=visits.toLocaleString('th-TH');
+  document.getElementById('usageRevenue').textContent=revenue.toLocaleString('th-TH')+' บาท';
+  document.getElementById('usagePeak').textContent=peak;
+  document.getElementById('usageTotalUnique').textContent=unique.toLocaleString('th-TH');
+  document.getElementById('usageTotalVisits').textContent=visits.toLocaleString('th-TH');
+  document.getElementById('usageTotalRevenue').textContent=revenue.toLocaleString('th-TH')+' บาท';
+}
+window.addEventListener('load',()=>{
+  if(location.hash==='#r03'){
+    const link=[...document.querySelectorAll('.nav-item')].find(x=>x.getAttribute('onclick')?.includes("'r03'"));
+    if(typeof goScreen==='function') goScreen('r03',link);
+    setTimeout(()=>document.getElementById('r03')?.scrollIntoView({block:'start'}),80);
+  }
+});
+</script>
+
+</body>
+</html>

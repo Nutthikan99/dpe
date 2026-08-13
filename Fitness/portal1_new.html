@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DPE Requirement Portal · v49</title>
+<style>
+*{box-sizing:border-box}
+:root{--blue:#155f9f;--blue2:#237fd1;--bg:#eef7fd;--line:#d6e6f2;--text:#17324a;--muted:#71869a}
+html,body{max-width:100%;overflow-x:hidden}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh;width:100%;max-width:100vw}
+.sidebar{background:linear-gradient(180deg,#145991,#1e78bf);color:#fff;padding:26px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;min-width:0}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:30px}.logo{width:48px;height:48px;border-radius:14px;background:#e5f4ff;color:#155f9f;display:grid;place-items:center;font-weight:800}
+.brand h1{font-size:18px;margin:0;line-height:1.3}.brand p{margin:5px 0 0;font-size:11px;color:#cfe8fb}
+.side-title{font-size:10px;letter-spacing:.08em;color:#b9dcf7;font-weight:700;margin:22px 8px 10px}
+.side-link{display:block;color:#fff;text-decoration:none;padding:11px 12px;border-radius:10px;margin:4px 0;font-size:12px}.side-link:hover,.side-link.active{background:rgba(255,255,255,.16)}
+.main{min-width:0;width:100%;max-width:100%;overflow-x:hidden}
+.topbar{min-height:82px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;position:sticky;top:0;z-index:20;min-width:0}
+.topbar h2{font-size:20px;margin:0}.topbar p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{border:1px solid #cfe2f1;background:#fff;border-radius:10px;padding:10px 14px;color:#23455f;font-weight:700;cursor:pointer}.btn.primary{background:var(--blue2);color:#fff;border-color:var(--blue2)}
+.content{padding:22px;min-width:0;max-width:100%}
+.hero{background:linear-gradient(135deg,#135f9f,#3194e5);color:#fff;border-radius:22px;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;box-shadow:0 18px 45px rgba(38,111,170,.18);min-width:0}
+.hero h1{margin:0 0 10px;font-size:28px}.hero p{margin:0;line-height:1.7;color:#dff1ff;max-width:900px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,120px);gap:9px}.stat{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);border-radius:14px;padding:13px}.stat strong{display:block;font-size:24px}.stat span{font-size:10px;color:#e7f5ff}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;margin-top:20px;overflow:hidden;box-shadow:0 8px 28px rgba(32,91,135,.06);min-width:0;max-width:100%}
+.card-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;min-width:0}.card-head h3{margin:0;font-size:17px}.card-head p{margin:5px 0 0;font-size:11px;color:var(--muted)}
+.table-wrap{overflow:visible;width:100%;max-width:100%}table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;min-width:0}th{background:#eaf4fc;color:#23455f;text-align:left;font-size:10px;padding:11px 9px;position:sticky;top:0;overflow-wrap:anywhere;word-break:break-word}td{padding:11px 9px;border-top:1px solid #edf3f7;vertical-align:top;font-size:10px;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.req-row{cursor:pointer}.req-row:hover td{background:#f8fcff}.req-row.open td{background:#f2f9ff}
+.req-no{width:auto;font-weight:800;color:#0c6fbd;font-size:13px}.req-title{width:auto;font-weight:800}.req-detail{width:auto}.req-file{width:auto;color:#0c6fbd;font-weight:700}.req-support{width:auto}table th:nth-child(1),table td:nth-child(1){width:5%}table th:nth-child(2),table td:nth-child(2){width:15%}table th:nth-child(3),table td:nth-child(3){width:40%}table th:nth-child(4),table td:nth-child(4){width:15%}table th:nth-child(5),table td:nth-child(5){width:25%}
+.flow-row{display:none}.flow-row.show{display:table-row}.flow-row td{background:#f9fcff;padding:0 14px 16px}
+.flow-box{border:1px solid #bddcf3;background:#eef8ff;border-radius:14px;padding:14px}
+.flow-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.flow-head b{display:block;color:#0c5f9e;font-size:12px}.flow-head span{font-size:10px;color:#668198}.flow-count{padding:5px 9px;border-radius:999px;background:#fff;color:#0c6fbd!important;border:1px solid #cfe4f5}
+.flow-track{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;overflow:visible;padding:3px 0 5px}.flow-node{flex:1 1 180px;min-width:0;max-width:260px;text-decoration:none;color:var(--text);background:#fff;border:1px solid #cfe4f5;border-radius:12px;padding:12px;display:block;overflow-wrap:anywhere}.flow-node:hover{border-color:#4ea0de;box-shadow:0 5px 15px rgba(28,105,163,.10)}.flow-node strong{display:block;color:#0c65a9;font-size:11px;margin-bottom:5px}.flow-node span{font-size:10px;line-height:1.45;color:#647d91}.flow-arrow{align-self:center;color:#4998d5;font-size:18px;font-weight:800}
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;min-width:0}.search{width:min(420px,100%);min-width:0;padding:10px 12px;border:1px solid #cfe1ee;border-radius:10px}
+.version{position:fixed;right:18px;bottom:18px;background:#0b6fc2;color:#fff;padding:7px 11px;border-radius:9px;font:700 11px sans-serif;z-index:50}
+@media(max-width:1180px){.layout{grid-template-columns:220px minmax(0,1fr)}.sidebar{padding:22px 14px}.brand h1{font-size:16px}.topbar{padding:12px 16px}.content{padding:16px}.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,minmax(90px,1fr))}.card-head{gap:12px;align-items:flex-start;flex-wrap:wrap}table th,table td{font-size:9px;padding:9px 7px}.flow-arrow{display:none}.flow-node{max-width:none}}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;overflow:visible}.side-title{margin-top:14px}.topbar{position:relative;align-items:flex-start;flex-direction:column}.actions{width:100%;justify-content:flex-start}.content{padding:12px}.hero{padding:18px}.hero h1{font-size:22px}.stats{display:none}.card-head{padding:15px}.table-wrap{overflow:visible}table,thead,tbody,tr,th,td{display:block;width:100%!important;max-width:100%}thead{display:none}.req-row{display:grid;grid-template-columns:56px minmax(0,1fr);border-top:1px solid #e4edf4;padding:10px 12px;background:#fff}.req-row td{border:0;padding:5px 6px}.req-row .req-no{grid-column:1;grid-row:1/3;font-size:18px}.req-row .req-title{grid-column:2;font-size:12px}.req-row .req-detail,.req-row .req-file,.req-row .req-support{grid-column:1/3}.req-row .req-detail:before{content:'Requirement: ';font-weight:800;color:#38566d}.req-row .req-file:before{content:'ไฟล์: ';font-weight:800;color:#38566d}.req-row .req-support:before{content:'หน้าจอ / ส่วนที่รองรับ: ';font-weight:800;color:#38566d}.flow-row{display:none!important}.flow-row.show{display:block!important}.flow-row td{padding:0 12px 12px}.flow-box{padding:12px}.flow-head{align-items:flex-start;gap:8px}.flow-track{display:grid;grid-template-columns:1fr;gap:8px}.flow-node{max-width:none}.version{right:10px;bottom:10px}.btn{padding:9px 11px}.search{width:100%}}
+@media(max-width:480px){.brand{margin-bottom:16px}.sidebar{padding:16px 12px}.topbar h2{font-size:17px}.topbar p{font-size:10px}.actions .btn{flex:1 1 auto}.hero p{font-size:11px}.content{padding:8px}.req-row{padding:9px 8px}.flow-head{flex-direction:column}.flow-count{align-self:flex-start}}
+
+/* v37 GLOBAL READABILITY — larger typography on all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important}
+.sidebar .nav-item,.sidebar .nav-item span,.side-link{font-size:14px!important;line-height:1.35!important}
+.sidebar .nav-code{font-size:12px!important}
+.brand-title,.brand h1{font-size:19px!important}
+.brand-sub,.brand p{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important;line-height:1.3!important}
+.topbar p,.breadcrumb,.screen-hero p,.meta-strip,.meta-pill{font-size:13px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.card-head h3,.panel-head h3{font-size:19px!important;line-height:1.3!important}
+.card-head p,.panel-head p{font-size:13px!important;line-height:1.45!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important;font-weight:700!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.45!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong,.kpi-card span{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.audit-line,.step-note{font-size:12px!important}
+.footer,.muted,.small,small{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th{font-size:12px!important} table td{font-size:12px!important}
+}
+
+
+/* v40 GLOBAL TYPOGRAPHY AUDIT — readable across all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important;line-height:1.4!important}
+.sidebar .nav-code{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.screen-hero p,.hero p,.breadcrumb,.meta-pill{font-size:13px!important}
+.card-head h3,.panel-head h3{font-size:19px!important}
+.card-head p,.panel-head p{font-size:13px!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.5!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.step-note,.audit-line{font-size:12px!important}
+small,.small,.muted,.footer{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th,table td{font-size:12px!important}
+}
+
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">DPE</div><div><h1>Requirement Portal</h1><p>Sports Science Service Center · v49</p></div></div>
+    <div class="side-title">MASTER REQUIREMENT</div>
+    <a class="side-link active" href="#requirements">Requirement 1–14</a>
+    <div class="side-title">PROTOTYPE SYSTEMS</div>
+    <a class="side-link" href="member.html">1. Member</a>
+    <a class="side-link" href="class.html">2. Class / Schedule</a>
+    <a class="side-link" href="workout.html">3. Workout</a>
+    <a class="side-link" href="payment.html">4. Payment</a>
+    <a class="side-link" href="report.html">5. Reporting</a>
+    <a class="side-link" href="admin.html">6. Administration</a>
+    <div class="side-title">ACCOUNT</div>
+    <a class="side-link" href="index.html">ออกจากระบบ</a>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><h2>System Navigation & Requirement Flow</h2><p>ยึดตารางจากไฟล์ Requirement ครั้งที่ 1 เป็น Master ของ Prototype</p></div>
+      <div class="actions"><button class="btn" onclick="closeAll()">ย่อทั้งหมด</button><button class="btn" onclick="openAll()">ขยายทั้งหมด</button><button class="btn primary" onclick="window.print()">พิมพ์ / Save PDF</button></div>
+    </header>
+    <div class="content">
+      <section class="hero">
+        <div><h1>Requirement ครั้งที่ 1 — 14 ข้อ</h1><p>หลัง Login ระบบเข้าสู่หน้านี้ก่อน แสดงข้อมูลจากไฟล์ Word <b>ครบทุกคอลัมน์</b> ได้แก่ ข้อ, หัวข้อจากกรรมการ, Requirement ของกรรมการที่นำมารวม, ไฟล์ และหน้าจอ/ส่วนที่รองรับ จากนั้นคลิกแต่ละข้อเพื่อดู Flow หน้าจอที่เรียงใหม่ และคลิกแต่ละ Step เพื่อเข้า Prototype ตรงหน้าได้ทันที</p></div>
+        <div class="stats"><div class="stat"><strong>14</strong><span>Requirement หลัก</span></div><div class="stat"><strong>70</strong><span>Comments ในข้อ 1–8</span></div><div class="stat"><strong>6</strong><span>ระบบ Prototype</span></div></div>
+      </section>
+      <section class="card" id="requirements">
+        <div class="card-head"><div><h3>Master Requirement Mapping</h3><p>ข้อมูลทุกคอลัมน์อ่านตรงจากไฟล์ Word ที่แนบมา</p></div><div class="filterbar"><input id="search" class="search" placeholder="ค้นหา เช่น Barcode, Payment, ใบรับรองแพทย์, Role..." oninput="filterRows()"></div></div>
+        <div class="table-wrap"><table>
+          <thead><tr>
+            <th>ข้อ</th>
+            <th>หัวข้อจากกรรมการ</th>
+            <th>Requirement ของกรรมการที่นำมารวม</th>
+            <th>ไฟล์</th>
+            <th>หน้าจอ / ส่วนที่รองรับ</th>
+          </tr></thead>
+          <tbody>
+          
+    <tr class="req-row" data-req="1" onclick="toggleReq('1', event)">
+      <td class="req-no">1</td>
+      <td class="req-title">ตอน Register</td>
+      <td class="req-detail">1) ต้องมีระบบสมัครสมาชิกออนไลน์ 2) มีเอกสารประกอบการสมัคร 3) ถ่าย/อัปโหลดรูปผู้สมัคร 4) ผู้สมัครสมัครเองได้ 5) Admin Register ให้ได้ 6) สมัครแล้วมี Popup แจ้งผล 7) เจ้าหน้าที่ต้องเห็นผู้สมัครใหม่ 8) มีสถานะคำขอ 9) ตรวจข้อมูลและเอกสาร 10) ขอข้อมูล/เอกสารเพิ่มได้ 11) ผ่านตรวจเบื้องต้นแล้วแจ้งชำระเงิน 12) ชำระแล้วต้องรออนุมัติ 13) อนุมัติแล้วจึงเป็นสมาชิก 14) มี Username/Password 15) มี Email/ช่องทางติดต่อ 16) มีวัตถุประสงค์การสมัคร</td>
+      <td class="req-file">member.html</td>
+      <td class="req-support">M-02 รายการคำขอสมัครสมาชิก → M-03 สมัครสมาชิก/แก้ไขคำขอ → M-04 ตรวจสอบและอนุมัติคำขอ</td>
+    </tr>
+    <tr class="flow-row" id="flow-1">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 1 ตอน Register</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m02">
+                <strong>M-02 รายการคำขอสมัครสมาชิก</strong>
+                <span>เจ้าหน้าที่เห็นคำขอใหม่ / สถานะคำขอ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m03">
+                <strong>M-03 สมัครสมาชิก / แก้ไขคำขอ</strong>
+                <span>ผู้สมัครเองหรือ Admin Register / รูป / Email / Username-Password / เอกสาร</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m04">
+                <strong>M-04 ตรวจสอบและอนุมัติคำขอ</strong>
+                <span>ตรวจข้อมูลและเอกสาร / ขอข้อมูลเพิ่ม / ผ่านตรวจ / ชำระ / รออนุมัติ / อนุมัติเป็นสมาชิก</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="2" onclick="toggleReq('2', event)">
+      <td class="req-no">2</td>
+      <td class="req-title">เอกสารสมาชิก / เอกสารสมัคร</td>
+      <td class="req-detail">17) เอกสารแต่ละชนิดต้องมีสถานะ 18) ผู้สมัครกลับมาเพิ่มเอกสารได้ 19) เจ้าหน้าที่ตรวจเอกสารได้ 20) มีผลตรวจองค์ประกอบร่างกาย 21) เก็บประวัติผลตรวจแต่ละครั้ง 22) ใบรับรองแพทย์มีอายุ 1 ปี 23) ต้องเห็นวันออก/วันหมดอายุเอกสาร</td>
+      <td class="req-file">member.html + workout.html</td>
+      <td class="req-support">M-03 ส่วนเอกสารประกอบการสมัคร, M-04 ตรวจเอกสาร, M-06 รายละเอียดสมาชิก 360° &gt; Tab เอกสาร/สุขภาพ และ Workout ส่วนผลตรวจ/ประวัติผลตรวจ</td>
+    </tr>
+    <tr class="flow-row" id="flow-2">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 2 เอกสารสมาชิก / เอกสารสมัคร</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">4 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m03">
+                <strong>M-03 เอกสารประกอบการสมัคร</strong>
+                <span>Upload / กลับมาเพิ่มเอกสาร</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m04">
+                <strong>M-04 ตรวจเอกสาร</strong>
+                <span>เจ้าหน้าที่ตรวจสถานะรายเอกสาร</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m06">
+                <strong>M-06 Member 360° &gt; เอกสาร/สุขภาพ</strong>
+                <span>วันออก / วันหมดอายุ / ใบรับรองแพทย์</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="workout.html#w08">
+                <strong>W-08 ผลตรวจ / ประวัติ</strong>
+                <span>องค์ประกอบร่างกายและผลตรวจย้อนหลัง</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="3" onclick="toggleReq('3', event)">
+      <td class="req-no">3</td>
+      <td class="req-title">Login</td>
+      <td class="req-detail">24) Login ด้วย Username/Password 25) รองรับ ThaiD 26) ผู้สมัครที่ถูกขอข้อมูลเพิ่มต้อง Login กลับมาแก้ไข 27) สมาชิก Login เพื่อดูสถานะ/รายละเอียดสมาชิกได้</td>
+      <td class="req-file">index.html + member.html</td>
+      <td class="req-support">Login Username/Password/ThaiD → M-03 แก้ไขคำขอ / ส่วนดูสถานะสมาชิก</td>
+    </tr>
+    <tr class="flow-row" id="flow-3">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 3 Login</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="index.html">
+                <strong>Login</strong>
+                <span>Username / Password / ThaiD</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m03">
+                <strong>M-03 แก้ไขคำขอ</strong>
+                <span>ผู้สมัครที่ถูกขอข้อมูลเพิ่มกลับมาแก้ไข</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m06">
+                <strong>M-06 รายละเอียดสมาชิก</strong>
+                <span>สมาชิกดูสถานะ / รายละเอียด</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="4" onclick="toggleReq('4', event)">
+      <td class="req-no">4</td>
+      <td class="req-title">เข้าใช้งาน / Schedule</td>
+      <td class="req-detail">28) มี Schedule 29) เลือกชื่อสมาชิก 30) เลือกวัน 31) เลือกเวลา 32) มี Calendar View 33) มีประวัติการใช้บริการ 34) ตรวจสิทธิสมาชิกก่อนใช้บริการ 35) Active/Expiring/Expired ต้องมีผลต่อการเข้าใช้ 36) มี Check-in</td>
+      <td class="req-file">class.html + member.html</td>
+      <td class="req-support">Schedule/Calendar ใน Class → M-09 Check-in / Check-out → M-10 ประวัติการใช้บริการ</td>
+    </tr>
+    <tr class="flow-row" id="flow-4">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 4 เข้าใช้งาน / Schedule</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">4 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="class.html#c03">
+                <strong>C-03 Calendar View</strong>
+                <span>ดู Schedule / วัน / เวลา</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="class.html#c05">
+                <strong>C-05 Service Schedule</strong>
+                <span>เลือกสมาชิก / ตรวจสิทธิ / เลือกบริการ / วัน / เวลา</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m09">
+                <strong>M-09 Check-in / Check-out</strong>
+                <span>Active / Expiring / Expired มีผลต่อการเข้าใช้</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m10">
+                <strong>M-10 ประวัติการใช้บริการ</strong>
+                <span>History</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="5" onclick="toggleReq('5', event)">
+      <td class="req-no">5</td>
+      <td class="req-title">บัตรสมาชิก</td>
+      <td class="req-detail">37) บัตรต้องอิงตัวอย่างจริงหน้า-หลัง 38) ต้องมี Barcode 39) มี Member Code 40) Scan Barcode ได้ 41) Scan แล้วตรวจข้อมูลสมาชิก 42) Scan แล้วเห็นสิทธิใช้งาน 43) Preview ก่อนพิมพ์ 44) รองรับการพิมพ์บัตรตามรูปแบบเครื่อง HiTi CS-200e</td>
+      <td class="req-file">member.html</td>
+      <td class="req-support">M-08 ออกบัตรสมาชิก – Front/Back Preview, Barcode, Member Code, Print → M-09 Scan/Check-in</td>
+    </tr>
+    <tr class="flow-row" id="flow-5">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 5 บัตรสมาชิก</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">2 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m08">
+                <strong>M-08 ออกบัตรสมาชิก</strong>
+                <span>Front / Back Preview / Barcode / Member Code / HiTi CS-200e</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m09">
+                <strong>M-09 Scan / Check-in</strong>
+                <span>Scan Barcode → ข้อมูลสมาชิก → สิทธิใช้งาน</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="6" onclick="toggleReq('6', event)">
+      <td class="req-no">6</td>
+      <td class="req-title">การใช้บริการ / รายงาน</td>
+      <td class="req-detail">45) ดูการใช้บริการสมาชิกได้ 46) รายงานรายวัน 47) รายเดือน 48) รายไตรมาส/รายปีตามประเภทข้อมูล 49) จำแนกเพศ 50) จำแนกประเภทผู้รับบริการ 51) ดูช่วงเวลาใช้งานสูงสุด 52) สถิติสมาชิกใหม่รายวัน/เดือน/ปี 53) จำแนกวัตถุประสงค์การสมัคร 54) ความพึงพอใจรายเดือน/ไตรมาส/6 เดือน 55) มีจำนวนผู้รับบริการรวม 56) แสดง % ความพึงพอใจ</td>
+      <td class="req-file">report.html</td>
+      <td class="req-support">R-01–R-07 Reporting – Dashboard/KPI, Member Report, Usage Report, Peak Usage, Satisfaction และ Filters</td>
+    </tr>
+    <tr class="flow-row" id="flow-6">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 6 การใช้บริการ / รายงาน</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">4 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="report.html#r01">
+                <strong>R-01 Executive Dashboard</strong>
+                <span>ผู้รับบริการรวม / KPI / Filter</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="report.html#r02">
+                <strong>R-02 รายงานสมาชิก</strong>
+                <span>สมาชิกใหม่ / เพศ / วัตถุประสงค์</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="report.html#r03">
+                <strong>R-03 รายงานการใช้บริการ</strong>
+                <span>วัน / เดือน / ไตรมาส / ปี / Peak Usage</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="report.html#r06">
+                <strong>R-06 รายงานความพึงพอใจ</strong>
+                <span>รายเดือน / ไตรมาส / 6 เดือน / % Satisfaction</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="7" onclick="toggleReq('7', event)">
+      <td class="req-no">7</td>
+      <td class="req-title">Message / แจ้งเตือน</td>
+      <td class="req-detail">57) สมัครแล้วแจ้ง “ได้รับคำขอแล้ว” 58) ขอข้อมูลเพิ่ม 59) ผ่านตรวจเบื้องต้นแจ้งชำระเงิน 60) ชำระแล้วแจ้งรออนุมัติ 61) อนุมัติแล้วแจ้งสมาชิก 62) ใกล้หมดอายุแจ้งเตือน 63) หมดอายุแจ้งต่ออายุ 64) มี Notification Center/ประวัติการแจ้งเตือน</td>
+      <td class="req-file">member.html</td>
+      <td class="req-support">M-11 แจ้งเตือนสมาชิก / Notification Center, Notification Status และ Message Preview</td>
+    </tr>
+    <tr class="flow-row" id="flow-7">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 7 Message / แจ้งเตือน</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">2 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m11">
+                <strong>M-11 Notification Center</strong>
+                <span>รับคำขอ / ขอข้อมูลเพิ่ม / แจ้งชำระ / ชำระแล้ว / อนุมัติ / ใกล้หมดอายุ / หมดอายุ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m11">
+                <strong>M-11 Notification History</strong>
+                <span>ประวัติการแจ้งเตือน / Preview ข้อความ</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="8" onclick="toggleReq('8', event)">
+      <td class="req-no">8</td>
+      <td class="req-title">การชำระเงิน</td>
+      <td class="req-detail">65) มี Payment Transaction 66) รองรับรายบุคคล 67) รองรับรายการ/กลุ่ม 68) เลือก Row ก่อนรับชำระ 69) รับชำระแล้วออกใบเสร็จ 70) ดูประวัติการเงิน/ใบเสร็จ</td>
+      <td class="req-file">payment.html</td>
+      <td class="req-support">Payment List → เลือกรายการ → รับชำระ → Payment Success → Receipt Preview/Print → Payment History</td>
+    </tr>
+    <tr class="flow-row" id="flow-8">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 8 การชำระเงิน</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">4 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="payment.html#p02">
+                <strong>P-02 Payment List / Invoice</strong>
+                <span>รายการที่ต้องชำระ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="payment.html#p03">
+                <strong>P-03 เลือก Row และรับชำระ</strong>
+                <span>รายบุคคล / กลุ่ม / Payment Transaction</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="payment.html#p03">
+                <strong>P-03 Payment Success / Receipt</strong>
+                <span>ออกและพิมพ์ใบเสร็จ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="payment.html#p04">
+                <strong>P-04 Payment History</strong>
+                <span>ประวัติการเงิน / ใบเสร็จ</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="9" onclick="toggleReq('9', event)">
+      <td class="req-no">9</td>
+      <td class="req-title">ใบรับรองแพทย์</td>
+      <td class="req-detail">ใบรับรองแพทย์เป็นเอกสารสำคัญของสมาชิก และกรรมการระบุว่า มีอายุ 1 ปี ต้องรู้ว่ายังใช้ได้หรือหมดอายุ</td>
+      <td class="req-file">member.html</td>
+      <td class="req-support">M-06 รายละเอียดสมาชิก 360° &gt; Tab เอกสาร/สุขภาพ &gt; ใบรับรองแพทย์ แสดงวันที่ออก/หมดอายุ/จำนวนวันคงเหลือ/สถานะ</td>
+    </tr>
+    <tr class="flow-row" id="flow-9">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 9 ใบรับรองแพทย์</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">2 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m06">
+                <strong>M-06 &gt; Tab เอกสาร</strong>
+                <span>ใบรับรองแพทย์</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m06">
+                <strong>วันออก / วันหมดอายุ</strong>
+                <span>อายุ 1 ปี / จำนวนวันคงเหลือ / ใช้ได้หรือหมดอายุ</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="10" onclick="toggleReq('10', event)">
+      <td class="req-no">10</td>
+      <td class="req-title">การต่ออายุสมาชิก</td>
+      <td class="req-detail">มี Membership Expiry, แจ้งใกล้หมดอายุ, แจ้งหมดอายุ และต้องสามารถดำเนินการต่ออายุสมาชิก</td>
+      <td class="req-file">member.html + payment.html</td>
+      <td class="req-support">M-07 แพ็กเกจ/ต่ออายุ → ตรวจเงื่อนไข/เอกสาร → Payment → Receipt → ต่ออายุสำเร็จ</td>
+    </tr>
+    <tr class="flow-row" id="flow-10">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 10 การต่ออายุสมาชิก</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">4 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m07">
+                <strong>M-07 แพ็กเกจ / ต่ออายุ</strong>
+                <span>ตรวจ Membership Expiry / เอกสาร / เลือกต่ออายุ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="payment.html#p03">
+                <strong>P-03 Payment</strong>
+                <span>รับชำระ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="payment.html#p03">
+                <strong>Receipt</strong>
+                <span>Preview / Print</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m07">
+                <strong>Renewal Success</strong>
+                <span>คำนวณวันหมดอายุใหม่ / แจ้งสมาชิก</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="11" onclick="toggleReq('11', event)">
+      <td class="req-no">11</td>
+      <td class="req-title">ปฏิทิน</td>
+      <td class="req-detail">ปฏิทินต้องสัมพันธ์กับ Schedule/การให้บริการจริง ไม่ใช่แค่ Calendar ทั่วไป</td>
+      <td class="req-file">class.html</td>
+      <td class="req-support">Calendar / Schedule แสดงวัน เวลา ตารางบริการ รายการนัดหมาย และเข้า Detail จากรายการ</td>
+    </tr>
+    <tr class="flow-row" id="flow-11">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 11 ปฏิทิน</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="class.html#c03">
+                <strong>C-03 Calendar / Schedule</strong>
+                <span>วัน / เวลา / ตารางบริการ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="class.html#c03">
+                <strong>รายการนัดหมาย</strong>
+                <span>กดรายการเพื่อดู Detail</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="class.html#c05">
+                <strong>C-05 Schedule Detail</strong>
+                <span>เลือกสมาชิก / สิทธิ / บริการ / เวลา</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="12" onclick="toggleReq('12', event)">
+      <td class="req-no">12</td>
+      <td class="req-title">การ Add Mail / Email</td>
+      <td class="req-detail">ต้องมี Email ในข้อมูลสมาชิก และใช้เป็นช่องทางติดต่อ/แจ้งสถานะ</td>
+      <td class="req-file">member.html</td>
+      <td class="req-support">M-03 สมัครสมาชิก/แก้ไขคำขอ &gt; ข้อมูลติดต่อ และ M-06 รายละเอียดสมาชิก &gt; ข้อมูลสมาชิก</td>
+    </tr>
+    <tr class="flow-row" id="flow-12">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 12 การ Add Mail / Email</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m03">
+                <strong>M-03 ข้อมูลติดต่อ</strong>
+                <span>Email ตอนสมัคร / แก้ไขคำขอ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m06">
+                <strong>M-06 ข้อมูลสมาชิก</strong>
+                <span>Email และช่องทางติดต่อ</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m11">
+                <strong>M-11 Notification</strong>
+                <span>ใช้ Email เป็นช่องทางแจ้งสถานะ</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="13" onclick="toggleReq('13', event)">
+      <td class="req-no">13</td>
+      <td class="req-title">ระบบแจ้งเตือน</td>
+      <td class="req-detail">ต้องมีการแจ้งเตือนสถานะต่าง ๆ ของสมาชิก รวมถึงสมัคร, เอกสาร, ชำระเงิน, อนุมัติ, ใกล้หมดอายุ, หมดอายุ</td>
+      <td class="req-file">member.html + admin.html</td>
+      <td class="req-support">M-11 Notification สมาชิก + Notification Management ฝั่งเจ้าหน้าที่ + ประวัติ Notification ใน Member Detail</td>
+    </tr>
+    <tr class="flow-row" id="flow-13">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 13 ระบบแจ้งเตือน</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="member.html#m11">
+                <strong>M-11 Notification สมาชิก</strong>
+                <span>สมัคร / เอกสาร / Payment / Approval / Expiry</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="admin.html#a03">
+                <strong>Admin Notification Management</strong>
+                <span>สิทธิ์เจ้าหน้าที่ที่เกี่ยวข้อง</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="member.html#m06">
+                <strong>M-06 &gt; Tab แจ้งเตือน</strong>
+                <span>ประวัติ Notification ของสมาชิก</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="req-row" data-req="14" onclick="toggleReq('14', event)">
+      <td class="req-no">14</td>
+      <td class="req-title">สิทธิ์ผู้ใช้งาน / ผู้ใช้งานระบบ</td>
+      <td class="req-detail">ต้องแก้ Role จากข้อมูลเดิมเป็น 4 ระดับ ได้แก่ Operator = เทรนเนอร์/วิทยากร, Supervisor = นายเวรหรือข้าราชการกลุ่มวิทยาศาสตร์สุขภาพ, Admin = ผอ.กลุ่มวิทยาศาสตร์สุขภาพ, Super Admin = เทคโนฯ และแต่ละ Role เห็น/ทำงานไม่เท่ากัน</td>
+      <td class="req-file">admin.html</td>
+      <td class="req-support">User Management + Role &amp; Permission + Permission Matrix กำหนดสิทธิ ดู/เพิ่ม/แก้ไข/อนุมัติ/พิมพ์/รับชำระ/ดูรายงาน</td>
+    </tr>
+    <tr class="flow-row" id="flow-14">
+      <td colspan="5">
+        <div class="flow-box">
+          <div class="flow-head">
+            <div>
+              <b>Flow หน้าจอที่เรียงใหม่ — ข้อ 14 สิทธิ์ผู้ใช้งาน / ผู้ใช้งานระบบ</b>
+              <span>คลิกแต่ละกล่องเพื่อเปิด Prototype ตรงหน้าที่เกี่ยวข้อง</span>
+            </div>
+            <span class="flow-count">3 Steps</span>
+          </div>
+          <div class="flow-track"><a class="flow-node" href="admin.html#a02">
+                <strong>A-02 User Management</strong>
+                <span>กำหนดผู้ใช้และ Role</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="admin.html#a03">
+                <strong>A-03 Role &amp; Permission</strong>
+                <span>Super Admin / Admin / Supervisor / Operator</span>
+            </a><span class="flow-arrow">→</span><a class="flow-node" href="admin.html#a03">
+                <strong>Permission Matrix</strong>
+                <span>ดู / เพิ่ม / แก้ไข / อนุมัติ / พิมพ์ / รับชำระ / ดูรายงาน</span>
+            </a></div>
+        </div>
+      </td>
+    </tr>
+    
+          </tbody>
+        </table></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="version">System Navigation v49</div>
+<script>
+function toggleReq(no, ev){
+  if(ev && ev.target.closest('a,button,input,select')) return;
+  const row=document.querySelector('.req-row[data-req="'+no+'"]');
+  const flow=document.getElementById('flow-'+no);
+  const open=flow.classList.toggle('show');
+  row.classList.toggle('open',open);
+}
+function openAll(){document.querySelectorAll('.flow-row').forEach(x=>x.classList.add('show'));document.querySelectorAll('.req-row').forEach(x=>x.classList.add('open'));}
+function closeAll(){document.querySelectorAll('.flow-row').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.req-row').forEach(x=>x.classList.remove('open'));}
+function filterRows(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.req-row').forEach(r=>{
+    const show=!q || r.innerText.toLowerCase().includes(q);
+    r.style.display=show?'':'none';
+    const flow=document.getElementById('flow-'+r.dataset.req);
+    if(!show) flow.style.display='none'; else flow.style.display='';
+  });
+}
+</script>
+</body></html>

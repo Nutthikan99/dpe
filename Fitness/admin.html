@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#1976D2;
+      --secondary:#42A5F5;
+      --bg:#F5FAFF;
+      --card:#FFFFFF;
+      --border:#D7EAF8;
+      --text:#183247;
+      --muted:#6B8496;
+      --success:#2E9B63;
+      --warning:#E49A2B;
+      --danger:#D9534F;
+      --shadow:0 12px 30px rgba(25,118,210,.10);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
+    button,input,select{font-family:inherit}
+    .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,#0D5A9B,#1976D2);color:#fff;padding:22px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden}
+    .brand{display:flex;align-items:center;gap:12px;padding:4px 8px 20px}
+    .brand-logo{width:44px;height:44px;border-radius:14px;background:#fff;color:var(--primary);display:grid;place-items:center;font-weight:600;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+    .brand h1{font-size:15px;margin:0}.brand p{font-size:9px;margin:3px 0 0;color:#DDEEFF}
+    .nav-title{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#CDE7FA;margin:16px 10px 8px}
+    .nav{display:grid;gap:6px}
+    .nav button{border:0;background:transparent;color:#EAF6FF;text-align:left;padding:11px 12px;border-radius:11px;cursor:pointer;font-size:10px;display:flex;justify-content:space-between;align-items:center}
+    .nav button:hover,.nav button.active{background:rgba(255,255,255,.16)}
+    .nav small{font-size:8px;color:#D4ECFC}
+    .sidebar-footer{position:static;margin-top:18px;border-top:1px solid rgba(255,255,255,.18);padding:14px 8px 4px;font-size:8px;color:#DDEEFF}
+
+    .main{min-width:0}
+    .topbar{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}
+    .page-title h2{font-size:18px;margin:0}.page-title p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 13px;border-radius:10px;font-size:9px;cursor:pointer}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .user-chip{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:13px;padding:7px 10px;background:#FBFDFF}
+    .avatar{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#7CC7F5,#1976D2);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600}
+    .user-chip strong{display:block;font-size:9px}.user-chip span{display:block;font-size:7px;color:var(--muted)}
+
+    .content{padding:24px}
+    .screen{display:none}.screen.active{display:block}
+    .hero{background:linear-gradient(135deg,#fff,#ECF7FF);border:1px solid var(--border);border-radius:20px;padding:22px;display:flex;justify-content:space-between;gap:20px;align-items:flex-start;box-shadow:var(--shadow)}
+    .hero h2{font-size:24px;margin:0 0 8px}.hero p{font-size:10px;color:var(--muted);max-width:780px;line-height:1.7;margin:0}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.pill{font-size:8px;padding:6px 9px;border-radius:999px;background:#EAF5FD;color:#1768A7}
+
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .kpi,.card{background:#fff;border:1px solid var(--border);border-radius:17px;box-shadow:var(--shadow)}
+    .kpi{padding:16px}
+    .kpi-top{display:flex;justify-content:space-between;align-items:center}
+    .kpi small{font-size:8px;color:var(--muted)}.kpi strong{display:block;font-size:23px;margin:8px 0 2px}.kpi p{font-size:8px;color:var(--success);margin:0}
+    .icon{width:34px;height:34px;border-radius:11px;background:#EAF5FD;color:var(--primary);display:grid;place-items:center;font-weight:600}
+    .card{margin-top:18px}
+    .card-head{padding:15px 17px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .card-head h3{font-size:13px;margin:0}.card-head p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .card-body{padding:17px}
+    .status-list{display:grid;gap:11px}
+    .status-item{display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+    .status-icon{width:42px;height:42px;border-radius:12px;background:#EAF5FD;display:grid;place-items:center}
+    .status-item strong{font-size:10px}.status-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .badge{font-size:8px;padding:5px 8px;border-radius:999px}
+    .good{background:#E9F7EF;color:var(--success)}.warn{background:#FFF5E5;color:#A76D12}.bad{background:#FFF0EF;color:var(--danger)}
+    .progress{height:8px;background:#EAF2F8;border-radius:99px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,#42A5F5,#1976D2);border-radius:99px}
+    .summary-line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--border);font-size:9px}.summary-line:last-child{border-bottom:0}.summary-line span{color:var(--muted)}
+    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .quick{border:1px solid var(--border);border-radius:14px;padding:14px;background:#FBFDFF;cursor:pointer}
+    .quick:hover{border-color:var(--secondary);transform:translateY(-1px)}
+    .quick strong{display:block;font-size:9px;margin-top:8px}.quick p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .timeline{display:grid;gap:10px}.timeline-item{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}.timeline-item strong{font-size:9px}.timeline-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+
+    .toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+    input,select{border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 11px;font-size:9px;color:var(--text)}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:980px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--border);font-size:8px}th{background:#F7FBFE;color:#5C7689;font-weight:500}td strong{font-size:9px}
+    .actions{display:flex;gap:5px}.mini{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 8px;font-size:8px;cursor:pointer}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(8,24,38,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}.modal-backdrop.open{display:flex}
+    .modal{width:min(720px,95vw);background:#fff;border-radius:20px;border:1px solid var(--border);box-shadow:0 30px 70px rgba(0,0,0,.25)}
+    .modal-head,.modal-foot{padding:16px 18px;display:flex;justify-content:space-between;align-items:center}.modal-head{border-bottom:1px solid var(--border)}.modal-foot{border-top:1px solid var(--border)}
+    .modal-body{padding:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-group{display:grid;gap:6px}.form-group label{font-size:8px;color:var(--muted)}
+    .toast{position:fixed;right:20px;bottom:20px;background:#173D59;color:#fff;padding:11px 14px;border-radius:11px;font-size:9px;opacity:0;transform:translateY(10px);transition:.2s;z-index:200}.toast.show{opacity:1;transform:none}
+
+
+    /* Sprint 2 */
+    .permission-wrap{overflow:auto}
+    .permission-table{min-width:980px}
+    .permission-table th,.permission-table td{text-align:center}
+    .permission-table th:first-child,.permission-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:2}
+    .permission-table th:first-child{background:#F7FBFE}
+    .toggle{position:relative;width:38px;height:22px;display:inline-block}
+    .toggle input{display:none}
+    .toggle span{position:absolute;inset:0;background:#D8E6F0;border-radius:99px;cursor:pointer;transition:.2s}
+    .toggle span:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:.2s}
+    .toggle input:checked+span{background:var(--primary)}
+    .toggle input:checked+span:before{transform:translateX(16px)}
+    .role-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .role-card{border:1px solid var(--border);border-radius:16px;background:#fff;padding:15px;box-shadow:var(--shadow)}
+    .role-card h4{font-size:11px;margin:0 0 4px}.role-card p{font-size:8px;color:var(--muted);margin:0 0 12px}
+    .role-card .count{font-size:22px;font-weight:600}.role-card .role-actions{display:flex;gap:6px;margin-top:12px}
+    .org-tree{display:grid;gap:10px}
+    .org-node{border:1px solid var(--border);border-radius:14px;background:#FBFDFF;padding:12px}
+    .org-node.root{background:linear-gradient(135deg,#EAF5FD,#F9FCFF)}
+    .org-node-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .org-node strong{font-size:10px}.org-node p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .org-children{margin-top:10px;padding-left:18px;border-left:2px solid #D9EBF8;display:grid;gap:8px}
+    .staff-list{display:grid;gap:10px}
+    .staff-item{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--border);border-radius:13px;background:#FBFDFF}
+    .staff-item strong{font-size:9px}.staff-item p{font-size:8px;color:var(--muted);margin:3px 0 0}
+    .branch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .branch-card{border:1px solid var(--border);border-radius:15px;background:#fff;padding:14px;box-shadow:var(--shadow)}
+    .branch-card h4{font-size:11px;margin:0}.branch-card p{font-size:8px;color:var(--muted);margin:4px 0 10px}
+
+    /* Sprint 3 */
+    .config-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .config-tabs button{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 12px;border-radius:10px;font-size:8px;cursor:pointer}
+    .config-tabs button.active{background:var(--primary);border-color:var(--primary);color:#fff}
+    .config-panel{display:none}.config-panel.active{display:block}
+    .setting-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .setting-card{border:1px solid var(--border);border-radius:15px;background:#FBFDFF;padding:14px}
+    .setting-card h4{font-size:11px;margin:0 0 4px}.setting-card p{font-size:8px;color:var(--muted);margin:0 0 12px;line-height:1.6}
+    .setting-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--border)}
+    .setting-row:last-child{border-bottom:0}
+    .setting-row strong{font-size:9px}.setting-row span{font-size:8px;color:var(--muted)}
+    .integration-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .integration-card{border:1px solid var(--border);border-radius:15px;background:#fff;padding:15px;box-shadow:var(--shadow)}
+    .integration-card .integration-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .integration-card h4{font-size:11px;margin:0}.integration-card p{font-size:8px;color:var(--muted);line-height:1.6}
+    .master-toolbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .master-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .master-card{border:1px solid var(--border);border-radius:15px;background:#fff;padding:14px;box-shadow:var(--shadow);cursor:pointer}
+    .master-card:hover{border-color:var(--secondary);transform:translateY(-1px)}
+    .master-card h4{font-size:10px;margin:8px 0 3px}.master-card p{font-size:8px;color:var(--muted);margin:0}
+    .master-icon{width:40px;height:40px;border-radius:12px;background:#EAF5FD;color:var(--primary);display:grid;place-items:center;font-weight:600}
+    .chip-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 8px;border-radius:999px;background:#EAF5FD;color:#1768A7;font-size:8px}
+    .secret{font-family:monospace;letter-spacing:.08em}
+
+    /* Sprint 5 */
+    body.dark{
+      --bg:#0F1B26;--card:#162635;--border:#294255;--text:#E8F3FB;--muted:#9CB2C2;
+      --shadow:0 12px 34px rgba(0,0,0,.28)
+    }
+    body.dark .topbar,body.dark .card,body.dark .kpi,body.dark .role-card,body.dark .branch-card,
+    body.dark .integration-card,body.dark .master-card,body.dark .setting-card,body.dark .org-node,
+    body.dark .status-item,body.dark .quick,body.dark .timeline-item,body.dark .staff-item,
+    body.dark .modal,body.dark input,body.dark select,body.dark .user-chip,body.dark .notification-panel{
+      background:#162635;color:var(--text)
+    }
+    body.dark th{background:#1B3042}
+    body.dark .permission-table th:first-child,body.dark .permission-table td:first-child{background:#162635}
+    body.dark .hero{background:linear-gradient(135deg,#162635,#1A3042)}
+    body.dark .quick,body.dark .status-item,body.dark .timeline-item,body.dark .staff-item,
+    body.dark .setting-card,body.dark .org-node{background:#1A2D3D}
+    .icon-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:11px;background:#fff;cursor:pointer;font-size:15px}
+    body.dark .icon-btn{background:#162635;color:var(--text)}
+    .monitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .monitor-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;box-shadow:var(--shadow)}
+    body.dark .monitor-card{background:#162635}
+    .monitor-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .monitor-head h4{font-size:11px;margin:0}.monitor-head span{font-size:8px}
+    .metric-number{font-size:26px;font-weight:600;margin:10px 0 2px}
+    .metric-sub{font-size:8px;color:var(--muted)}
+    .spark{height:54px;display:flex;align-items:flex-end;gap:4px;margin-top:12px}
+    .spark i{display:block;flex:1;background:linear-gradient(180deg,#42A5F5,#1976D2);border-radius:4px 4px 0 0;min-height:5px}
+    .job-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .job-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:14px;box-shadow:var(--shadow)}
+    body.dark .job-card{background:#162635}
+    .job-card h4{font-size:10px;margin:0}.job-card p{font-size:8px;color:var(--muted);margin:4px 0 10px}
+    .job-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .notification-panel{position:fixed;right:18px;top:82px;width:350px;max-height:72vh;overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.22);z-index:120;display:none}
+    .notification-panel.open{display:block}
+    .notification-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .notification-head h3{font-size:12px;margin:0}
+    .notification-list{padding:12px;display:grid;gap:9px}
+    .notification-item{border:1px solid var(--border);border-radius:12px;padding:11px;background:#FBFDFF}
+    body.dark .notification-item{background:#1A2D3D}
+    .notification-item strong{font-size:9px}.notification-item p{font-size:8px;color:var(--muted);margin:3px 0}
+    .saved-filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .health-check-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .health-check{border:1px solid var(--border);border-radius:13px;padding:12px;background:#FBFDFF}
+    body.dark .health-check{background:#1A2D3D}
+    .health-check strong{font-size:9px}.health-check p{font-size:8px;color:var(--muted);margin:3px 0}
+    @media(max-width:1100px){.monitor-grid{grid-template-columns:repeat(2,1fr)}.health-check-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.monitor-grid,.job-grid,.health-check-grid{grid-template-columns:1fr}.notification-panel{left:10px;right:10px;width:auto}}
+
+    @media(max-width:1100px){.integration-grid{grid-template-columns:repeat(2,1fr)}.master-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.setting-grid,.integration-grid,.master-grid{grid-template-columns:1fr}}
+
+    @media(max-width:1100px){.role-cards,.branch-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.role-cards,.branch-grid{grid-template-columns:1fr}}
+
+    @media(max-width:1100px){.app{grid-template-columns:210px 1fr}.grid-4,.quick-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+    @media(max-width:760px){.app{display:block}.sidebar{position:relative;height:auto}.sidebar-footer{position:static;margin-top:16px}.topbar{position:relative;height:auto;padding:14px;align-items:flex-start}.content{padding:14px}.grid-4,.quick-grid{grid-template-columns:1fr}.hero{display:block}.top-actions{flex-wrap:wrap;justify-content:flex-end}.form-grid{grid-template-columns:1fr}}
+  
+    .nav-home{
+      display:flex;align-items:center;gap:9px;margin:0 0 12px;padding:10px 12px;
+      border:1px solid rgba(255,255,255,.22);border-radius:11px;
+      background:rgba(255,255,255,.10);color:#fff;text-decoration:none;font-size:10px
+    }
+    .nav-home:hover{background:rgba(255,255,255,.18)}
+    .nav-home-icon{font-size:15px}
+
+  
+/* v37 GLOBAL READABILITY — larger typography on all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important}
+.sidebar .nav-item,.sidebar .nav-item span,.side-link{font-size:14px!important;line-height:1.35!important}
+.sidebar .nav-code{font-size:12px!important}
+.brand-title,.brand h1{font-size:19px!important}
+.brand-sub,.brand p{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important;line-height:1.3!important}
+.topbar p,.breadcrumb,.screen-hero p,.meta-strip,.meta-pill{font-size:13px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.card-head h3,.panel-head h3{font-size:19px!important;line-height:1.3!important}
+.card-head p,.panel-head p{font-size:13px!important;line-height:1.45!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important;font-weight:700!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.45!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong,.kpi-card span{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.audit-line,.step-note{font-size:12px!important}
+.footer,.muted,.small,small{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th{font-size:12px!important} table td{font-size:12px!important}
+}
+
+
+/* v40 GLOBAL TYPOGRAPHY AUDIT — readable across all prototype pages */
+html{font-size:16px!important}
+body{font-size:15px!important;line-height:1.55!important}
+body,button,input,select,textarea,table{font-family:Arial,Tahoma,sans-serif!important}
+.sidebar,.sidebar *{font-size:14px!important;line-height:1.4!important}
+.sidebar .nav-code{font-size:12px!important}
+.topbar h1,.topbar h2,#pageTitle{font-size:22px!important}
+.screen-hero h2,.hero h2{font-size:27px!important;line-height:1.25!important}
+.screen-hero p,.hero p,.breadcrumb,.meta-pill{font-size:13px!important}
+.card-head h3,.panel-head h3{font-size:19px!important}
+.card-head p,.panel-head p{font-size:13px!important}
+.card-body,.panel-body{font-size:14px!important}
+.field label{font-size:13px!important}
+.field input,.field select,.field textarea,input,select,textarea{font-size:14px!important;min-height:42px!important}
+.btn,button{font-size:14px!important}
+table{font-size:14px!important}
+table th{font-size:13px!important;font-weight:800!important}
+table td{font-size:13px!important;line-height:1.5!important}
+.status,.badge,.pill,.chip{font-size:12px!important}
+.req-card strong,.info-box strong{font-size:13px!important}
+.req-card span,.info-box span,.doc-row,.step-note,.audit-line{font-size:12px!important}
+small,.small,.muted,.footer{font-size:12px!important}
+@media(max-width:1100px){
+  html{font-size:15px!important}
+  body{font-size:14px!important}
+  .sidebar,.sidebar *{font-size:13px!important}
+  .screen-hero h2,.hero h2{font-size:24px!important}
+  table th,table td{font-size:12px!important}
+}
+
+</style>
+
+<style>
+.portal-home-button{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:flex;align-items:center;gap:8px;padding:11px 14px;
+  border-radius:14px;background:#1976D2;color:#fff!important;
+  text-decoration:none;font-family:"Kanit",sans-serif;font-size:12px;font-weight:600;
+  box-shadow:0 12px 28px rgba(25,118,210,.30);
+  border:1px solid rgba(255,255,255,.35);transition:.2s
+}
+.portal-home-button:hover{transform:translateY(-2px);background:#0F5CA3}
+.portal-home-icon{font-size:18px;line-height:1}
+@media(max-width:700px){
+  .portal-home-button{right:12px;bottom:12px;padding:10px 12px}
+  .portal-home-label{display:none}
+}
+</style>
+
+
+<style>
+.sidebar .nav button{
+  justify-content:flex-start !important;
+}
+.sidebar .nav small{
+  display:none !important;
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">DPE</div>
+      <div><h1>Administration</h1><p>ระบบบริหารจัดการส่วนกลาง</p></div>
+    </div>
+    <a class="nav-home" href="portal1_new.html"><span class="nav-home-icon">⌂</span><span>Home / Portal</span></a>
+    <div class="nav-title">ระบบหลัก</div>
+    <div class="nav">
+      <button onclick="location.href=\'member.html\'">1. Member</button>
+      <button onclick="location.href=\'class.html\'">2. Class</button>
+      <button onclick="location.href=\'workout.html\'">3. Workout</button>
+      <button onclick="location.href=\'payment.html\'">4. Payment</button>
+      <button onclick="location.href=\'report.html\'">5. Reporting</button>
+      <button class="active">6. Administration</button>
+    </div>
+    <div class="nav-title">เมนู Administration</div>
+    <div class="nav">
+      <button class="active" data-screen="a01" onclick="showScreen('a01',this)">A-01 Dashboard</button>
+      <button data-screen="a02" onclick="showScreen('a02',this)">A-02 User Management</button>
+      <button data-screen="a03" onclick="showScreen('a03',this)">A-03 Role & Permission</button>
+      <button data-screen="a04" onclick="showScreen('a04',this)">A-04 Organization</button>
+      <button data-screen="a05" onclick="showScreen('a05',this)">A-05 System Configuration</button>
+      <button data-screen="a06" onclick="showScreen('a06',this)">A-06 Master Data</button>
+      <button data-screen="a07" onclick="showScreen('a07',this)">A-07 Audit Log</button>
+      <button data-screen="a08" onclick="showScreen('a08',this)">A-08 Backup & Recovery</button>
+      <button data-screen="a09" onclick="showScreen('a09',this)">A-09 Monitoring</button>
+      <button data-screen="a10" onclick="showScreen('a10',this)">A-10 Maintenance</button>
+    </div>
+    <div class="sidebar-footer">Administration Prototype · Sprint 5</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="page-title"><h2 id="pageTitle">A-01 Dashboard</h2><p id="pageSub">ภาพรวมสถานะระบบ ผู้ใช้งาน และบริการส่วนกลาง</p></div>
+      <div class="top-actions">
+        <button class="icon-btn" title="Notifications" onclick="toggleNotifications()">🔔</button>
+        <button class="icon-btn" title="Dark Mode" onclick="toggleDarkMode()">◐</button>
+        <button class="btn" onclick="refreshCurrentScreen()">↻ Refresh</button>
+        <button class="btn primary" onclick="openUserModal()">＋ เพิ่มผู้ใช้งาน</button>
+        <div class="user-chip"><div class="avatar">SA</div><div><strong>System Administrator</strong><span>Super Admin</span></div></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="a01" class="screen active">
+        <div class="hero">
+          <div>
+            <h2>Administration Dashboard</h2>
+            <p>ศูนย์ควบคุมสำหรับผู้ดูแลระบบ ใช้ตรวจสอบสถานะบริการ ผู้ใช้งาน ฐานข้อมูล งานเบื้องหลัง และเหตุการณ์สำคัญของทุกโมดูลในแพลตฟอร์ม</p>
+            <div class="meta"><span class="pill">System Health</span><span class="pill">User Access</span><span class="pill">Sprint 1</span></div>
+          </div>
+          <button class="btn primary" onclick="showToast('เริ่มตรวจสอบสุขภาพระบบแล้ว')">Run Health Check</button>
+        </div>
+
+        <div class="grid-4">
+          <div class="kpi"><div class="kpi-top"><small>ผู้ใช้งานทั้งหมด</small><div class="icon">U</div></div><strong>1,284</strong><p>↑ 48 บัญชีเดือนนี้</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ผู้ใช้งานออนไลน์</small><div class="icon">●</div></div><strong>148</strong><p>11.5% ของผู้ใช้ทั้งหมด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>System Uptime</small><div class="icon">99</div></div><strong>99.98%</strong><p>ทำงานต่อเนื่อง 42 วัน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>เหตุการณ์ที่ต้องติดตาม</small><div class="icon">!</div></div><strong style="color:var(--warning)">6</strong><p style="color:var(--warning)">2 รายการเร่งด่วน</p></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h3>System Status</h3><p>สถานะบริการหลักแบบ Real-time</p></div><span class="badge good">Operational</span></div>
+            <div class="card-body status-list">
+              <div class="status-item"><div class="status-icon">APP</div><div><strong>Application Server</strong><p>Response Time 184 ms · Uptime 99.99%</p></div><span class="badge good">ปกติ</span></div>
+              <div class="status-item"><div class="status-icon">DB</div><div><strong>Database Server</strong><p>Connection 68 / 200 · Query Avg 42 ms</p></div><span class="badge good">ปกติ</span></div>
+              <div class="status-item"><div class="status-icon">API</div><div><strong>API Gateway</strong><p>1,284 req/min · Error Rate 0.18%</p></div><span class="badge good">ปกติ</span></div>
+              <div class="status-item"><div class="status-icon">JOB</div><div><strong>Background Jobs</strong><p>Pending 12 · Failed 2</p></div><span class="badge warn">ติดตาม</span></div>
+              <div class="status-item"><div class="status-icon">FS</div><div><strong>File Storage</strong><p>ใช้งาน 1.82 TB จาก 3 TB</p></div><span class="badge warn">61%</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Resource Usage</h3><p>การใช้ทรัพยากรระบบ</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>CPU Usage</span><strong>42%</strong></div><div class="progress"><i style="width:42%"></i></div>
+              <div class="summary-line"><span>Memory Usage</span><strong>68%</strong></div><div class="progress"><i style="width:68%"></i></div>
+              <div class="summary-line"><span>Storage Usage</span><strong>61%</strong></div><div class="progress"><i style="width:61%"></i></div>
+              <div class="summary-line"><span>Database Connections</span><strong>34%</strong></div><div class="progress"><i style="width:34%"></i></div>
+              <div class="summary-line"><span>API Capacity</span><strong>58%</strong></div><div class="progress"><i style="width:58%"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Quick Actions</h3><p>คำสั่งที่ผู้ดูแลระบบใช้งานบ่อย</p></div></div>
+          <div class="card-body quick-grid">
+            <div class="quick" onclick="openUserModal()"><div class="icon">＋</div><strong>เพิ่มผู้ใช้งาน</strong><p>สร้างบัญชีและกำหนดบทบาท</p></div>
+            <div class="quick" onclick="showScreen('a02')"><div class="icon">U</div><strong>จัดการผู้ใช้งาน</strong><p>ค้นหา ล็อก หรือแก้ไขบัญชี</p></div>
+            <div class="quick" onclick="showToast('ส่งคำสั่งตรวจสอบ Background Jobs แล้ว')"><div class="icon">J</div><strong>ตรวจสอบ Jobs</strong><p>ดูงานค้างและงานที่ล้มเหลว</p></div>
+            <div class="quick" onclick="showToast('สร้าง System Snapshot แล้ว')"><div class="icon">S</div><strong>System Snapshot</strong><p>บันทึกสถานะเพื่อการตรวจสอบ</p></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Recent Activity</h3><p>กิจกรรมล่าสุดของผู้ดูแลระบบ</p></div></div>
+            <div class="card-body timeline">
+              <div class="timeline-item"><div class="status-icon">PW</div><div><strong>Reset Password</strong><p>ผู้ดูแลระบบรีเซ็ตรหัสผ่านของ user: trainer_014</p></div><span class="badge good">2 นาที</span></div>
+              <div class="timeline-item"><div class="status-icon">RL</div><div><strong>Role Updated</strong><p>เปลี่ยนสิทธิ์ staff_028 เป็น Supervisor</p></div><span class="badge good">18 นาที</span></div>
+              <div class="timeline-item"><div class="status-icon">LK</div><div><strong>Account Locked</strong><p>ระบบล็อกบัญชี user_104 จาก Failed Login</p></div><span class="badge warn">46 นาที</span></div>
+              <div class="timeline-item"><div class="status-icon">BK</div><div><strong>Backup Completed</strong><p>Database backup สำเร็จ ขนาด 18.4 GB</p></div><span class="badge good">1 ชม.</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>License & Service</h3><p>สถานะสิทธิ์ใช้งานและบริการภายนอก</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>Platform License</span><strong>Active</strong></div>
+              <div class="summary-line"><span>License Expire</span><strong>31 ธ.ค. 2570</strong></div>
+              <div class="summary-line"><span>Email Service</span><strong>Operational</strong></div>
+              <div class="summary-line"><span>SMS Credit</span><strong>18,420 ข้อความ</strong></div>
+              <div class="summary-line"><span>Payment Gateway</span><strong>Connected</strong></div>
+              <div class="summary-line"><span>Last Configuration Sync</span><strong>22:14 น.</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="a02" class="screen">
+        <div class="hero">
+          <div>
+            <h2>User Management</h2>
+            <p>บริหารบัญชีผู้ใช้งาน ค้นหาและกรองข้อมูล กำหนดบทบาท ล็อกหรือปลดล็อกบัญชี รีเซ็ตรหัสผ่าน และควบคุมสถานะการใช้งาน</p>
+            <div class="meta"><span class="pill">User CRUD</span><span class="pill">Role Assignment</span><span class="pill">Security Control</span></div>
+          </div>
+          <button class="btn primary" onclick="openUserModal()">＋ เพิ่มผู้ใช้งาน</button>
+        </div>
+
+        <div class="grid-4">
+          <div class="kpi"><div class="kpi-top"><small>บัญชีทั้งหมด</small><div class="icon">U</div></div><strong>1,284</strong><p>Active 1,196 บัญชี</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Super Admin</small><div class="icon">SA</div></div><strong>8</strong><p>สิทธิ์ระดับสูงสุด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>บัญชีถูกล็อก</small><div class="icon">L</div></div><strong style="color:var(--warning)">12</strong><p style="color:var(--warning)">รอตรวจสอบ</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Inactive</small><div class="icon">I</div></div><strong>76</strong><p>ไม่ได้ใช้งานเกิน 90 วัน</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>รายการผู้ใช้งาน</h3><p>ตัวอย่างข้อมูลสำหรับระบบต้นแบบ</p></div><button class="btn" onclick="showToast('เตรียม Export รายชื่อผู้ใช้งานแล้ว')">Export Excel</button></div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="filter-row">
+                <input id="userSearch" type="text" placeholder="ค้นหาชื่อ Username หรือ Email" oninput="filterUsers()">
+                <select id="roleFilter" onchange="filterUsers()"><option value="">ทุกบทบาท</option><option>Super Admin</option><option>Admin</option><option>Supervisor</option><option>Operator</option></select>
+                <select id="statusFilter" onchange="filterUsers()"><option value="">ทุกสถานะ</option><option>Active</option><option>Inactive</option><option>Locked</option></select>
+              </div>
+              <button class="btn" onclick="resetFilters()">ล้างตัวกรอง</button>
+            </div>
+            <div class="table-wrap" style="margin-top:14px">
+              <table id="userTable">
+                <thead><tr><th>ชื่อผู้ใช้งาน</th><th>Username</th><th>Email</th><th>หน่วยงาน</th><th>บทบาท</th><th>เข้าสู่ระบบล่าสุด</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+                <tbody>
+                  <tr data-role="Super Admin" data-status="Active"><td><strong>กิตติพงษ์ ศรีสุข</strong></td><td>admin.kitti</td><td>kitti@dpe.go.th</td><td>ศูนย์เทคโนโลยีสารสนเทศ</td><td>Super Admin</td><td>วันนี้ 22:18</td><td><span class="badge good">Active</span></td><td><div class="actions"><button class="mini" onclick="editUser('กิตติพงษ์ ศรีสุข')">แก้ไข</button><button class="mini" onclick="resetPassword('admin.kitti')">Reset PW</button></div></td></tr>
+                  <tr data-role="Admin" data-status="Active"><td><strong>พิมพ์ชนก วัฒนา</strong></td><td>admin.pim</td><td>pim@dpe.go.th</td><td>ศูนย์บริการหลัก</td><td>Admin</td><td>วันนี้ 21:42</td><td><span class="badge good">Active</span></td><td><div class="actions"><button class="mini" onclick="editUser('พิมพ์ชนก วัฒนา')">แก้ไข</button><button class="mini" onclick="lockUser('admin.pim')">ล็อก</button></div></td></tr>
+                  <tr data-role="Supervisor" data-status="Active"><td><strong>ธนภัทร สุขเกษม</strong></td><td>sup.thana</td><td>thana@dpe.go.th</td><td>ศูนย์ฝึกกีฬา</td><td>Supervisor</td><td>วันนี้ 19:08</td><td><span class="badge good">Active</span></td><td><div class="actions"><button class="mini" onclick="editUser('ธนภัทร สุขเกษม')">แก้ไข</button><button class="mini" onclick="resetPassword('sup.thana')">Reset PW</button></div></td></tr>
+                  <tr data-role="Operator" data-status="Locked"><td><strong>ศิริพร พัฒนสุข</strong></td><td>op.siriporn</td><td>siriporn@dpe.go.th</td><td>งานบริการสมาชิก</td><td>Operator</td><td>เมื่อวาน 16:21</td><td><span class="badge bad">Locked</span></td><td><div class="actions"><button class="mini" onclick="unlockUser('op.siriporn')">ปลดล็อก</button><button class="mini" onclick="editUser('ศิริพร พัฒนสุข')">แก้ไข</button></div></td></tr>
+                  <tr data-role="Operator" data-status="Inactive"><td><strong>กิตติชัย แสงทอง</strong></td><td>op.kittichai</td><td>kittichai@dpe.go.th</td><td>งานทะเบียน</td><td>Operator</td><td>12 เม.ย. 2569</td><td><span class="badge warn">Inactive</span></td><td><div class="actions"><button class="mini" onclick="activateUser('op.kittichai')">เปิดใช้งาน</button><button class="mini" onclick="editUser('กิตติชัย แสงทอง')">แก้ไข</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="a03" class="screen">
+        <div class="hero">
+          <div>
+            <h2>Role & Permission</h2>
+            <p>กำหนดบทบาทและสิทธิ์การเข้าถึงระบบแบบ Role-Based Access Control ครอบคลุมเมนู ฟังก์ชัน ข้อมูล หน่วยงาน และสิทธิ์เชื่อมต่อ API</p>
+            <div class="meta"><span class="pill">RBAC</span><span class="pill">Permission Matrix</span><span class="pill">Sprint 2</span></div>
+          </div>
+          <button class="btn primary" onclick="openRoleModal()">＋ เพิ่มบทบาท</button>
+        </div>
+
+        <div class="role-cards" style="margin-top:18px">
+          <div class="role-card"><h4>Super Admin</h4><p>เทคโนฯ · ผู้ดูแลระบบสูงสุดและโครงสร้างสิทธิ</p><div class="count">8</div><span class="badge good">All Permissions</span><div class="role-actions"><button class="mini" onclick="editRole('Super Admin')">แก้ไข</button><button class="mini" onclick="duplicateRole('Super Admin')">คัดลอก</button></div></div>
+          <div class="role-card"><h4>Admin</h4><p>ผอ.กลุ่มวิทยาศาสตร์สุขภาพ · บริหารข้อมูลและอนุมัติงาน</p><div class="count">24</div><span class="badge good">Management</span><div class="role-actions"><button class="mini" onclick="editRole('Admin')">แก้ไข</button><button class="mini" onclick="duplicateRole('Admin')">คัดลอก</button></div></div>
+          <div class="role-card"><h4>Supervisor</h4><p>นายเวร/ข้าราชการกลุ่มวิทยาศาสตร์สุขภาพ · ตรวจสอบและควบคุมงาน</p><div class="count">58</div><span class="badge warn">Branch Scope</span><div class="role-actions"><button class="mini" onclick="editRole('Supervisor')">แก้ไข</button><button class="mini" onclick="duplicateRole('Supervisor')">คัดลอก</button></div></div>
+          <div class="role-card"><h4>Operator</h4><p>เทรนเนอร์/วิทยากร · ปฏิบัติงานบริการตามสิทธิที่ได้รับ</p><div class="count">1,194</div><span class="badge good">Operational</span><div class="role-actions"><button class="mini" onclick="editRole('Operator')">แก้ไข</button><button class="mini" onclick="duplicateRole('Operator')">คัดลอก</button></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Permission Matrix</h3><p>เปิดหรือปิดสิทธิ์แต่ละโมดูลตามบทบาท</p></div><div class="filter-row"><select id="permissionScope"><option>สิทธิ์เมนู</option><option>สิทธิ์ข้อมูล</option><option>สิทธิ์ API</option><option>สิทธิ์สาขา</option></select><button class="btn" onclick="savePermissionMatrix()">บันทึกสิทธิ์</button></div></div>
+          <div class="card-body permission-wrap">
+            <table class="permission-table">
+              <thead><tr><th>โมดูล / สิทธิ์</th><th>Super Admin</th><th>Admin</th><th>Supervisor</th><th>Operator</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Member Management</strong><br><span style="color:var(--muted)">ดู เพิ่ม แก้ไข และส่งออกข้อมูลสมาชิก</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td></tr>
+                <tr><td><strong>Class Management</strong><br><span style="color:var(--muted)">สร้างตารางคลาส จอง และ Attendance</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td></tr>
+                <tr><td><strong>Workout Management</strong><br><span style="color:var(--muted)">จัดโปรแกรมและติดตามผลการออกกำลังกาย</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td></tr>
+                <tr><td><strong>Payment</strong><br><span style="color:var(--muted)">รับชำระ คืนเงิน และตรวจสอบธุรกรรม</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td></tr>
+                <tr><td><strong>Reporting</strong><br><span style="color:var(--muted)">ดูรายงาน วิเคราะห์ และส่งออกข้อมูล</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td></tr>
+                <tr><td><strong>Administration</strong><br><span style="color:var(--muted)">ตั้งค่าระบบ ผู้ใช้ สิทธิ์ และ Audit Log</span></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox" checked><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td><td><label class="toggle"><input type="checkbox"><span></span></label></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Data Permission</h3><p>ขอบเขตข้อมูลที่แต่ละบทบาทเข้าถึงได้</p></div></div>
+            <div class="card-body">
+              <div class="summary-line"><span>Super Admin</span><strong>ทุกหน่วยงาน / ทุกสาขา</strong></div>
+              <div class="summary-line"><span>Admin</span><strong>หน่วยงานที่รับผิดชอบ</strong></div>
+              <div class="summary-line"><span>Supervisor</span><strong>เฉพาะสาขาและทีม</strong></div>
+              <div class="summary-line"><span>Operator</span><strong>เฉพาะรายการที่ได้รับมอบหมาย</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>Permission Alerts</h3><p>รายการที่ควรตรวจสอบ</p></div></div>
+            <div class="card-body status-list">
+              <div class="status-item"><div class="status-icon">!</div><div><strong>ผู้ใช้ 3 รายมีสิทธิ์ซ้ำซ้อน</strong><p>มีทั้ง Admin และ Supervisor ในหน่วยงานเดียวกัน</p></div><span class="badge warn">ตรวจสอบ</span></div>
+              <div class="status-item"><div class="status-icon">API</div><div><strong>API Token ใกล้หมดอายุ</strong><p>2 Token จะหมดอายุภายใน 14 วัน</p></div><span class="badge warn">ต่ออายุ</span></div>
+            </div>
+          </div>
+        </div>
+      
+<div class="card" style="margin-top:18px">
+<div class="card-head"><div><h3>4 Role ตาม Requirement กรรมการ</h3><p>Requirement ข้อ 14 — บทบาทและขอบเขตการใช้งานต้องต่างกัน</p></div></div>
+<div class="card-body"><div class="role-grid">
+<div class="role-card"><h4>Super Admin</h4><p><strong>เทคโนฯ</strong><br>ดูแลระบบสูงสุด โครงสร้างสิทธิ และการตั้งค่าระบบ</p></div>
+<div class="role-card"><h4>Admin</h4><p><strong>ผอ.กลุ่มวิทยาศาสตร์สุขภาพ</strong><br>บริหารข้อมูลและอนุมัติงานระดับหน่วยงาน</p></div>
+<div class="role-card"><h4>Supervisor</h4><p><strong>นายเวร / ข้าราชการกลุ่มวิทยาศาสตร์สุขภาพ</strong><br>ตรวจสอบและควบคุมงาน</p></div>
+<div class="role-card"><h4>Operator</h4><p><strong>เทรนเนอร์ / วิทยากร</strong><br>ปฏิบัติงานบริการตามสิทธิที่ได้รับ</p></div>
+</div>
+<table style="margin-top:14px"><thead><tr><th>สิทธิ</th><th>Super Admin</th><th>Admin</th><th>Supervisor</th><th>Operator</th></tr></thead><tbody>
+<tr><td>ดูข้อมูล</td><td>✓</td><td>✓</td><td>✓</td><td>✓ ตามงาน</td></tr>
+<tr><td>เพิ่ม/แก้ไข</td><td>✓</td><td>✓</td><td>✓ ตามขอบเขต</td><td>ตามสิทธิ</td></tr>
+<tr><td>อนุมัติคำขอ</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+<tr><td>พิมพ์บัตร</td><td>✓</td><td>✓</td><td>ตามสิทธิ</td><td>—</td></tr>
+<tr><td>รับชำระ</td><td>✓</td><td>✓</td><td>ตามสิทธิ</td><td>—</td></tr>
+<tr><td>ดูรายงาน</td><td>✓</td><td>✓</td><td>✓ หน่วยงาน</td><td>เฉพาะงาน</td></tr>
+</tbody></table>
+</div></div>
+</section>
+
+      <section id="a04" class="screen">
+        <div class="hero">
+          <div>
+            <h2>Organization Management</h2>
+            <p>บริหารโครงสร้างองค์กร หน่วยงาน สาขา ตำแหน่ง ทีม และการผูกพนักงานกับหน่วยงาน เพื่อรองรับการกำหนดสิทธิ์และการรายงานตามโครงสร้างจริง</p>
+            <div class="meta"><span class="pill">Department</span><span class="pill">Branch & Team</span><span class="pill">Staff Mapping</span></div>
+          </div>
+          <div class="filter-row"><button class="btn" onclick="openDepartmentModal()">＋ หน่วยงาน</button><button class="btn primary" onclick="openBranchModal()">＋ สาขา</button></div>
+        </div>
+
+        <div class="grid-4">
+          <div class="kpi"><div class="kpi-top"><small>หน่วยงานทั้งหมด</small><div class="icon">D</div></div><strong>12</strong><p>หน่วยงานหลัก 5 แห่ง</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ศูนย์บริการ / สาขา</small><div class="icon">B</div></div><strong>18</strong><p>เปิดใช้งาน 17 แห่ง</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ทีมปฏิบัติงาน</small><div class="icon">T</div></div><strong>46</strong><p>สมาชิกทีม 1,284 คน</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ตำแหน่งงาน</small><div class="icon">P</div></div><strong>24</strong><p>อัปเดตล่าสุด 8 ก.ค.</p></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Organization Structure</h3><p>โครงสร้างหน่วยงานแบบลำดับชั้น</p></div><button class="btn" onclick="showToast('ขยายโครงสร้างทั้งหมดแล้ว')">Expand All</button></div>
+            <div class="card-body org-tree">
+              <div class="org-node root">
+                <div class="org-node-head"><div><strong>กรมพลศึกษา</strong><p>สำนักงานใหญ่ · บุคลากร 1,284 คน</p></div><span class="badge good">Root</span></div>
+                <div class="org-children">
+                  <div class="org-node"><div class="org-node-head"><div><strong>ศูนย์เทคโนโลยีสารสนเทศ</strong><p>4 ทีม · 86 คน</p></div><button class="mini" onclick="editDepartment('ศูนย์เทคโนโลยีสารสนเทศ')">แก้ไข</button></div></div>
+                  <div class="org-node"><div class="org-node-head"><div><strong>ศูนย์บริการประชาชน</strong><p>6 สาขา · 428 คน</p></div><button class="mini" onclick="editDepartment('ศูนย์บริการประชาชน')">แก้ไข</button></div></div>
+                  <div class="org-node"><div class="org-node-head"><div><strong>ศูนย์ฝึกกีฬา</strong><p>8 สาขา · 512 คน</p></div><button class="mini" onclick="editDepartment('ศูนย์ฝึกกีฬา')">แก้ไข</button></div></div>
+                  <div class="org-node"><div class="org-node-head"><div><strong>กองการเงินและพัสดุ</strong><p>3 ทีม · 98 คน</p></div><button class="mini" onclick="editDepartment('กองการเงินและพัสดุ')">แก้ไข</button></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Staff Mapping</h3><p>บุคลากรที่มีการเปลี่ยนแปลงล่าสุด</p></div><button class="btn" onclick="showToast('เปิดหน้าจัดสรรบุคลากรแล้ว')">Manage Mapping</button></div>
+            <div class="card-body staff-list">
+              <div class="staff-item"><div class="avatar">กศ</div><div><strong>กิตติพงษ์ ศรีสุข</strong><p>System Administrator · ศูนย์เทคโนโลยีสารสนเทศ</p></div><span class="badge good">Mapped</span></div>
+              <div class="staff-item"><div class="avatar">พว</div><div><strong>พิมพ์ชนก วัฒนา</strong><p>Branch Admin · ศูนย์บริการหลัก</p></div><span class="badge good">Mapped</span></div>
+              <div class="staff-item"><div class="avatar">ธส</div><div><strong>ธนภัทร สุขเกษม</strong><p>Supervisor · ศูนย์ฝึกกีฬา</p></div><span class="badge good">Mapped</span></div>
+              <div class="staff-item"><div class="avatar">ศพ</div><div><strong>ศิริพร พัฒนสุข</strong><p>ยังไม่กำหนดทีมปฏิบัติงาน</p></div><span class="badge warn">Pending</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Branch Management</h3><p>ข้อมูลศูนย์บริการและสาขา</p></div><div class="filter-row"><input id="branchSearch" placeholder="ค้นหาสาขา" oninput="filterBranches()"><select id="branchStatus" onchange="filterBranches()"><option value="">ทุกสถานะ</option><option>Active</option><option>Inactive</option></select></div></div>
+          <div class="card-body branch-grid" id="branchGrid">
+            <div class="branch-card" data-status="Active"><h4>ศูนย์บริการหลัก</h4><p>กรุงเทพมหานคร · บุคลากร 186 คน</p><div class="summary-line"><span>ผู้จัดการสาขา</span><strong>พิมพ์ชนก วัฒนา</strong></div><div class="summary-line"><span>สถานะ</span><span class="badge good">Active</span></div><button class="btn" onclick="editBranch('ศูนย์บริการหลัก')">แก้ไขข้อมูล</button></div>
+            <div class="branch-card" data-status="Active"><h4>ศูนย์ฝึกกีฬาแห่งชาติ</h4><p>ปทุมธานี · บุคลากร 142 คน</p><div class="summary-line"><span>ผู้จัดการสาขา</span><strong>ธนภัทร สุขเกษม</strong></div><div class="summary-line"><span>สถานะ</span><span class="badge good">Active</span></div><button class="btn" onclick="editBranch('ศูนย์ฝึกกีฬาแห่งชาติ')">แก้ไขข้อมูล</button></div>
+            <div class="branch-card" data-status="Inactive"><h4>หน่วยบริการเคลื่อนที่ 03</h4><p>ภาคตะวันออก · บุคลากร 24 คน</p><div class="summary-line"><span>ผู้จัดการสาขา</span><strong>ยังไม่กำหนด</strong></div><div class="summary-line"><span>สถานะ</span><span class="badge warn">Inactive</span></div><button class="btn" onclick="editBranch('หน่วยบริการเคลื่อนที่ 03')">แก้ไขข้อมูล</button></div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="a05" class="screen">
+        <div class="hero">
+          <div>
+            <h2>System Configuration</h2>
+            <p>บริหารค่ากลางของระบบ ช่องทางสื่อสาร พื้นที่จัดเก็บ การเชื่อมต่อบริการภายนอก การรับชำระเงิน และการตั้งค่าความสามารถด้าน AI จากศูนย์กลาง</p>
+            <div class="meta"><span class="pill">General Setting</span><span class="pill">Integration</span><span class="pill">Sprint 3</span></div>
+          </div>
+          <div class="filter-row"><button class="btn" onclick="testAllConnections()">ทดสอบการเชื่อมต่อ</button><button class="btn primary" onclick="saveSystemConfig()">บันทึกการตั้งค่า</button></div>
+        </div>
+
+        <div class="grid-4">
+          <div class="kpi"><div class="kpi-top"><small>บริการเชื่อมต่อ</small><div class="icon">API</div></div><strong>8</strong><p>Online 7 บริการ</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ช่องทางแจ้งเตือน</small><div class="icon">N</div></div><strong>4</strong><p>Email, SMS, LINE, Push</p></div>
+          <div class="kpi"><div class="kpi-top"><small>พื้นที่จัดเก็บ</small><div class="icon">FS</div></div><strong>3 TB</strong><p>ใช้งานแล้ว 61%</p></div>
+          <div class="kpi"><div class="kpi-top"><small>Config Version</small><div class="icon">V</div></div><strong>3.8.2</strong><p>อัปเดตล่าสุดวันนี้</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Configuration Center</h3><p>เลือกหมวดการตั้งค่าที่ต้องการจัดการ</p></div><span class="badge good">Auto Save Draft</span></div>
+          <div class="card-body">
+            <div class="config-tabs">
+              <button class="active" onclick="switchConfigTab('general',this)">General</button>
+              <button onclick="switchConfigTab('email',this)">Email</button>
+              <button onclick="switchConfigTab('sms',this)">SMS & LINE</button>
+              <button onclick="switchConfigTab('storage',this)">File Storage</button>
+              <button onclick="switchConfigTab('payment',this)">Payment Gateway</button>
+              <button onclick="switchConfigTab('ai',this)">AI Configuration</button>
+            </div>
+
+            <div id="config-general" class="config-panel active">
+              <div class="setting-grid">
+                <div class="setting-card">
+                  <h4>General System</h4><p>ค่าพื้นฐานของแพลตฟอร์มและรูปแบบการแสดงผล</p>
+                  <div class="form-group"><label>ชื่อระบบ</label><input value="ระบบบริหารจัดการศูนย์วิทยาศาสตร์การกีฬา"></div>
+                  <div class="form-group" style="margin-top:10px"><label>ภาษาเริ่มต้น</label><select><option>ภาษาไทย</option><option>English</option></select></div>
+                  <div class="form-group" style="margin-top:10px"><label>เขตเวลา</label><select><option>Asia/Bangkok (UTC+7)</option></select></div>
+                </div>
+                <div class="setting-card">
+                  <h4>Security Policy</h4><p>นโยบายรหัสผ่านและ Session</p>
+                  <div class="setting-row"><div><strong>บังคับใช้รหัสผ่านซับซ้อน</strong><span>ตัวอักษรใหญ่ เล็ก ตัวเลข และสัญลักษณ์</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+                  <div class="setting-row"><div><strong>Two-Factor Authentication</strong><span>บังคับใช้กับ Admin และ Super Admin</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+                  <div class="form-group" style="margin-top:10px"><label>Session Timeout</label><select><option>30 นาที</option><option>60 นาที</option><option>120 นาที</option></select></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="config-email" class="config-panel">
+              <div class="setting-grid">
+                <div class="setting-card">
+                  <h4>SMTP Configuration</h4><p>ตั้งค่าการส่ง Email จากระบบ</p>
+                  <div class="form-group"><label>SMTP Host</label><input value="smtp.dpe.go.th"></div>
+                  <div class="form-grid" style="margin-top:10px"><div class="form-group"><label>Port</label><input value="587"></div><div class="form-group"><label>Encryption</label><select><option>TLS</option><option>SSL</option></select></div></div>
+                  <div class="form-group" style="margin-top:10px"><label>Sender Email</label><input value="noreply@dpe.go.th"></div>
+                </div>
+                <div class="setting-card">
+                  <h4>Email Test</h4><p>ตรวจสอบสถานะและส่งข้อความทดสอบ</p>
+                  <div class="summary-line"><span>Connection</span><strong>Connected</strong></div>
+                  <div class="summary-line"><span>Last Test</span><strong>วันนี้ 22:14</strong></div>
+                  <div class="form-group" style="margin-top:10px"><label>อีเมลทดสอบ</label><input value="admin@dpe.go.th"></div>
+                  <button class="btn primary" style="margin-top:10px" onclick="testService('Email')">ส่งอีเมลทดสอบ</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="config-sms" class="config-panel">
+              <div class="integration-grid">
+                <div class="integration-card"><div class="integration-head"><h4>SMS Gateway</h4><span class="badge good">Connected</span></div><p>เครดิตคงเหลือ 18,420 ข้อความ</p><div class="form-group"><label>Provider</label><select><option>ThaiBulkSMS</option><option>Custom API</option></select></div><button class="btn" style="margin-top:10px" onclick="testService('SMS')">ทดสอบ SMS</button></div>
+                <div class="integration-card"><div class="integration-head"><h4>LINE Messaging API</h4><span class="badge good">Connected</span></div><p>ใช้สำหรับส่งแจ้งเตือนและข้อความบริการ</p><div class="form-group"><label>Channel ID</label><input value="200468xxxx"></div><button class="btn" style="margin-top:10px" onclick="testService('LINE')">ทดสอบ LINE</button></div>
+                <div class="integration-card"><div class="integration-head"><h4>Push Notification</h4><span class="badge warn">Pending</span></div><p>Firebase Cloud Messaging สำหรับ Mobile App</p><div class="form-group"><label>Project ID</label><input value="dpe-sport-center"></div><button class="btn" style="margin-top:10px" onclick="testService('Push Notification')">ทดสอบ Push</button></div>
+              </div>
+            </div>
+
+            <div id="config-storage" class="config-panel">
+              <div class="setting-grid">
+                <div class="setting-card"><h4>Primary Storage</h4><p>พื้นที่จัดเก็บเอกสาร รูปภาพ และไฟล์รายงาน</p><div class="form-group"><label>Storage Type</label><select><option>S3 Compatible</option><option>Local Storage</option><option>Google Cloud Storage</option></select></div><div class="form-group" style="margin-top:10px"><label>Bucket / Path</label><input value="dpe-production-files"></div></div>
+                <div class="setting-card"><h4>Storage Policy</h4><p>นโยบายอายุไฟล์และการเข้ารหัส</p><div class="setting-row"><div><strong>Encrypt at Rest</strong><span>AES-256</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div><div class="setting-row"><div><strong>Virus Scan on Upload</strong><span>ตรวจสอบทุกไฟล์ก่อนบันทึก</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div><div class="form-group" style="margin-top:10px"><label>Retention</label><select><option>5 ปี</option><option>10 ปี</option><option>ไม่ลบอัตโนมัติ</option></select></div></div>
+              </div>
+            </div>
+
+            <div id="config-payment" class="config-panel">
+              <div class="integration-grid">
+                <div class="integration-card"><div class="integration-head"><h4>PromptPay</h4><span class="badge good">Connected</span></div><p>รับชำระผ่าน QR และตรวจสอบสถานะอัตโนมัติ</p><div class="form-group"><label>Merchant ID</label><input class="secret" value="DPE-PP-001"></div><button class="btn" style="margin-top:10px" onclick="testService('PromptPay')">Test Connection</button></div>
+                <div class="integration-card"><div class="integration-head"><h4>Credit Card Gateway</h4><span class="badge good">Connected</span></div><p>รองรับบัตรเครดิตและบัตรเดบิต</p><div class="form-group"><label>Mode</label><select><option>Production</option><option>Sandbox</option></select></div><button class="btn" style="margin-top:10px" onclick="testService('Credit Card Gateway')">Test Connection</button></div>
+                <div class="integration-card"><div class="integration-head"><h4>Bank Reconciliation</h4><span class="badge warn">Manual</span></div><p>นำเข้า Statement และจับคู่ธุรกรรม</p><div class="form-group"><label>Schedule</label><select><option>ทุกวัน 02:00</option><option>ทุก 6 ชั่วโมง</option></select></div><button class="btn" style="margin-top:10px" onclick="showToast('เริ่มทดสอบ Reconciliation แล้ว')">Run Test</button></div>
+              </div>
+            </div>
+
+            <div id="config-ai" class="config-panel">
+              <div class="setting-grid">
+                <div class="setting-card"><h4>AI Service</h4><p>ตั้งค่าการใช้ AI สำหรับ Insight และ Recommendation</p><div class="form-group"><label>AI Provider</label><select><option>OpenAI Compatible API</option><option>On-Premise Model</option><option>Disabled</option></select></div><div class="form-group" style="margin-top:10px"><label>Model</label><input value="enterprise-insight-model"></div><div class="form-group" style="margin-top:10px"><label>API Endpoint</label><input value="https://ai-api.dpe.go.th/v1"></div></div>
+                <div class="setting-card"><h4>AI Governance</h4><p>ควบคุมข้อมูลที่ส่งไปประมวลผลและการอนุมัติผลลัพธ์</p><div class="setting-row"><div><strong>Mask Personal Data</strong><span>ซ่อนข้อมูลส่วนบุคคลก่อนส่ง AI</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div><div class="setting-row"><div><strong>Require Human Approval</strong><span>ผล AI ต้องมีผู้อนุมัติก่อนใช้งาน</span></div><label class="toggle"><input type="checkbox" checked><span></span></label></div><div class="form-group" style="margin-top:10px"><label>Confidence Threshold</label><input value="0.85"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="a06" class="screen">
+        <div class="hero">
+          <div>
+            <h2>Master Data Management</h2>
+            <p>จัดการข้อมูลอ้างอิงกลางที่ทุกโมดูลใช้งานร่วมกัน เช่น จังหวัด ประเภทกีฬา คลาส แพ็กเกจ Trainer อุปกรณ์ และข้อมูลประกอบการให้บริการ</p>
+            <div class="meta"><span class="pill">Central Master Data</span><span class="pill">Shared Reference</span><span class="pill">Data Governance</span></div>
+          </div>
+          <button class="btn primary" onclick="openMasterModal('เพิ่มข้อมูลหลัก')">＋ เพิ่มข้อมูลหลัก</button>
+        </div>
+
+        <div class="grid-4">
+          <div class="kpi"><div class="kpi-top"><small>หมวดข้อมูลหลัก</small><div class="icon">M</div></div><strong>18</strong><p>Active ทุกหมวด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>รายการทั้งหมด</small><div class="icon">D</div></div><strong>4,286</strong><p>เพิ่มใหม่ 64 รายการ</p></div>
+          <div class="kpi"><div class="kpi-top"><small>รออนุมัติ</small><div class="icon">P</div></div><strong style="color:var(--warning)">12</strong><p style="color:var(--warning)">จาก 4 หมวด</p></div>
+          <div class="kpi"><div class="kpi-top"><small>ข้อมูลซ้ำซ้อน</small><div class="icon">!</div></div><strong>7</strong><p>พร้อมตรวจสอบและรวมข้อมูล</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Master Data Categories</h3><p>เลือกหมวดเพื่อจัดการข้อมูลอ้างอิง</p></div><div class="filter-row"><input id="masterSearch" placeholder="ค้นหาหมวดข้อมูล" oninput="filterMasterCards()"><select id="masterStatusFilter" onchange="filterMasterCards()"><option value="">ทุกสถานะ</option><option>Active</option><option>Review</option></select></div></div>
+          <div class="card-body master-grid" id="masterGrid">
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('จังหวัดและพื้นที่')"><div class="master-icon">TH</div><h4>จังหวัดและพื้นที่</h4><p>77 จังหวัด · 928 อำเภอ</p><div class="chip-list"><span class="chip">Location</span><span class="chip">Active</span></div></div>
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('ประเภทกีฬา')"><div class="master-icon">SP</div><h4>ประเภทกีฬา</h4><p>64 ประเภท · 182 ชนิดย่อย</p><div class="chip-list"><span class="chip">Sport</span><span class="chip">Active</span></div></div>
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('ประเภทคลาส')"><div class="master-icon">CL</div><h4>ประเภทคลาส</h4><p>28 ประเภท · ใช้งาน 24</p><div class="chip-list"><span class="chip">Class</span><span class="chip">Active</span></div></div>
+            <div class="master-card" data-status="Review" onclick="openMasterCategory('แพ็กเกจบริการ')"><div class="master-icon">PK</div><h4>แพ็กเกจบริการ</h4><p>36 แพ็กเกจ · รออนุมัติ 4</p><div class="chip-list"><span class="chip">Payment</span><span class="chip">Review</span></div></div>
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('Trainer')"><div class="master-icon">TR</div><h4>Trainer</h4><p>148 คน · Active 136</p><div class="chip-list"><span class="chip">Personnel</span><span class="chip">Active</span></div></div>
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('อุปกรณ์กีฬา')"><div class="master-icon">EQ</div><h4>อุปกรณ์กีฬา</h4><p>1,842 รายการ · 18 หมวด</p><div class="chip-list"><span class="chip">Equipment</span><span class="chip">Active</span></div></div>
+            <div class="master-card" data-status="Review" onclick="openMasterCategory('แบบทดสอบสมรรถภาพ')"><div class="master-icon">FT</div><h4>แบบทดสอบสมรรถภาพ</h4><p>42 แบบทดสอบ · รอทบทวน 3</p><div class="chip-list"><span class="chip">Fitness</span><span class="chip">Review</span></div></div>
+            <div class="master-card" data-status="Active" onclick="openMasterCategory('หน่วยวัด')"><div class="master-icon">UN</div><h4>หน่วยวัด</h4><p>86 หน่วย · ใช้ร่วมทุกระบบ</p><div class="chip-list"><span class="chip">Shared</span><span class="chip">Active</span></div></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Recently Updated</h3><p>รายการข้อมูลหลักที่แก้ไขล่าสุด</p></div><button class="btn" onclick="showToast('เปิดประวัติการแก้ไข Master Data แล้ว')">View History</button></div>
+            <div class="card-body table-wrap">
+              <table style="min-width:700px"><thead><tr><th>หมวด</th><th>รายการ</th><th>การเปลี่ยนแปลง</th><th>ผู้แก้ไข</th><th>เวลา</th></tr></thead><tbody>
+                <tr><td>แพ็กเกจบริการ</td><td><strong>Premium Fitness 12M</strong></td><td>แก้ไขราคา</td><td>admin.pim</td><td>วันนี้ 21:40</td></tr>
+                <tr><td>Trainer</td><td><strong>พิมพ์ชนก ชัยวัฒนา</strong></td><td>เพิ่มความเชี่ยวชาญ</td><td>admin.kitti</td><td>วันนี้ 20:18</td></tr>
+                <tr><td>อุปกรณ์กีฬา</td><td><strong>Treadmill TM-018</strong></td><td>เปลี่ยนสถานะ Active</td><td>op.siriporn</td><td>วันนี้ 18:02</td></tr>
+                <tr><td>ประเภทคลาส</td><td><strong>Senior Mobility</strong></td><td>เพิ่มรายการใหม่</td><td>sup.thana</td><td>เมื่อวาน 16:24</td></tr>
+              </tbody></table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Data Quality Alerts</h3><p>ประเด็นคุณภาพข้อมูลที่ควรดำเนินการ</p></div></div>
+            <div class="card-body status-list">
+              <div class="status-item"><div class="status-icon">D</div><div><strong>พบรายการอุปกรณ์ซ้ำ 7 รายการ</strong><p>ชื่อและ Serial Number ใกล้เคียงกัน</p></div><span class="badge warn">รวมข้อมูล</span></div>
+              <div class="status-item"><div class="status-icon">P</div><div><strong>แพ็กเกจ 4 รายการรออนุมัติ</strong><p>มีผลต่อระบบ Payment และ Class</p></div><span class="badge warn">อนุมัติ</span></div>
+              <div class="status-item"><div class="status-icon">✓</div><div><strong>จังหวัดและพื้นที่ผ่านการตรวจสอบ</strong><p>ข้อมูลครบ 77 จังหวัด</p></div><span class="badge good">ผ่าน</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  
+<section id="a07" class="screen"><div class="hero"><div><h2>A-07 Audit Log</h2><p>ติดตาม Login Log, Activity Log, Error Log และ API Log พร้อมค้นหาและ Export</p><div class="meta"><span class="pill">Audit</span><span class="pill">Security</span><span class="pill">Sprint 4</span></div></div><button class="btn primary" onclick="showToast('Export Audit Log แล้ว')">Export</button></div>
+<div class="grid-4"><div class="kpi"><div class="kpi-top"><small>Login วันนี้</small><div class="icon">L</div></div><strong>3,842</strong><p>Success 99.6%</p></div><div class="kpi"><div class="kpi-top"><small>Activity</small><div class="icon">A</div></div><strong>12,484</strong><p>Events</p></div><div class="kpi"><div class="kpi-top"><small>Error</small><div class="icon">E</div></div><strong>18</strong><p>Critical 2</p></div><div class="kpi"><div class="kpi-top"><small>API Calls</small><div class="icon">API</div></div><strong>1.8M</strong><p>0.18% Error</p></div></div>
+<div class="card"><div class="card-head"><div><h3>Recent Audit Events</h3></div></div><div class="card-body table-wrap"><table><thead><tr><th>เวลา</th><th>ผู้ใช้</th><th>เหตุการณ์</th><th>IP</th><th>ผลลัพธ์</th></tr></thead><tbody>
+<tr><td>22:18</td><td>admin.kitti</td><td>Reset Password</td><td>10.0.0.21</td><td><span class='badge good'>Success</span></td></tr>
+<tr><td>21:42</td><td>admin.pim</td><td>Edit Role</td><td>10.0.0.18</td><td><span class='badge good'>Success</span></td></tr>
+<tr><td>20:03</td><td>unknown</td><td>Failed Login</td><td>185.22.x.x</td><td><span class='badge bad'>Blocked</span></td></tr>
+</tbody></table></div></div></section>
+
+<section id="a08" class="screen"><div class="hero"><div><h2>A-08 Backup & Recovery</h2><p>สำรองข้อมูล กำหนดรอบอัตโนมัติ กู้คืน และจัดการเวอร์ชัน</p><div class="meta"><span class="pill">Backup</span><span class="pill">Recovery</span><span class="pill">Sprint 4</span></div></div><div><button class="btn" onclick="showToast('เริ่ม Backup แล้ว')">Backup Now</button> <button class="btn primary" onclick="showToast('เริ่ม Restore Wizard แล้ว')">Restore</button></div></div>
+<div class="grid-4"><div class="kpi"><div class="kpi-top"><small>Backup ล่าสุด</small><div class="icon">B</div></div><strong>22:00</strong><p>Successful</p></div><div class="kpi"><div class="kpi-top"><small>Backup Size</small><div class="icon">GB</div></div><strong>18.4GB</strong><p>Compressed</p></div><div class="kpi"><div class="kpi-top"><small>Retention</small><div class="icon">R</div></div><strong>30 วัน</strong><p>Policy</p></div><div class="kpi"><div class="kpi-top"><small>Storage</small><div class="icon">S</div></div><strong>61%</strong><p>Used</p></div></div>
+<div class="grid-2"><div class="card"><div class="card-head"><div><h3>Backup Schedule</h3></div></div><div class="card-body">
+<div class="summary-line"><span>Database</span><strong>Daily 02:00</strong></div>
+<div class="summary-line"><span>Files</span><strong>Daily 03:00</strong></div>
+<div class="summary-line"><span>Full System</span><strong>Weekly Sunday</strong></div>
+</div></div>
+<div class="card"><div class="card-head"><div><h3>Recovery History</h3></div></div><div class="card-body table-wrap"><table><thead><tr><th>Version</th><th>Date</th><th>Status</th></tr></thead><tbody><tr><td>v3.8.2</td><td>วันนี้</td><td><span class='badge good'>Available</span></td></tr><tr><td>v3.8.1</td><td>เมื่อวาน</td><td><span class='badge good'>Available</span></td></tr><tr><td>v3.8.0</td><td>7 วันก่อน</td><td><span class='badge warn'>Archive</span></td></tr></tbody></table></div></div></div></section>
+
+<section id="a09" class="screen">
+  <div class="hero">
+    <div>
+      <h2>A-09 Monitoring</h2>
+      <p>ติดตาม CPU, RAM, Storage, Network, Database และ API แบบศูนย์กลาง พร้อมสถานะ SLA แนวโน้มการใช้งาน และการแจ้งเตือนเชิงรุก</p>
+      <div class="meta"><span class="pill">Real-time Monitoring</span><span class="pill">SLA</span><span class="pill">Sprint 5</span></div>
+    </div>
+    <div class="filter-row"><button class="btn" onclick="saveAdminFilter('Monitoring View')">บันทึกมุมมอง</button><button class="btn primary" onclick="runFullHealthCheck()">Run Health Check</button></div>
+  </div>
+
+  <div class="monitor-grid" style="margin-top:18px">
+    <div class="monitor-card"><div class="monitor-head"><h4>CPU Usage</h4><span class="badge good">Normal</span></div><div class="metric-number">42%</div><div class="metric-sub">8 Core · Peak 67%</div><div class="spark"><i style="height:28%"></i><i style="height:36%"></i><i style="height:44%"></i><i style="height:39%"></i><i style="height:52%"></i><i style="height:42%"></i><i style="height:47%"></i><i style="height:40%"></i></div></div>
+    <div class="monitor-card"><div class="monitor-head"><h4>Memory Usage</h4><span class="badge warn">Watch</span></div><div class="metric-number">68%</div><div class="metric-sub">43.5 GB / 64 GB</div><div class="spark"><i style="height:54%"></i><i style="height:59%"></i><i style="height:64%"></i><i style="height:62%"></i><i style="height:68%"></i><i style="height:66%"></i><i style="height:70%"></i><i style="height:68%"></i></div></div>
+    <div class="monitor-card"><div class="monitor-head"><h4>Storage Usage</h4><span class="badge warn">61%</span></div><div class="metric-number">1.82 TB</div><div class="metric-sub">จากทั้งหมด 3 TB</div><div class="progress"><i style="width:61%"></i></div></div>
+    <div class="monitor-card"><div class="monitor-head"><h4>Network</h4><span class="badge good">Stable</span></div><div class="metric-number">428 Mbps</div><div class="metric-sub">Latency 18 ms · Packet Loss 0.02%</div><div class="spark"><i style="height:38%"></i><i style="height:52%"></i><i style="height:61%"></i><i style="height:48%"></i><i style="height:72%"></i><i style="height:58%"></i><i style="height:63%"></i><i style="height:54%"></i></div></div>
+    <div class="monitor-card"><div class="monitor-head"><h4>Database</h4><span class="badge good">Healthy</span></div><div class="metric-number">42 ms</div><div class="metric-sub">Avg Query · 68 Active Connections</div><div class="progress"><i style="width:34%"></i></div></div>
+    <div class="monitor-card"><div class="monitor-head"><h4>API Gateway</h4><span class="badge good">99.82%</span></div><div class="metric-number">1,284</div><div class="metric-sub">Requests/min · Error 0.18%</div><div class="spark"><i style="height:44%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:70%"></i><i style="height:65%"></i><i style="height:58%"></i><i style="height:63%"></i></div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card"><div class="card-head"><div><h3>Service Availability</h3><p>สถานะบริการและ SLA</p></div><button class="btn" onclick="exportAdminData('csv','service-availability')">Export CSV</button></div><div class="card-body table-wrap">
+      <table style="min-width:700px"><thead><tr><th>Service</th><th>Status</th><th>Uptime</th><th>Response</th><th>SLA</th></tr></thead><tbody>
+        <tr><td><strong>Member API</strong></td><td><span class="badge good">Online</span></td><td>99.99%</td><td>132 ms</td><td>ผ่าน</td></tr>
+        <tr><td><strong>Class API</strong></td><td><span class="badge good">Online</span></td><td>99.98%</td><td>148 ms</td><td>ผ่าน</td></tr>
+        <tr><td><strong>Payment API</strong></td><td><span class="badge warn">Degraded</span></td><td>99.91%</td><td>684 ms</td><td>ติดตาม</td></tr>
+        <tr><td><strong>Reporting Engine</strong></td><td><span class="badge good">Online</span></td><td>99.97%</td><td>226 ms</td><td>ผ่าน</td></tr>
+      </tbody></table>
+    </div></div>
+    <div class="card"><div class="card-head"><div><h3>Active Alerts</h3><p>เหตุการณ์ที่ระบบตรวจพบ</p></div></div><div class="card-body status-list">
+      <div class="status-item"><div class="status-icon">RAM</div><div><strong>Memory Usage สูงต่อเนื่อง</strong><p>สูงกว่า 65% เป็นเวลา 28 นาที</p></div><span class="badge warn">Medium</span></div>
+      <div class="status-item"><div class="status-icon">PAY</div><div><strong>Payment API ตอบสนองช้า</strong><p>Response Time สูงกว่า 600 ms</p></div><span class="badge warn">Medium</span></div>
+      <div class="status-item"><div class="status-icon">DB</div><div><strong>Database Backup สำเร็จ</strong><p>Full Backup เวลา 02:00 น.</p></div><span class="badge good">Resolved</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section id="a10" class="screen">
+  <div class="hero">
+    <div>
+      <h2>A-10 Maintenance</h2>
+      <p>จัดการ Scheduler, Cron Jobs, Cache, Queue, การอัปเดตระบบ และ Health Check เพื่อให้แพลตฟอร์มทำงานต่อเนื่องและตรวจสอบย้อนหลังได้</p>
+      <div class="meta"><span class="pill">Scheduler</span><span class="pill">System Maintenance</span><span class="pill">Production Ready</span></div>
+    </div>
+    <div class="filter-row"><button class="btn" onclick="clearSystemCache()">Clear Cache</button><button class="btn primary" onclick="openUpdateWizard()">Update Wizard</button></div>
+  </div>
+
+  <div class="grid-4">
+    <div class="kpi"><div class="kpi-top"><small>Scheduled Jobs</small><div class="icon">J</div></div><strong>28</strong><p>Active 26</p></div>
+    <div class="kpi"><div class="kpi-top"><small>Queue Pending</small><div class="icon">Q</div></div><strong>12</strong><p>Failed 2</p></div>
+    <div class="kpi"><div class="kpi-top"><small>Cache Hit Rate</small><div class="icon">C</div></div><strong>94.8%</strong><p>Healthy</p></div>
+    <div class="kpi"><div class="kpi-top"><small>System Version</small><div class="icon">V</div></div><strong>3.8.2</strong><p>Latest stable</p></div>
+  </div>
+
+  <div class="job-grid" style="margin-top:18px">
+    <div class="job-card"><h4>Database Backup</h4><p>ทุกวัน เวลา 02:00 น. · ล่าสุดสำเร็จ</p><div class="job-actions"><button class="mini" onclick="runJob('Database Backup')">Run Now</button><button class="mini" onclick="showToast('เปิดแก้ไข Schedule แล้ว')">Edit</button></div></div>
+    <div class="job-card"><h4>Payment Reconciliation</h4><p>ทุก 6 ชั่วโมง · Pending 1 รายการ</p><div class="job-actions"><button class="mini" onclick="runJob('Payment Reconciliation')">Run Now</button><button class="mini" onclick="showToast('เปิดแก้ไข Schedule แล้ว')">Edit</button></div></div>
+    <div class="job-card"><h4>Email Notification Queue</h4><p>ทุก 5 นาที · Failed 2 รายการ</p><div class="job-actions"><button class="mini" onclick="retryQueue()">Retry Failed</button><button class="mini" onclick="showToast('เปิด Queue Monitor แล้ว')">View Queue</button></div></div>
+    <div class="job-card"><h4>Data Cleanup</h4><p>ทุกวันอาทิตย์ เวลา 04:00 น.</p><div class="job-actions"><button class="mini" onclick="runJob('Data Cleanup')">Run Now</button><button class="mini" onclick="showToast('เปิดแก้ไข Retention Policy แล้ว')">Policy</button></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><h3>System Health Check</h3><p>ผลตรวจสอบองค์ประกอบสำคัญล่าสุด</p></div><button class="btn primary" onclick="runFullHealthCheck()">Run Full Check</button></div>
+    <div class="card-body health-check-grid">
+      <div class="health-check"><strong>Application</strong><p>Response และ Dependency ปกติ</p><span class="badge good">Passed</span></div>
+      <div class="health-check"><strong>Database</strong><p>Replication และ Query ปกติ</p><span class="badge good">Passed</span></div>
+      <div class="health-check"><strong>Storage</strong><p>พื้นที่ว่าง 39%</p><span class="badge warn">Watch</span></div>
+      <div class="health-check"><strong>Security</strong><p>ไม่พบ Critical Finding</p><span class="badge good">Passed</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card"><div class="card-head"><div><h3>Maintenance History</h3><p>ประวัติการบำรุงรักษา</p></div><button class="btn" onclick="exportAdminData('excel','maintenance-history')">Export Excel</button></div><div class="card-body table-wrap">
+      <table style="min-width:680px"><thead><tr><th>เวลา</th><th>กิจกรรม</th><th>ผู้ดำเนินการ</th><th>ผลลัพธ์</th></tr></thead><tbody>
+        <tr><td>วันนี้ 22:14</td><td>Clear Application Cache</td><td>admin.kitti</td><td><span class="badge good">Success</span></td></tr>
+        <tr><td>วันนี้ 02:00</td><td>Database Backup</td><td>System</td><td><span class="badge good">Success</span></td></tr>
+        <tr><td>เมื่อวาน 18:30</td><td>Retry Failed Queue</td><td>admin.pim</td><td><span class="badge good">Success</span></td></tr>
+      </tbody></table>
+    </div></div>
+    <div class="card"><div class="card-head"><div><h3>Update Center</h3><p>สถานะเวอร์ชันและ Patch</p></div></div><div class="card-body">
+      <div class="summary-line"><span>Current Version</span><strong>3.8.2</strong></div>
+      <div class="summary-line"><span>Latest Stable</span><strong>3.8.2</strong></div>
+      <div class="summary-line"><span>Security Patch</span><strong>2026.07.2</strong></div>
+      <div class="summary-line"><span>Last Update</span><strong>18 ก.ค. 2569</strong></div>
+      <button class="btn primary" style="margin-top:12px" onclick="openUpdateWizard()">ตรวจสอบการอัปเดต</button>
+    </div></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div class="modal-backdrop" id="userModal">
+  <div class="modal">
+    <div class="modal-head"><div><strong id="modalTitle">เพิ่มผู้ใช้งาน</strong><div style="font-size:8px;color:var(--muted);margin-top:3px">กำหนดข้อมูลบัญชีและบทบาทการใช้งาน</div></div><button class="btn" onclick="closeUserModal()">ปิด</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>ชื่อ</label><input id="firstName" placeholder="ชื่อ"></div>
+        <div class="form-group"><label>นามสกุล</label><input id="lastName" placeholder="นามสกุล"></div>
+        <div class="form-group"><label>Username</label><input id="username" placeholder="username"></div>
+        <div class="form-group"><label>Email</label><input id="email" type="email" placeholder="name@dpe.go.th"></div>
+        <div class="form-group"><label>หน่วยงาน</label><select id="department"><option>ศูนย์เทคโนโลยีสารสนเทศ</option><option>ศูนย์บริการหลัก</option><option>ศูนย์ฝึกกีฬา</option><option>งานบริการสมาชิก</option></select></div>
+        <div class="form-group"><label>บทบาท</label><select id="role"><option>Operator</option><option>Supervisor</option><option>Admin</option><option>Super Admin</option></select></div>
+        <div class="form-group"><label>สถานะ</label><select id="status"><option>Active</option><option>Inactive</option></select></div>
+        <div class="form-group"><label>ส่งข้อมูลเข้าสู่ระบบ</label><select><option>ส่งทาง Email</option><option>ไม่ส่ง</option></select></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeUserModal()">ยกเลิก</button><button class="btn primary" onclick="saveUser()">บันทึกผู้ใช้งาน</button></div>
+  </div>
+</div>
+
+
+<div class="modal-backdrop" id="roleModal">
+  <div class="modal">
+    <div class="modal-head"><div><strong id="roleModalTitle">เพิ่มบทบาท</strong><div style="font-size:8px;color:var(--muted);margin-top:3px">กำหนดชื่อ ขอบเขต และสิทธิ์เริ่มต้น</div></div><button class="btn" onclick="closeRoleModal()">ปิด</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="form-group"><label>ชื่อบทบาท</label><input id="roleName" placeholder="เช่น Branch Manager"></div>
+      <div class="form-group"><label>Role Code</label><input id="roleCode" placeholder="BRANCH_MANAGER"></div>
+      <div class="form-group"><label>ขอบเขตข้อมูล</label><select><option>ทุกหน่วยงาน</option><option>เฉพาะหน่วยงาน</option><option>เฉพาะสาขา</option><option>เฉพาะรายการตนเอง</option></select></div>
+      <div class="form-group"><label>สถานะ</label><select><option>Active</option><option>Inactive</option></select></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeRoleModal()">ยกเลิก</button><button class="btn primary" onclick="saveRole()">บันทึกบทบาท</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="orgModal">
+  <div class="modal">
+    <div class="modal-head"><div><strong id="orgModalTitle">เพิ่มหน่วยงาน</strong><div style="font-size:8px;color:var(--muted);margin-top:3px">กำหนดข้อมูลหน่วยงานหรือสาขา</div></div><button class="btn" onclick="closeOrgModal()">ปิด</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="form-group"><label>ชื่อหน่วยงาน / สาขา</label><input id="orgName" placeholder="ชื่อหน่วยงาน"></div>
+      <div class="form-group"><label>รหัส</label><input id="orgCode" placeholder="ORG-001"></div>
+      <div class="form-group"><label>หน่วยงานต้นสังกัด</label><select><option>กรมพลศึกษา</option><option>ศูนย์บริการประชาชน</option><option>ศูนย์ฝึกกีฬา</option></select></div>
+      <div class="form-group"><label>ผู้รับผิดชอบ</label><input placeholder="ชื่อผู้จัดการ/หัวหน้าหน่วยงาน"></div>
+      <div class="form-group"><label>ประเภท</label><select><option>Department</option><option>Branch</option><option>Team</option></select></div>
+      <div class="form-group"><label>สถานะ</label><select><option>Active</option><option>Inactive</option></select></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeOrgModal()">ยกเลิก</button><button class="btn primary" onclick="saveOrganization()">บันทึกข้อมูล</button></div>
+  </div>
+</div>
+
+
+<div class="modal-backdrop" id="masterModal">
+  <div class="modal">
+    <div class="modal-head"><div><strong id="masterModalTitle">เพิ่มข้อมูลหลัก</strong><div style="font-size:8px;color:var(--muted);margin-top:3px">กำหนดข้อมูลอ้างอิงและสถานะการใช้งาน</div></div><button class="btn" onclick="closeMasterModal()">ปิด</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="form-group"><label>หมวดข้อมูล</label><select id="masterCategory"><option>จังหวัดและพื้นที่</option><option>ประเภทกีฬา</option><option>ประเภทคลาส</option><option>แพ็กเกจบริการ</option><option>Trainer</option><option>อุปกรณ์กีฬา</option></select></div>
+      <div class="form-group"><label>รหัสรายการ</label><input id="masterCode" placeholder="MASTER-001"></div>
+      <div class="form-group"><label>ชื่อรายการ</label><input id="masterName" placeholder="ชื่อข้อมูลหลัก"></div>
+      <div class="form-group"><label>ชื่อภาษาอังกฤษ</label><input placeholder="English name"></div>
+      <div class="form-group"><label>สถานะ</label><select><option>Active</option><option>Inactive</option><option>Draft</option></select></div>
+      <div class="form-group"><label>ลำดับแสดงผล</label><input type="number" value="1"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeMasterModal()">ยกเลิก</button><button class="btn primary" onclick="saveMasterData()">บันทึกข้อมูลหลัก</button></div>
+  </div>
+</div>
+
+
+<div class="notification-panel" id="notificationPanel">
+  <div class="notification-head"><h3>Notification Center</h3><button class="btn" onclick="toggleNotifications()">ปิด</button></div>
+  <div class="notification-list">
+    <div class="notification-item"><strong>Payment API ตอบสนองช้า</strong><p>ตรวจพบ Response Time 684 ms เมื่อ 5 นาทีที่ผ่านมา</p><span class="badge warn">Monitoring</span></div>
+    <div class="notification-item"><strong>Backup สำเร็จ</strong><p>Full Database Backup ขนาด 18.4 GB</p><span class="badge good">Completed</span></div>
+    <div class="notification-item"><strong>พบ Failed Queue 2 รายการ</strong><p>Email Notification Queue ต้อง Retry</p><span class="badge warn">Action Required</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const screenMeta={
+  a01:['A-01 Dashboard','ภาพรวมสถานะระบบ ผู้ใช้งาน และบริการส่วนกลาง'],
+  a02:['A-02 User Management','จัดการบัญชีผู้ใช้งาน บทบาท และสถานะการเข้าถึง'],
+  a03:['A-03 Role & Permission','กำหนดบทบาท สิทธิ์เมนู ข้อมูล API และขอบเขตสาขา'],
+  a04:['A-04 Organization','บริหารโครงสร้างองค์กร หน่วยงาน สาขา ทีม และบุคลากร'],
+  a05:['A-05 System Configuration','ตั้งค่าระบบ ช่องทางสื่อสาร Storage Payment และ AI'],
+  a06:['A-06 Master Data','จัดการข้อมูลอ้างอิงกลางที่ใช้ร่วมกันทุกโมดูล'],
+  a07:['A-07 Audit Log','บันทึกเหตุการณ์ การเข้าสู่ระบบ และ API'],
+  a08:['A-08 Backup & Recovery','สำรองข้อมูล กู้คืน และจัดการเวอร์ชัน'],
+  a09:['A-09 Monitoring','เฝ้าระวัง CPU RAM Storage Network Database และ API'],
+  a10:['A-10 Maintenance','จัดการ Scheduler Queue Cache Update และ Health Check']
+};
+
+function showScreen(id,nav){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+  document.getElementById('pageTitle').textContent=screenMeta[id][0];
+  document.getElementById('pageSub').textContent=screenMeta[id][1];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function refreshDashboard(){showToast('อัปเดตสถานะระบบล่าสุดแล้ว')}
+function openUserModal(){document.getElementById('modalTitle').textContent='เพิ่มผู้ใช้งาน';document.getElementById('userModal').classList.add('open')}
+function closeUserModal(){document.getElementById('userModal').classList.remove('open')}
+function editUser(name){document.getElementById('modalTitle').textContent='แก้ไขผู้ใช้งาน: '+name;document.getElementById('userModal').classList.add('open')}
+function saveUser(){
+  const username=document.getElementById('username').value.trim();
+  if(!username){showToast('กรุณากรอก Username');return}
+  closeUserModal();showToast('บันทึกข้อมูลผู้ใช้งานแล้ว');
+}
+function resetPassword(user){showToast('ส่งลิงก์ Reset Password ให้ '+user+' แล้ว')}
+function lockUser(user){showToast('ล็อกบัญชี '+user+' แล้ว')}
+function unlockUser(user){showToast('ปลดล็อกบัญชี '+user+' แล้ว')}
+function activateUser(user){showToast('เปิดใช้งานบัญชี '+user+' แล้ว')}
+function resetFilters(){
+  document.getElementById('userSearch').value='';
+  document.getElementById('roleFilter').value='';
+  document.getElementById('statusFilter').value='';
+  filterUsers();
+}
+function filterUsers(){
+  const q=document.getElementById('userSearch').value.toLowerCase();
+  const role=document.getElementById('roleFilter').value;
+  const status=document.getElementById('statusFilter').value;
+  document.querySelectorAll('#userTable tbody tr').forEach(row=>{
+    const text=row.innerText.toLowerCase();
+    const okText=!q||text.includes(q);
+    const okRole=!role||row.dataset.role===role;
+    const okStatus=!status||row.dataset.status===status;
+    row.style.display=okText&&okRole&&okStatus?'':'none';
+  });
+}
+document.getElementById('userModal').addEventListener('click',e=>{if(e.target.id==='userModal')closeUserModal()});
+
+function openRoleModal(){document.getElementById('roleModalTitle').textContent='เพิ่มบทบาท';document.getElementById('roleModal').classList.add('open')}
+function closeRoleModal(){document.getElementById('roleModal').classList.remove('open')}
+function editRole(name){document.getElementById('roleModalTitle').textContent='แก้ไขบทบาท: '+name;document.getElementById('roleModal').classList.add('open')}
+function duplicateRole(name){showToast('สร้างสำเนาบทบาท '+name+' แล้ว')}
+function saveRole(){
+  const name=document.getElementById('roleName').value.trim();
+  if(!name){showToast('กรุณากรอกชื่อบทบาท');return}
+  closeRoleModal();showToast('บันทึกบทบาทและสิทธิ์แล้ว');
+}
+function savePermissionMatrix(){showToast('บันทึก Permission Matrix แล้ว')}
+
+function openDepartmentModal(){document.getElementById('orgModalTitle').textContent='เพิ่มหน่วยงาน';document.getElementById('orgModal').classList.add('open')}
+function openBranchModal(){document.getElementById('orgModalTitle').textContent='เพิ่มสาขา';document.getElementById('orgModal').classList.add('open')}
+function closeOrgModal(){document.getElementById('orgModal').classList.remove('open')}
+function editDepartment(name){document.getElementById('orgModalTitle').textContent='แก้ไขหน่วยงาน: '+name;document.getElementById('orgModal').classList.add('open')}
+function editBranch(name){document.getElementById('orgModalTitle').textContent='แก้ไขสาขา: '+name;document.getElementById('orgModal').classList.add('open')}
+function saveOrganization(){
+  const name=document.getElementById('orgName').value.trim();
+  if(!name){showToast('กรุณากรอกชื่อหน่วยงานหรือสาขา');return}
+  closeOrgModal();showToast('บันทึกข้อมูลโครงสร้างองค์กรแล้ว');
+}
+function filterBranches(){
+  const q=(document.getElementById('branchSearch').value||'').toLowerCase();
+  const status=document.getElementById('branchStatus').value;
+  document.querySelectorAll('#branchGrid .branch-card').forEach(card=>{
+    const okText=!q||card.innerText.toLowerCase().includes(q);
+    const okStatus=!status||card.dataset.status===status;
+    card.style.display=okText&&okStatus?'':'none';
+  });
+}
+document.getElementById('roleModal').addEventListener('click',e=>{if(e.target.id==='roleModal')closeRoleModal()});
+document.getElementById('orgModal').addEventListener('click',e=>{if(e.target.id==='orgModal')closeOrgModal()});
+
+
+function switchConfigTab(name,btn){
+  document.querySelectorAll('.config-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('config-'+name).classList.add('active');
+  document.querySelectorAll('.config-tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function saveSystemConfig(){showToast('บันทึก System Configuration แล้ว')}
+function testService(name){showToast('ทดสอบ '+name+' สำเร็จ')}
+function testAllConnections(){showToast('ตรวจสอบการเชื่อมต่อทั้งหมดแล้ว: Online 7 จาก 8 บริการ')}
+
+function openMasterModal(title){
+  document.getElementById('masterModalTitle').textContent=title||'เพิ่มข้อมูลหลัก';
+  document.getElementById('masterModal').classList.add('open');
+}
+function closeMasterModal(){document.getElementById('masterModal').classList.remove('open')}
+function openMasterCategory(name){
+  document.getElementById('masterModalTitle').textContent='จัดการหมวด: '+name;
+  document.getElementById('masterCategory').value=name;
+  document.getElementById('masterModal').classList.add('open');
+}
+function saveMasterData(){
+  const name=document.getElementById('masterName').value.trim();
+  if(!name){showToast('กรุณากรอกชื่อข้อมูลหลัก');return}
+  closeMasterModal();showToast('บันทึก Master Data แล้ว');
+}
+function filterMasterCards(){
+  const q=(document.getElementById('masterSearch').value||'').toLowerCase();
+  const status=document.getElementById('masterStatusFilter').value;
+  document.querySelectorAll('#masterGrid .master-card').forEach(card=>{
+    const okText=!q||card.innerText.toLowerCase().includes(q);
+    const okStatus=!status||card.dataset.status===status;
+    card.style.display=okText&&okStatus?'':'none';
+  });
+}
+document.getElementById('masterModal').addEventListener('click',e=>{if(e.target.id==='masterModal')closeMasterModal()});
+
+
+function toggleDarkMode(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('admin_dark_mode',document.body.classList.contains('dark')?'1':'0');
+  showToast(document.body.classList.contains('dark')?'เปิด Dark Mode แล้ว':'ปิด Dark Mode แล้ว');
+}
+function toggleNotifications(){
+  document.getElementById('notificationPanel').classList.toggle('open');
+}
+function refreshCurrentScreen(){
+  const id=document.querySelector('.screen.active')?.id||'a01';
+  localStorage.setItem('admin_last_screen',id);
+  showToast('อัปเดตข้อมูล '+(screenMeta[id]?.[0]||'Administration')+' แล้ว');
+}
+function saveAdminFilter(name){
+  const list=JSON.parse(localStorage.getItem('admin_saved_filters')||'[]');
+  list.unshift({name,screen:document.querySelector('.screen.active')?.id||'a01',time:new Date().toLocaleString('th-TH')});
+  localStorage.setItem('admin_saved_filters',JSON.stringify(list.slice(0,10)));
+  showToast('บันทึกมุมมองแล้ว');
+}
+function exportAdminData(type,name){
+  showToast('เตรียมส่งออก '+name+' เป็น '+type.toUpperCase());
+}
+function runFullHealthCheck(){showToast('ตรวจสอบสุขภาพระบบครบทุกองค์ประกอบแล้ว')}
+function clearSystemCache(){showToast('ล้าง Cache สำเร็จ')}
+function retryQueue(){showToast('Retry Failed Queue แล้ว 2 รายการ')}
+function runJob(name){showToast('เริ่มรัน '+name+' แล้ว')}
+function openUpdateWizard(){showToast('ระบบเป็นเวอร์ชันล่าสุด 3.8.2')}
+
+const originalShowScreen=showScreen;
+showScreen=function(id,nav){
+  originalShowScreen(id,nav);
+  localStorage.setItem('admin_last_screen',id);
+};
+
+window.addEventListener('DOMContentLoaded',()=>{
+  if(localStorage.getItem('admin_dark_mode')==='1')document.body.classList.add('dark');
+  const last=localStorage.getItem('admin_last_screen');
+  if(last&&document.getElementById(last))showScreen(last);
+});
+
+</script>
+
+
+<script>
+(function(){
+  function openScreenFromHash(){
+    const id=(location.hash||'').slice(1).trim().toLowerCase();
+    if(!id || !document.getElementById(id)) return;
+    const fn=window.showScreen;
+    if(typeof fn==='function'){
+      fn(id);
+      setTimeout(()=>window.scrollTo({top:0,behavior:'auto'}),0);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',openScreenFromHash);
+  window.addEventListener('hashchange',openScreenFromHash);
+})();
+</script>
+
+<div style="position:fixed;right:18px;bottom:18px;background:#0b6fc2;color:#fff;padding:7px 11px;border-radius:9px;font:700 11px sans-serif;z-index:9999">Prototype v49</div></body>
+</html>
