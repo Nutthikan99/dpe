@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Requirement ประชุมระบบจองสนาม 7/7/69</title>
+<style>
+:root{--gd:#1B4332;--gm:#2D6A4F;--gl:#52B788;--gp:#D8F3DC;--go:#C9A84C;--gol:#F0D080;--bg:#EEF2EF;--text:#1A2E1A;}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 22px 50px;}
+.hero{position:relative;background:linear-gradient(135deg,var(--gd),#245b44);border-radius:16px;padding:24px 28px;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.hero .eyebrow{font-size:12px;color:var(--gol);font-weight:700;letter-spacing:.3px}
+.hero h1{margin:5px 0 7px;font-size:25px;}
+.hero p{margin:0;color:rgba(255,255,255,.75);font-size:13px;line-height:1.65}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:6px 11px;border-radius:999px;font-size:11px}
+.section-title{margin:24px 0 12px;display:flex;align-items:center;gap:9px;font-size:15px;color:var(--gd)}
+.section-title:before{content:"";width:6px;height:20px;border-radius:3px;background:var(--go)}
+.req-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.req-card{display:flex;gap:15px;background:#fff;border:1px solid #DCE5DF;border-radius:12px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.055);transition:.18s ease}
+.req-card:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.09)}
+.req-no{width:43px;height:43px;border-radius:12px;background:var(--gd);color:var(--gol);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.req-body{min-width:0;flex:1}
+.req-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.req-head h2{font-size:14px;margin:1px 0 6px;color:var(--gd)}
+.req-body p{font-size:12px;color:#536158;line-height:1.65;margin:0 0 11px}
+.status{font-size:9px;font-weight:700;border-radius:999px;padding:3px 7px;white-space:nowrap}
+.status.done{background:#E8F6EC;color:#21633E;border:1px solid #BCE0C8}
+.status.pending{background:#FFF3CD;color:#805F00;border:1px solid #E8C86A}
+.links{display:flex;gap:7px;flex-wrap:wrap}
+.wfbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border:1px solid #BBD3C4;color:var(--gd);background:#F6FBF7;padding:6px 9px;border-radius:7px;font-size:10px;font-weight:600}
+.wfbtn:hover{background:var(--gp);border-color:var(--gl)}
+.wfbtn .code{background:var(--go);color:var(--gd);border-radius:5px;padding:2px 5px;font-weight:800}
+.note{margin-top:17px;background:#FFF9E9;border:1px solid #E8D596;border-left:5px solid var(--go);padding:12px 14px;border-radius:9px;font-size:11px;line-height:1.6;color:#62542A}
+.footer{text-align:center;color:#7C8A81;font-size:10px;margin-top:22px}
+@media(max-width:780px){.wf-main-btn{position:static;margin-top:16px;}.req-list{grid-template-columns:1fr}.hero h1{font-size:20px}}
+
+.wf-main-btn{position:absolute;top:20px;right:22px;display:inline-flex;align-items:center;gap:8px;margin-top:0;background:#C9A84C;color:#1B4332;text-decoration:none;font-weight:800;font-size:12px;padding:10px 16px;border-radius:9px;box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.wf-main-btn:hover{background:#F0D080;transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">SYSTEM REQUIREMENT</div>
+    <h1>Requirement ประชุมระบบจองสนาม 7/7/69</h1>
+    <p>สรุป Requirement จำนวน 10 ข้อ พร้อมเชื่อมโยงไปยังหน้าจอใน Wireframe ระบบบริการขอใช้อาคารสถานกีฬา โดยกดปุ่ม S-XX เพื่อเปิดหน้าที่เกี่ยวข้องโดยตรง</p>
+    <div class="summary">
+      <span class="pill">10 Requirements</span>
+      <span class="pill">Reference TOR: ข้อ 4.2.5</span>
+      <span class="pill">Wireframe v2.18</span>
+    </div>
+    <a class="wf-main-btn" href="wireframe.html">▶ ดู Wireframe ทั้งหมด</a>
+  </header>
+
+  <div class="section-title"><b>Requirement & Wireframe Traceability</b></div>
+  <main class="req-list">
+    
+    <article class="req-card">
+      <div class="req-no">01</div>
+      <div class="req-body">
+        <div class="req-head"><h2>ค่าอำนวยความสะดวก</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>ค่าไฟส่องสว่าง ชั่วโมง/บาท, สกอร์บอร์ด ชั่วโมง/บาท, เครื่องเสียง ชั่วโมง/บาท, ค่าไฟ วัน/บาท และค่าห้องน้ำ วัน/บาท</p>
+        <div class="links"><a class="wfbtn" href="S-04b.html" target="_blank" rel="noopener"><span class="code">S-04b</span><span>รายละเอียดสนาม / อัตราค่าบริการ</span></a><a class="wfbtn" href="S-05.html" target="_blank" rel="noopener"><span class="code">S-05</span><span>คำนวณค่าใช้จ่าย</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">02</div>
+      <div class="req-body">
+        <div class="req-head"><h2>เพิ่ม Email และ LINE ID</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>เพิ่ม Email และ LINE ID สำหรับการติดต่อและดึงข้อมูลไปใช้ในขั้นตอนแบบฟอร์มคำขอ</p>
+        <div class="links"><a class="wfbtn" href="S-05.html" target="_blank" rel="noopener"><span class="code">S-05</span><span>กำหนดเงื่อนไขเวลา</span></a><a class="wfbtn" href="S-05d.html" target="_blank" rel="noopener"><span class="code">S-05d</span><span>แบบฟอร์มขอใช้สนาม</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">03</div>
+      <div class="req-body">
+        <div class="req-head"><h2>วันที่จอง และวันใช้สถานที่หลายวัน</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>ต้องมีวันที่จอง และสามารถเพิ่มวันใช้สถานที่ได้มากกว่า 1 วัน พร้อมช่วงเวลาของแต่ละวัน</p>
+        <div class="links"><a class="wfbtn" href="S-05.html" target="_blank" rel="noopener"><span class="code">S-05</span><span>ปฏิทิน &amp; กำหนดเงื่อนไขเวลา</span></a><a class="wfbtn" href="S-05d.html" target="_blank" rel="noopener"><span class="code">S-05d</span><span>แบบฟอร์มขอใช้สนาม</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">04</div>
+      <div class="req-body">
+        <div class="req-head"><h2>วันพักสนาม และวันปิดสนาม</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>กำหนดวันพักสนามได้ และกำหนดวันปิดสนามเป็นวันที่ห้ามจอง โดยแสดงสถานะบนปฏิทินให้ชัดเจน</p>
+        <div class="links"><a class="wfbtn" href="S-05.html" target="_blank" rel="noopener"><span class="code">S-05</span><span>ปฏิทินการจอง</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">05</div>
+      <div class="req-body">
+        <div class="req-head"><h2>วิธีการชำระเงิน</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>เพิ่มวิธีชำระเงินด้วยเช็คและเงินสด และรองรับ QR Code ที่แตกต่างกันตามแต่ละหน่วยรับเงิน</p>
+        <div class="links"><a class="wfbtn" href="S-07.html" target="_blank" rel="noopener"><span class="code">S-07</span><span>เลือกวิธีชำระเงิน</span></a><a class="wfbtn" href="S-07b.html" target="_blank" rel="noopener"><span class="code">S-07b</span><span>QR Code / Barcode</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">06</div>
+      <div class="req-body">
+        <div class="req-head"><h2>การขอยกเว้นค่าบริการ</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>รองรับการขอยกเว้นตามระเบียบข้อ 1, 2, 3 และ 4 โดยเป็นรายการที่ต้องเสนอขออนุมัติอธิบดี</p>
+        <div class="links"><a class="wfbtn" href="S-06b.html" target="_blank" rel="noopener"><span class="code">S-06b</span><span>ยืนยันคำขอ / ขอยกเว้น</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">07</div>
+      <div class="req-body">
+        <div class="req-head"><h2>ประเภทผู้ขอใช้บริการ 3 กลุ่ม</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>รองรับ ประชาชน / นิติบุคคล &amp; สมาคม / หน่วยงานราชการ และแสดงเงื่อนไขเอกสารตามประเภทผู้ขอ</p>
+        <div class="links"><a class="wfbtn" href="S-06.html" target="_blank" rel="noopener"><span class="code">S-06</span><span>แนบเอกสารประกอบคำขอ</span></a><a class="wfbtn" href="S-03.html" target="_blank" rel="noopener"><span class="code">S-03</span><span>สมัครนิติบุคคล</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">08</div>
+      <div class="req-body">
+        <div class="req-head"><h2>เอกสารหน่วยงานราชการ</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>หน่วยงานราชการต้องแนบหนังสือที่มีตราครุฑ พร้อมบัตรประชาชนของผู้รับมอบอำนาจ</p>
+        <div class="links"><a class="wfbtn" href="S-06.html" target="_blank" rel="noopener"><span class="code">S-06</span><span>แนบเอกสารประกอบคำขอ</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">09</div>
+      <div class="req-body">
+        <div class="req-head"><h2>เจ้าหน้าที่ระบุยอดยกเว้นค่าบริการ</h2><span class="status done">มีใน Wireframe</span></div>
+        <p>เจ้าหน้าที่กรมพลศึกษาสามารถกรอกจำนวนเงินที่ยกเว้นค่าบริการ และให้ระบบคำนวณยอดคงเหลือ</p>
+        <div class="links"><a class="wfbtn" href="S-06b.html" target="_blank" rel="noopener"><span class="code">S-06b</span><span>ยืนยันคำขอ / ส่วนเจ้าหน้าที่</span></a><a class="wfbtn" href="S-10b.html" target="_blank" rel="noopener"><span class="code">S-10b</span><span>ตรวจสอบรายละเอียดคำขอ</span></a></div>
+      </div>
+    </article>
+    
+    <article class="req-card">
+      <div class="req-no">10</div>
+      <div class="req-body">
+        <div class="req-head"><h2>การจองข้ามปี</h2><span class="status pending">รอข้อสรุปนิติกร</span></div>
+        <p>กรณีการจองข้ามปีให้สอบถามนิติกรก่อนสรุปหลักเกณฑ์ ระบบยังไม่กำหนดเงื่อนไขบังคับจนกว่าจะได้ข้อยุติ</p>
+        <div class="links"><a class="wfbtn" href="S-05.html" target="_blank" rel="noopener"><span class="code">S-05</span><span>ปฏิทิน &amp; วันใช้สถานที่</span></a></div>
+      </div>
+    </article>
+    
+  </main>
+
+  <div class="note"><b>หมายเหตุ Requirement ข้อ 10:</b> การจองข้ามปียังเป็นประเด็นที่ต้องสอบถามนิติกรก่อน จึงแสดงเป็นสถานะ “รอข้อสรุปนิติกร” และเชื่อมไปที่หน้าปฏิทิน S-05 เพื่อใช้ประกอบการพิจารณาเท่านั้น</div>
+  <div class="footer">ระบบบริการขอใช้อาคารสถานกีฬา · Requirement Traceability</div>
+</div>
+</body>
+</html>
